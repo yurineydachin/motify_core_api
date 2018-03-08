@@ -3,7 +3,6 @@ package main
 import (
 	"godep.lzd.co/service"
 	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/dconfig"
 	"godep.lzd.co/service/logger"
 	"godep.lzd.co/service/handlersmanager"
 

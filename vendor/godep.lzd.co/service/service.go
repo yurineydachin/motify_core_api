@@ -363,7 +363,6 @@ func getAdmAddr(port uint64) (string, uint64) {
 func getProfileAddr() (string, uint64) {
 	// "profile-port" param should override other settings
 	dockerPort, _ := config.GetUint("profile-port")
-    logger.Critical(nil, "profile-port: %d", dockerPort)
 	strPort := strconv.FormatUint(uint64(dockerPort), 10)
 	return ":" + strPort, uint64(dockerPort)
 }
@@ -384,9 +383,9 @@ func (service *Service) Init() error {
 	addr, hostname, port := getAddr()
 	_, admPort := getAdmAddr(port)
 	_, profilePort := getProfileAddr()
-    if profilePort == 0 {
-        profilePort = admPort + 2;
-    }
+	if profilePort == 0 {
+		profilePort = admPort + 2
+	}
 
 	service.venture, _ = config.GetString("venture")
 	_, grpcPort := getGrpcAddr(port)
