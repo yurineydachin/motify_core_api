@@ -1,0 +1,14 @@
+version: '2'
+services:
+  example:
+    build: .
+    volumes:
+    - log:/var/log
+
+  rsyslog:
+    image: kamermans/rsyslog
+    volumes:
+    - log:/var/log
+
+volumes:
+  log:

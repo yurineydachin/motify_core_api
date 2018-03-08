@@ -1,0 +1,7 @@
+package: godep.lzd.co/etcd
+import:
+- package: github.com/coreos/etcd
+  version: ^3.2.10
+  subpackages:
+  - client
+  - clientv3

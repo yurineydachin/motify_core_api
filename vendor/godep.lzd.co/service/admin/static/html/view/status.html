@@ -1,0 +1,15 @@
+<div class="container-fluid">
+    <div class="page-header">
+        <h1>Status</h1>
+    </div>
+
+    <div ng-controller="TabCtrl as tab">
+        <ul class="nav nav-tabs">
+            <li ng-class="{active:tab.isSet('self')}"><a  href='#/status/self'><h4>{{self_name}}</h4></a></li>
+            <li ng-repeat="name in resources" ng-value="name" ng-class="{active:tab.isSet(name)}"><a href='#/status/{{name}}'><h4>{{name}}</h4></a></li>
+        </ul>
+
+        <div ng-init="resourceName='self'" ng-show="tab.isSet('self')" ng-include="'view/status/self.html'"></div>
+        <div ng-init="resourceName=name" ng-repeat="name in resources" ng-show="tab.isSet(name)" ng-include="'view/status/resource.html'"></div>
+    </div>
+</div>

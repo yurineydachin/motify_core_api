@@ -1,0 +1,9 @@
+/.idea/
+/_example/bin/*
+/_example/logs/*
+/_example/vendor/
+/vendor/
+/tmp/
+
+/glide.lock
+

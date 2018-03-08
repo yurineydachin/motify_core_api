@@ -1,0 +1,109 @@
+<div class="container-fluid" ng-controller="SessionCtrl">
+    <div class="page-header">
+        <h1>Logs</h1>
+    </div>
+
+    <div class="well">
+        <form class="form-inline" ng-submit="navigateSubmit()">
+            <div class="form-group">
+                <label for="file-select">Log file:</label>
+
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button" ng-click="updateFiles()" ng-disabled="updatingFiles">
+                            <span class="glyphicon glyphicon-refresh"></span>
+                        </button>
+                    </span>
+                    <select class="form-control" id="file-select" style="width: 200px;" ng-model="sessionNav.file">
+                        <option ng-repeat="file in files" ng-value="file">{{file}}</option>
+                    </select>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="rid-input">RID:</label>
+                <input type="text" class="form-control" id="rid-input" style="width: 170px;"
+                       ng-model="sessionNav.id"  ng-disabled="updatingFiles">
+            </div>
+            <button type="submit" class="btn btn-primary"
+                    ng-disabled="!sessionNav.file || !sessionNav.id || updatingFiles">
+                Show
+            </button>
+        </form>
+    </div>
+
+    <div class="row" ng-show="state=='loaded'">
+        <div class="col-sm-12 col-md-12" ng-include="'session_header.tpl'"></div>
+    </div>
+
+    <div class="row" ng-show="state=='loaded'">
+        <div class="col-sm-12 col-md-12">
+            <div class="panel panel-info">
+                <div class="panel-heading">
+                    Request
+                    <span ng-if="curSession.error_message" class="label label-danger">Error: {{curSession.error_message}}</span>
+                </div>
+                <div class="panel-body var-dump" ng-bind-html="curSession.request_dump"></div>
+            </div>
+
+            <div class="panel panel-success" ng-repeat="response in curSession.responses">
+                <div class="panel-heading">
+                    Response
+                    <span ng-if="response.error_message" class="label label-danger">Error: {{response.error_message}}</span>
+                </div>
+                <div class="panel-body var-dump" ng-bind-html="response.dump"></div>
+            </div>
+
+            <div class="panel panel-danger" ng-repeat="error in curSession.errors">
+                <div class="panel-heading">Error</div>
+                <div class="panel-body var-dump" ng-bind-html="error.dump"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="state=='loading'">
+        <div class="col-sm-12 col-md-12">
+            <h1 class="text-center">Loading...</h1>
+
+            <div class="progress">
+                <div class="progress-bar progress-bar-info progress-bar-striped active" role="progressbar"
+                     aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%">
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="error">
+        <div class="col-sm-12 col-md-12">
+            <div class="alert alert-danger" role="alert">
+                <strong>Error: </strong>
+                {{error}}
+            </div>
+        </div>
+    </div>
+
+    <div class="row" ng-show="state=='no_session'">
+        <div class="col-sm-12 col-md-12">
+            <div class="alert alert-info">
+                No session was selected
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/ng-template" id="session_header.tpl">
+    <div class="session" ng-class="{true: 'active', false: ''}[session == curSession]"
+         ng-click="setActive(); $event.stopPropagation()">
+        <h4>
+            <span class="label label-primary" title="Request date and time">{{session.request_time | date : "HH:mm:ss.sss" : "UTC"}}</span>
+            {{session.caption}}
+            <span ng-if="session.error_message" class="label label-danger">Error: {{session.error_message}}</span>
+            <span ng-if="session.errors.length" class="label label-danger">Error: {{session.errors[0].error_message}}</span>
+            <span ng-if="session.responses.length && session.responses[0].error_message" class="label label-danger">Error: {{session.responses[0].error_message}}</span>
+            <span class="label label-info pull-right" title="Session duration" ng-if="session.duration">{{session.duration}}s</span>
+        </h4>
+
+        <ul>
+            <li ng-repeat="session in session.children" ng-include="'session_header.tpl'"></li>
+        </ul>
+    </div>
+</script>

@@ -1,0 +1,7 @@
+/.idea/
+/vendor/
+/tmp/
+
+/glide.lock
+
+*.swp

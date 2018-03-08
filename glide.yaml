@@ -1,0 +1,4 @@
+package: motify_core_api
+import:
+- package: godep.lzd.co/service
+  version: ^5.9.1

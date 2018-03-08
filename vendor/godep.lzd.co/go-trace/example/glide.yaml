@@ -1,0 +1,31 @@
+package: godep.lzd.co/go-trace/example
+import:
+- package: github.com/golang/protobuf
+  subpackages:
+  - proto
+- package: github.com/opentracing/basictracer-go
+- package: github.com/opentracing/opentracing-go
+  subpackages:
+  - ext
+  - log
+- package: github.com/prometheus/client_golang
+  version: ~0.8.0
+  subpackages:
+  - prometheus/promhttp
+- package: godep.lzd.co/go-log
+  version: ^3.8.0
+- package: godep.lzd.co/go-trace
+  version: GOLIBS-1238
+- package: godep.lzd.co/metrics
+- package: golang.org/x/net
+  subpackages:
+  - context
+- package: google.golang.org/grpc
+  subpackages:
+  - metadata
+  - reflection
+- package: sourcegraph.com/sourcegraph/appdash
+  subpackages:
+  - opentracing
+  - traceapp
+- package: github.com/openzipkin/zipkin-go-opentracing

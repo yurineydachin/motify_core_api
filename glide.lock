@@ -1,0 +1,222 @@
+hash: faf373d41397cb568123928e54475f5075105dc7971bbb14e111c3ea767b9d17
+updated: 2018-03-08T16:36:13.874704985+03:00
+imports:
+- name: github.com/beorn7/perks
+  version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
+  subpackages:
+  - quantile
+- name: github.com/coreos/etcd
+  version: 121edf0467052d55876a817b89875fb39a99bf78
+  subpackages:
+  - auth/authpb
+  - client
+  - clientv3
+  - etcdserver/api/v3rpc/rpctypes
+  - etcdserver/etcdserverpb
+  - mvcc/mvccpb
+  - pkg/pathutil
+  - pkg/srv
+  - pkg/tlsutil
+  - pkg/transport
+  - pkg/types
+  - version
+- name: github.com/coreos/go-semver
+  version: 8ab6407b697782a06568d4b7f1db25550ec2e4c6
+  subpackages:
+  - semver
+- name: github.com/davecgh/go-spew
+  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  subpackages:
+  - spew
+- name: github.com/elazarl/go-bindata-assetfs
+  version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
+- name: github.com/facebookgo/clock
+  version: 600d898af40aa09a7a93ecb9265d87b0504b6f03
+- name: github.com/facebookgo/grace
+  version: 4afe952a37a495ae4ac0c1d4ce5f66e91058d149
+  subpackages:
+  - gracehttp
+  - gracenet
+- name: github.com/facebookgo/httpdown
+  version: a3b1354551a26449fbe05f5d855937f6e7acbd71
+- name: github.com/facebookgo/stats
+  version: 1b76add642e42c6ffba7211ad7b3939ce654526e
+- name: github.com/golang/protobuf
+  version: 5a0f697c9ed9d68fef0116532c6e05cfeae00e55
+  subpackages:
+  - jsonpb
+  - proto
+  - protoc-gen-go/descriptor
+  - ptypes
+  - ptypes/any
+  - ptypes/duration
+  - ptypes/timestamp
+- name: github.com/gorilla/websocket
+  version: e8f0f8aaa98dfb6586cbdf2978d511e3199a960a
+- name: github.com/jpillora/backoff
+  version: 06c7a16c845dc8e0bf575fafeeca0f5462f5eb4d
+- name: github.com/kardianos/osext
+  version: c2c54e542fb797ad986b31721e1baedf214ca413
+- name: github.com/mailru/easyjson
+  version: 9d6630dc8c577b56cb9687a9cf9e8578aca7298a
+  subpackages:
+  - buffer
+  - jlexer
+  - jwriter
+- name: github.com/matttproud/golang_protobuf_extensions
+  version: c12348ce28de40eed0136aa2b644d0ee0650e56c
+  subpackages:
+  - pbutil
+- name: github.com/opentracing/opentracing-go
+  version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
+  subpackages:
+  - ext
+  - log
+- name: github.com/pmezard/go-difflib
+  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  subpackages:
+  - difflib
+- name: github.com/prometheus/client_golang
+  version: c5b7fccd204277076155f10851dad72b76a49317
+  subpackages:
+  - prometheus
+  - prometheus/promhttp
+- name: github.com/prometheus/client_model
+  version: 6f3806018612930941127f2a7c6c453ba2c527d2
+  subpackages:
+  - go
+- name: github.com/prometheus/common
+  version: 49fee292b27bfff7f354ee0f64e1bc4850462edf
+  subpackages:
+  - expfmt
+  - internal/bitbucket.org/ww/goautoneg
+  - model
+- name: github.com/prometheus/procfs
+  version: a1dba9ce8baed984a2495b658c82687f8157b98f
+  subpackages:
+  - xfs
+- name: github.com/sergei-svistunov/gorpc
+  version: c41f2d6a5c97fb57abaa9871b7abaa6b7e01a842
+  subpackages:
+  - debug
+  - swagger_ui
+  - transport/cache
+  - transport/http_json
+  - transport/http_json/adapter
+- name: github.com/stretchr/objx
+  version: cbeaeb16a013161a98496fad62933b1d21786672
+- name: github.com/stretchr/testify
+  version: 12b6f73e6084dad08a7c6e575284b177ecafbc71
+  subpackages:
+  - assert
+  - mock
+- name: github.com/ugorji/go
+  version: ded73eae5db7e7a0ef6f55aace87a2873c5d2b74
+  subpackages:
+  - codec
+- name: github.com/vaughan0/go-ini
+  version: a98ad7ee00ec53921f08832bc06ecf7fd600e6a1
+- name: godep.lzd.co/discovery
+  version: d160dbaa49381f8cf7bdc87474dd5a0fd20d489d
+  subpackages:
+  - balancer
+  - balancer/grpc
+  - locator
+  - provider
+  - provider/etcdV3
+  - registrator
+- name: godep.lzd.co/etcd
+  version: 9bb4bbeb35234dd4bf755d5fd0baf5643e185267
+- name: godep.lzd.co/go-errors
+  version: cecadd6e9fc7c535df6b2c561f4b1718034dfaa1
+  subpackages:
+  - errors
+- name: godep.lzd.co/go-healthcheck
+  version: aebaa516de0162a8d66f404095d46909f398af25
+- name: godep.lzd.co/go-log
+  version: 3506c18c88cdde02921dab6b762f4539ee682e15
+  subpackages:
+  - format
+  - internal
+- name: godep.lzd.co/go-metrics
+  version: 60f23d5a347aaa50db175fcfc9c3fda17557ff7d
+- name: godep.lzd.co/go-trace
+  version: 6e406007bdedcc93f16083c29da52016438a7a08
+  subpackages:
+  - flake
+- name: godep.lzd.co/goprof
+  version: b9a76fbb377dd5188d479a9ebdb9fe50a69a06ac
+- name: godep.lzd.co/metrics
+  version: 90cb33fe9b7aa5b3504f28fc7ef797669b7864a2
+  subpackages:
+  - httpmon
+  - structcachemon
+- name: godep.lzd.co/service
+  version: a48e3fcb443a1effa1350731c7bfe16ca255a1ca
+  subpackages:
+  - admin
+  - admin/sessionlogger
+  - admin/static
+  - admin/wshub
+  - cache
+  - cache/inmem
+  - closer
+  - config
+  - dconfig
+  - example/client/adapter
+  - handlersmanager
+  - interfaces
+  - k8s
+  - logger
+  - response
+  - sessionlogger
+  - sessionlogger/libs/file
+  - sessionlogger/libs/locker
+  - sessionlogger/libs/uniq_dumper
+  - utils
+  - watcher
+- name: godep.lzd.co/swgui
+  version: df5c6646dd5547b876fcdc8a6b19dcb9cf2023d6
+- name: golang.org/x/net
+  version: 66aacef3dd8a676686c7ae3716979581e8b03c47
+  subpackages:
+  - context
+  - http2
+  - http2/hpack
+  - idna
+  - internal/timeseries
+  - lex/httplex
+  - trace
+- name: golang.org/x/text
+  version: 4ee4af566555f5fbe026368b75596286a312663a
+  subpackages:
+  - secure/bidirule
+  - transform
+  - unicode/bidi
+  - unicode/norm
+- name: google.golang.org/genproto
+  version: 09f6ed296fc66555a25fe4ce95173148778dfa85
+  subpackages:
+  - googleapis/api/annotations
+  - googleapis/rpc/status
+- name: google.golang.org/grpc
+  version: 5b3c4e850e90a4cf6a20ebd46c8b32a0a3afcb9e
+  subpackages:
+  - balancer
+  - codes
+  - connectivity
+  - credentials
+  - grpclb/grpc_lb_v1/messages
+  - grpclog
+  - health/grpc_health_v1
+  - internal
+  - keepalive
+  - metadata
+  - naming
+  - peer
+  - resolver
+  - stats
+  - status
+  - tap
+  - transport
+testImports: []
