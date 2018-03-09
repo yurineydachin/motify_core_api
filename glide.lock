@@ -1,12 +1,12 @@
-hash: faf373d41397cb568123928e54475f5075105dc7971bbb14e111c3ea767b9d17
-updated: 2018-03-08T16:36:13.874704985+03:00
+hash: f10d9671ae6c43550efdf3e340278c7652614d1fa3a245c01a5247068b3f2637
+updated: 2018-03-09T16:46:08.271927159+03:00
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
   subpackages:
   - quantile
 - name: github.com/coreos/etcd
-  version: 121edf0467052d55876a817b89875fb39a99bf78
+  version: 28c47bb2f8d4a0b60bd41dc5ff61016cff1cfb84
   subpackages:
   - auth/authpb
   - client
@@ -41,6 +41,8 @@ imports:
   version: a3b1354551a26449fbe05f5d855937f6e7acbd71
 - name: github.com/facebookgo/stats
   version: 1b76add642e42c6ffba7211ad7b3939ce654526e
+- name: github.com/go-sql-driver/mysql
+  version: a0583e0143b1624142adab07e0e97fe106d99561
 - name: github.com/golang/protobuf
   version: 5a0f697c9ed9d68fef0116532c6e05cfeae00e55
   subpackages:
@@ -53,8 +55,12 @@ imports:
   - ptypes/timestamp
 - name: github.com/gorilla/websocket
   version: e8f0f8aaa98dfb6586cbdf2978d511e3199a960a
+- name: github.com/jmoiron/sqlx
+  version: 66a435a3e4213c1e0fb4b0bcdfac38933e514636
+  subpackages:
+  - reflectx
 - name: github.com/jpillora/backoff
-  version: 06c7a16c845dc8e0bf575fafeeca0f5462f5eb4d
+  version: 8eab2debe79d12b7bd3d10653910df25fa9552ba
 - name: github.com/kardianos/osext
   version: c2c54e542fb797ad986b31721e1baedf214ca413
 - name: github.com/mailru/easyjson
@@ -138,8 +144,6 @@ imports:
   subpackages:
   - format
   - internal
-- name: godep.lzd.co/go-metrics
-  version: 60f23d5a347aaa50db175fcfc9c3fda17557ff7d
 - name: godep.lzd.co/go-trace
   version: 6e406007bdedcc93f16083c29da52016438a7a08
   subpackages:
@@ -150,6 +154,7 @@ imports:
   version: 90cb33fe9b7aa5b3504f28fc7ef797669b7864a2
   subpackages:
   - httpmon
+  - mysqlmon
   - structcachemon
 - name: godep.lzd.co/service
   version: a48e3fcb443a1effa1350731c7bfe16ca255a1ca
@@ -163,7 +168,6 @@ imports:
   - closer
   - config
   - dconfig
-  - example/client/adapter
   - handlersmanager
   - interfaces
   - k8s

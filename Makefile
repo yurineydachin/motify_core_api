@@ -2,7 +2,7 @@
 
 PWD = $(shell pwd)
 
-GOVER:=1.8.3
+GOVER:=1.10
 INSTALL_PATH:=/tmp/go${GOVER}
 GO:=/usr/local/go/bin/go # default linux path
 
