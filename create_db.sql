@@ -1,11 +1,9 @@
-create database motify_core_api;
-
 -- phpMyAdmin SQL Dump
 -- version 4.2.8.1
 -- http://www.phpmyadmin.net
 --
 -- Хост: localhost
--- Время создания: Мар 10 2018 г., 00:23
+-- Время создания: Мар 12 2018 г., 00:36
 -- Версия сервера: 5.6.19
 -- Версия PHP: 5.4.45
 
@@ -15,8 +13,6 @@ SET time_zone = "+00:00";
 --
 -- База данных: `motify_core_api`
 --
-CREATE DATABASE IF NOT EXISTS `motify_core_api` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `motify_core_api`;
 
 -- --------------------------------------------------------
 
@@ -28,7 +24,9 @@ CREATE TABLE IF NOT EXISTS `motify_agents` (
 `id_agent` int(11) NOT NULL,
   `name` varchar(100) NOT NULL,
   `company_id` varchar(50) NOT NULL,
-  `desc` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `logo` varchar(255) NOT NULL,
+  `bg_image` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
@@ -44,6 +42,7 @@ CREATE TABLE IF NOT EXISTS `motify_agents` (
 --
 
 CREATE TABLE IF NOT EXISTS `motify_agent_employees` (
+`id_employee` int(11) NOT NULL,
   `fk_agent` int(11) NOT NULL,
   `fk_user` int(11) NOT NULL,
   `employee_code` varchar(50) NOT NULL,
@@ -98,6 +97,7 @@ CREATE TABLE IF NOT EXISTS `motify_users` (
   `name` varchar(255) NOT NULL,
   `p_description` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
+  `awatar` varchar(255) NOT NULL,
   `phone` varchar(50) NOT NULL,
   `email` varchar(255) NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -135,19 +135,19 @@ ALTER TABLE `motify_agents`
 -- Индексы таблицы `motify_agent_employees`
 --
 ALTER TABLE `motify_agent_employees`
- ADD PRIMARY KEY (`fk_agent`,`fk_user`), ADD UNIQUE KEY `id_agent` (`fk_agent`,`fk_user`);
+ ADD PRIMARY KEY (`id_employee`), ADD UNIQUE KEY `uniq_fk_agent_fk_user` (`fk_agent`,`fk_user`), ADD KEY `fk_user` (`fk_user`), ADD KEY `fk_agent` (`fk_agent`);
 
 --
 -- Индексы таблицы `motify_agent_settings`
 --
 ALTER TABLE `motify_agent_settings`
- ADD PRIMARY KEY (`fk_agent`,`fk_user`), ADD UNIQUE KEY `id_agent` (`fk_agent`,`fk_user`);
+ ADD PRIMARY KEY (`fk_agent`,`fk_user`), ADD UNIQUE KEY `uniq_fk_agent_fk_user` (`fk_agent`,`fk_user`), ADD KEY `fk_user` (`fk_user`), ADD KEY `fk_agent` (`fk_agent`);
 
 --
 -- Индексы таблицы `motify_payslip`
 --
 ALTER TABLE `motify_payslip`
- ADD PRIMARY KEY (`id_payslip`);
+ ADD PRIMARY KEY (`id_payslip`), ADD KEY `fk_employee` (`fk_employee`);
 
 --
 -- Индексы таблицы `motify_users`
@@ -159,7 +159,7 @@ ALTER TABLE `motify_users`
 -- Индексы таблицы `motify_user_access`
 --
 ALTER TABLE `motify_user_access`
- ADD PRIMARY KEY (`id_user_access`);
+ ADD PRIMARY KEY (`id_user_access`), ADD KEY `fk_user` (`fk_user`);
 
 --
 -- AUTO_INCREMENT для сохранённых таблиц
@@ -170,6 +170,11 @@ ALTER TABLE `motify_user_access`
 --
 ALTER TABLE `motify_agents`
 MODIFY `id_agent` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- AUTO_INCREMENT для таблицы `motify_agent_employees`
+--
+ALTER TABLE `motify_agent_employees`
+MODIFY `id_employee` int(11) NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT для таблицы `motify_payslip`
 --
@@ -185,3 +190,33 @@ MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
 --
 ALTER TABLE `motify_user_access`
 MODIFY `id_user_access` int(11) NOT NULL AUTO_INCREMENT;
+--
+-- Ограничения внешнего ключа сохраненных таблиц
+--
+
+--
+-- Ограничения внешнего ключа таблицы `motify_agent_employees`
+--
+ALTER TABLE `motify_agent_employees`
+ADD CONSTRAINT `motify_agent_employees_ibfk_1` FOREIGN KEY (`fk_agent`) REFERENCES `motify_agents` (`id_agent`) ON UPDATE CASCADE,
+ADD CONSTRAINT `motify_agent_employees_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `motify_users` (`id_user`) ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `motify_agent_settings`
+--
+ALTER TABLE `motify_agent_settings`
+ADD CONSTRAINT `motify_agent_settings_ibfk_2` FOREIGN KEY (`fk_user`) REFERENCES `motify_users` (`id_user`) ON UPDATE CASCADE,
+ADD CONSTRAINT `motify_agent_settings_ibfk_1` FOREIGN KEY (`fk_agent`) REFERENCES `motify_agents` (`id_agent`) ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `motify_payslip`
+--
+ALTER TABLE `motify_payslip`
+ADD CONSTRAINT `motify_payslip_ibfk_1` FOREIGN KEY (`fk_employee`) REFERENCES `motify_agent_employees` (`id_employee`) ON UPDATE CASCADE;
+
+--
+-- Ограничения внешнего ключа таблицы `motify_user_access`
+--
+ALTER TABLE `motify_user_access`
+ADD CONSTRAINT `motify_user_access_ibfk_1` FOREIGN KEY (`fk_user`) REFERENCES `motify_users` (`id_user`) ON UPDATE CASCADE;
+

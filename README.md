@@ -4,3 +4,5 @@ Motify core api
 
 brew install etcd
 brew install mysql
+
+Apply create_db.sql
