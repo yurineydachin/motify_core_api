@@ -89,8 +89,8 @@ func (service *UserService) DeleteUser(ctx context.Context, userID uint64) error
             DELETE FROM motify_users
             WHERE id_user = :id_user
         `, map[string]interface{}{
-            "id_user": userID,
-            })
+		"id_user": userID,
+	})
 	if err != nil {
 		return fmt.Errorf("Delete DB exec error: %v", err)
 	}
@@ -197,8 +197,8 @@ func (service *UserService) DeleteUserAccessByUserID(ctx context.Context, userID
             DELETE FROM motify_user_access
             WHERE fk_user = :fk_user
         `, map[string]interface{}{
-            "fk_user": userID,
-            })
+		"fk_user": userID,
+	})
 	if err != nil {
 		return fmt.Errorf("Delete DB exec error: %v", err)
 	}
