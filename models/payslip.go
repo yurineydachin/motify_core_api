@@ -9,3 +9,14 @@ type Payslip struct {
 	UpdateAt   string  `db:"updated_at"`
 	CreatedAt  string  `db:"created_at"`
 }
+
+type PayslipExtended struct {
+	Payslip
+
+	CompanyName string `db:"company_name"`
+	Role        string `db:"role"`
+}
+
+func (ext *PayslipExtended) ToPayslip() *Payslip {
+	return &ext.Payslip
+}

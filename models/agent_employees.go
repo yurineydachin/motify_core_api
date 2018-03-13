@@ -1,6 +1,7 @@
 package models
 
 type Employee struct {
+	ID                 uint64  `db:"id_employee"`
 	AgentFK            uint64  `db:"fk_agent"`
 	UserFK             uint64  `db:"fk_user"`
 	Code               string  `db:"employee_code"`

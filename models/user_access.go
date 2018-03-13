@@ -24,6 +24,21 @@ type UserAccess struct {
 	CreatedAt        string `db:"created_at"`
 }
 
+func (access *UserAccess) SetEmail(value string) {
+	access.Email = value
+	access.IsHashedEmail = false
+}
+
+func (access *UserAccess) SetPhone(value string) {
+	access.Phone = value
+	access.IsHashedPhone = false
+}
+
+func (access *UserAccess) SetPassword(value string) {
+	access.Password = value
+	access.IsHashedPassword = false
+}
+
 func (access *UserAccess) MarkAllHashed() {
 	access.IsHashedEmail = true
 	access.IsHashedPhone = true
