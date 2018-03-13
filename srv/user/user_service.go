@@ -38,9 +38,9 @@ func (service *UserService) SetUser(ctx context.Context, user models.User) (uint
 func (service *UserService) createUser(ctx context.Context, user models.User) (uint64, error) {
 	insertRes, err := service.db.Exec(`
             INSERT INTO motify_users (name, p_description, description, awatar, phone, email)
-            VALUES (:name, :p_description, :description, :awatar, :phone, :email)
+            VALUES (:user_name, :p_description, :description, :awatar, :phone, :email)
         `, map[string]interface{}{
-		"name":          user.Name,
+		"user_name":     user.Name,
 		"p_description": user.Short,
 		"description":   user.Description,
 		"awatar":        user.Awatar,
@@ -58,16 +58,16 @@ func (service *UserService) createUser(ctx context.Context, user models.User) (u
 func (service *UserService) updateUser(ctx context.Context, user models.User) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_users SET
-                name = :name,
+                name = :user_name,
                 p_description = :p_description,
                 description = :description,
                 awatar = :awatar,
                 phone = :phone,
                 email = :email
-            WHERE id_user = :id
+            WHERE id_user = :id_user
         `, map[string]interface{}{
-		"id":            user.ID,
-		"name":          user.Name,
+		"id_user":       user.ID,
+		"user_name":     user.Name,
 		"p_description": user.Short,
 		"description":   user.Description,
 		"awatar":        user.Awatar,
@@ -82,6 +82,23 @@ func (service *UserService) updateUser(ctx context.Context, user models.User) (u
 		return 0, fmt.Errorf("Update DB exec error: nothing changed")
 	}
 	return user.ID, nil
+}
+
+func (service *UserService) DeleteUser(ctx context.Context, userID uint64) error {
+	deleteRes, err := service.db.Exec(`
+            DELETE FROM motify_users
+            WHERE id_user = :id_user
+        `, map[string]interface{}{
+            "id_user": userID,
+            })
+	if err != nil {
+		return fmt.Errorf("Delete DB exec error: %v", err)
+	}
+	rowsCount, err := deleteRes.RowsAffected()
+	if rowsCount == 0 {
+		return fmt.Errorf("Delete DB exec error: nothing changed")
+	}
+	return nil
 }
 
 func (service *UserService) SetUserAccess(ctx context.Context, access models.UserAccess) (uint64, error) {
@@ -109,12 +126,12 @@ func (service *UserService) createUserAccess(ctx context.Context, access models.
 
 func (service *UserService) updateUserAccess(ctx context.Context, access models.UserAccess) (uint64, error) {
 	updateRes, err := service.db.Exec(`
-            UPDATE motify_users SET
-                type_access = :name,
+            UPDATE motify_user_access SET
+                type_access = :type_access,
                 phone = :phone,
-                email = :email
+                email = :email,
                 password = :password
-            WHERE id_user_access = :id
+            WHERE id_user_access = :id_user_access
         `, access.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
@@ -126,28 +143,28 @@ func (service *UserService) updateUserAccess(ctx context.Context, access models.
 	return access.ID, nil
 }
 
-func (service *UserService) Authentificate(ctx context.Context, login, password string) (*models.User, error) {
-	accessList, err := service.GetUserAssessListByLoginAndPass(login, password)
+func (service *UserService) Authentificate(ctx context.Context, login, password string) (uint64, error) {
+	accessList, err := service.getUserAssessListByLoginAndPass(login, password)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 	if len(accessList) == 0 {
-		return nil, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', not found", login, password)
+		return 0, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', not found", login, password)
 	}
 	userIDs := make(map[uint64]bool, len(accessList))
 	for i := range accessList {
 		userIDs[accessList[i].UserFK] = true
 	}
 	if len(userIDs) > 1 {
-		return nil, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', too many users: %v", login, password, userIDs)
+		return 0, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', too many users: %v", login, password, userIDs)
 	}
 	for i := range accessList {
-		return service.GetUserByID(ctx, accessList[i].UserFK)
+		return accessList[i].UserFK, nil
 	}
-	return nil, nil
+	return 0, nil
 }
 
-func (service *UserService) GetUserAssessListByLoginAndPass(login, password string) ([]*models.UserAccess, error) {
+func (service *UserService) getUserAssessListByLoginAndPass(login, password string) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
 	loginHash := utils.Hash(login)
 	passwordHash := utils.Hash(password)
@@ -162,15 +179,32 @@ func (service *UserService) GetUserAssessListByLoginAndPass(login, password stri
 	return res, err
 }
 
-func (service *UserService) GetUserAssessList(ctx context.Context, id uint64) ([]*models.UserAccess, error) {
+func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
 	err := service.db.Select(&res, `
         SELECT id_user_access,fk_user,type_access,email,phone,password,updated_at,created_at
         FROM motify_user_access WHERE fk_user = ?
-    `, id)
+    `, userID)
 	for i, access := range res {
 		access.MarkAllHashed()
 		res[i] = access
 	}
 	return res, err
+}
+
+func (service *UserService) DeleteUserAccessByUserID(ctx context.Context, userID uint64) error {
+	deleteRes, err := service.db.Exec(`
+            DELETE FROM motify_user_access
+            WHERE fk_user = :fk_user
+        `, map[string]interface{}{
+            "fk_user": userID,
+            })
+	if err != nil {
+		return fmt.Errorf("Delete DB exec error: %v", err)
+	}
+	rowsCount, err := deleteRes.RowsAffected()
+	if rowsCount == 0 {
+		return fmt.Errorf("Delete DB exec error: nothing changed")
+	}
+	return nil
 }
