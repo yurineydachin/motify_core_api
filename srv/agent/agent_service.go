@@ -22,11 +22,11 @@ func NewAgentService(db *database.DbAdapter) *AgentService {
 	}
 }
 
-func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID, limit, offset uint64) ([]*models.AgentWithSettings, error) {
+func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID, limit, offset uint64) ([]*models.AgentWithSetting, error) {
 	if limit == 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
-	res := []*models.AgentWithSettings{}
+	res := []*models.AgentWithSetting{}
 
 	err := service.db.Select(&res, `
         SELECT
@@ -168,16 +168,16 @@ func (service *AgentService) createEmployee(ctx context.Context, model *models.E
 		return 0, fmt.Errorf("Insert DB exec error: no fk_agent")
 	}
 	args := model.ToArgs()
-	fkUserField := ""
-	fkUserValue := ""
+	fkField := ""
+	fkValue := ""
 	if _, exists := args["fk_user"]; exists {
-		fkUserField = "fk_user, "
-		fkUserValue = ":fk_user, "
+		fkField = "fk_user, "
+		fkValue = ":fk_user, "
 	}
 	sql := fmt.Sprintf(
-		"INSERT INTO motify_agent_employees (fk_agent, %s employee_code, hire_date, number_of_dependants, gross_base_salary, role) "+
-			"VALUES (:fk_agent, %s :employee_code, :hire_date, :number_of_dependants, :gross_base_salary, :role)",
-		fkUserField, fkUserValue)
+		`INSERT INTO motify_agent_employees (fk_agent, %s employee_code, hire_date, number_of_dependants, gross_base_salary, role) 
+        VALUES (:fk_agent, %s :employee_code, :hire_date, :number_of_dependants, :gross_base_salary, :role)`,
+		fkField, fkValue)
 	insertRes, err := service.db.Exec(sql, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -192,9 +192,9 @@ func (service *AgentService) updateEmployee(ctx context.Context, model *models.E
 		return 0, fmt.Errorf("Update DB exec error: no fk_agent")
 	}
 	args := model.ToArgs()
-	fkUser := ""
+	fkField := ""
 	if _, exists := args["fk_user"]; exists {
-		fkUser = "fk_user = :fk_user,"
+		fkField = "fk_user = :fk_user,"
 	}
 	sql := fmt.Sprintf(
 		`UPDATE motify_agent_employees SET
@@ -207,7 +207,7 @@ func (service *AgentService) updateEmployee(ctx context.Context, model *models.E
                 role = :role
             WHERE
                 id_employee = :id_employee`,
-		fkUser)
+		fkField)
 	updateRes, err := service.db.Exec(sql, args)
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
@@ -226,6 +226,102 @@ func (service *AgentService) DeleteEmployee(ctx context.Context, modelID uint64)
                 id_employee = :id_employee
         `, map[string]interface{}{
 		"id_employee": modelID,
+	})
+	if err != nil {
+		return fmt.Errorf("Insert DB exec error: %v", err)
+	}
+	rowsCount, err := deleteRes.RowsAffected()
+	if rowsCount == 0 {
+		return fmt.Errorf("Delete DB exec error: nothing changed")
+	}
+	return nil
+}
+
+func (service *AgentService) GetSettingByID(ctx context.Context, modelID uint64) (*models.AgentSetting, error) {
+	res := models.AgentSetting{}
+
+	err := service.db.Get(&res, `
+        SELECT id_setting, fk_agent, fk_agent_processed, fk_user, role, notifications_enabled, is_main_agent, updated_at, created_at
+        FROM motify_agent_settings WHERE id_setting = ?
+    `, modelID)
+	return &res, err
+}
+
+func (service *AgentService) SetSetting(ctx context.Context, model *models.AgentSetting) (uint64, error) {
+	if model.ID > 0 {
+		return service.updateSetting(ctx, model)
+	}
+	return service.createSetting(ctx, model)
+}
+
+func (service *AgentService) createSetting(ctx context.Context, model *models.AgentSetting) (uint64, error) {
+	if model.AgentFK == 0 {
+		return 0, fmt.Errorf("Insert DB exec error: no fk_agent")
+	}
+	args := model.ToArgs()
+	fkField := ""
+	fkValue := ""
+	if _, exists := args["fk_user"]; exists {
+		fkField += "fk_user, "
+		fkValue += ":fk_user, "
+	}
+	if _, exists := args["fk_agent_processed"]; exists {
+		fkField += "fk_agent_processed, "
+		fkValue += ":fk_agent_processed, "
+	}
+	sql := fmt.Sprintf(
+		`INSERT INTO motify_agent_settings (fk_agent, %s role, notifications_enabled, is_main_agent) 
+        VALUES (:fk_agent, %s :role, :notifications_enabled, :is_main_agent)`,
+		fkField, fkValue)
+	insertRes, err := service.db.Exec(sql, model.ToArgs())
+	if err != nil {
+		return 0, fmt.Errorf("Insert DB exec error: %v", err)
+	}
+
+	id, err := insertRes.LastInsertId()
+	return uint64(id), err
+}
+
+func (service *AgentService) updateSetting(ctx context.Context, model *models.AgentSetting) (uint64, error) {
+	if model.AgentFK == 0 {
+		return 0, fmt.Errorf("Update DB exec error: no fk_agent")
+	}
+	args := model.ToArgs()
+	fkField := ""
+	if _, exists := args["fk_user"]; exists {
+		fkField += "fk_user = :fk_user,"
+	}
+	if _, exists := args["fk_agent_processed"]; exists {
+		fkField += "fk_agent_processed = :fk_agent_processed,"
+	}
+	sql := fmt.Sprintf(
+		`UPDATE motify_agent_settings SET
+                fk_agent = :fk_agent,
+                %s
+                role = :role,
+                notifications_enabled = :notifications_enabled,
+                is_main_agent = :is_main_agent
+            WHERE
+                id_setting = :id_setting`,
+		fkField)
+	updateRes, err := service.db.Exec(sql, args)
+	if err != nil {
+		return 0, fmt.Errorf("Update DB exec error: %v", err)
+	}
+	rowsCount, err := updateRes.RowsAffected()
+	if rowsCount == 0 {
+		return 0, fmt.Errorf("Update DB exec error: nothing changed")
+	}
+	return model.ID, nil
+}
+
+func (service *AgentService) DeleteSetting(ctx context.Context, modelID uint64) error {
+	deleteRes, err := service.db.Exec(`
+            DELETE FROM motify_agent_settings
+            WHERE
+                id_setting = :id_setting
+        `, map[string]interface{}{
+		"id_setting": modelID,
 	})
 	if err != nil {
 		return fmt.Errorf("Insert DB exec error: %v", err)

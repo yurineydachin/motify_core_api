@@ -30,9 +30,9 @@ func (agent *Agent) ToArgs() map[string]interface{} {
 	}
 }
 
-type AgentWithSettings struct {
+type AgentWithSetting struct {
 	Agent
-	AgentSettings
+	AgentSetting
 	/*
 		Role                  string `db:"role"`
 		IsNotificationEnabled bool   `db:"notifications_enabled"`
