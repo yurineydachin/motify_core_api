@@ -15,6 +15,7 @@ var (
 	testAgentID         = uint64(0)
 	testAgentIDStr      = "0"
 	testAgentSettingsID = uint64(0)
+	testEmployeeID      = uint64(0)
 )
 
 func getService(t *testing.T) *AgentService {
@@ -83,6 +84,62 @@ func TestSetAgent_Update(t *testing.T) {
 		assert.Equal(t, agentNew.ID, testAgentID)
 		assert.Equal(t, agentNew.Name, "agent "+testAgentIDStr)
 	}
+}
+
+func TestSetEmployee_Create(t *testing.T) {
+	service := getService(t)
+	employee := &models.Employee{
+		AgentFK:            testAgentID,
+		Code:               "employee code",
+		HireDate:           "hire date",
+		NumberOfDepandants: 1,
+		GrossBaseSalary:    1234.00,
+		Role:               "role",
+	}
+	var err error
+	testEmployeeID, err = service.SetEmployee(context.Background(), employee)
+	if assert.Nil(t, err) {
+		assert.Equal(t, testEmployeeID > 0, true)
+	}
+}
+
+func TestGetEmployeeByID(t *testing.T) {
+	service := getService(t)
+	employee, err := service.GetEmployeeByID(context.Background(), testEmployeeID)
+	if assert.Nil(t, err) &&
+		assert.NotNil(t, employee) {
+		assert.Equal(t, employee.ID, testEmployeeID)
+		assert.Equal(t, employee.Code, "employee code")
+	}
+}
+
+func TestSetEmployee_Update(t *testing.T) {
+	service := getService(t)
+	employee := &models.Employee{
+		ID:                 testEmployeeID,
+		AgentFK:            testAgentID,
+		Code:               "employee code 2",
+		HireDate:           "hire date 2",
+		NumberOfDepandants: 2,
+		GrossBaseSalary:    2345.00,
+		Role:               "role 2",
+	}
+	empoloyeeID, err := service.SetEmployee(context.Background(), employee)
+	if assert.Nil(t, err) {
+		assert.Equal(t, testEmployeeID, employee.ID)
+	}
+
+	employeeNew, err := service.GetEmployeeByID(context.Background(), empoloyeeID)
+	if assert.Nil(t, err) &&
+		assert.NotNil(t, employeeNew) {
+		assert.Equal(t, employeeNew.ID, testEmployeeID)
+		assert.Equal(t, employeeNew.Code, "employee code 2")
+	}
+}
+
+func TestDeleteEmployee(t *testing.T) {
+	service := getService(t)
+	assert.Nil(t, service.DeleteEmployee(context.Background(), testEmployeeID))
 }
 
 func TestDeleteAgent(t *testing.T) {

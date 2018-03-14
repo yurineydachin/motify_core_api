@@ -146,3 +146,93 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 	}
 	return nil
 }
+
+func (service *AgentService) GetEmployeeByID(ctx context.Context, modelID uint64) (*models.Employee, error) {
+	res := models.Employee{}
+	err := service.db.Get(&res, `
+        SELECT id_employee, fk_agent, fk_user, employee_code, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
+        FROM motify_agent_employees WHERE id_employee = ?
+    `, modelID)
+	return &res, err
+}
+
+func (service *AgentService) SetEmployee(ctx context.Context, model *models.Employee) (uint64, error) {
+	if model.ID > 0 {
+		return service.updateEmployee(ctx, model)
+	}
+	return service.createEmployee(ctx, model)
+}
+
+func (service *AgentService) createEmployee(ctx context.Context, model *models.Employee) (uint64, error) {
+	if model.AgentFK == 0 {
+		return 0, fmt.Errorf("Insert DB exec error: no fk_agent")
+	}
+	args := model.ToArgs()
+	fkUserField := ""
+	fkUserValue := ""
+	if _, exists := args["fk_user"]; exists {
+		fkUserField = "fk_user, "
+		fkUserValue = ":fk_user, "
+	}
+	sql := fmt.Sprintf(
+		"INSERT INTO motify_agent_employees (fk_agent, %s employee_code, hire_date, number_of_dependants, gross_base_salary, role) "+
+			"VALUES (:fk_agent, %s :employee_code, :hire_date, :number_of_dependants, :gross_base_salary, :role)",
+		fkUserField, fkUserValue)
+	insertRes, err := service.db.Exec(sql, model.ToArgs())
+	if err != nil {
+		return 0, fmt.Errorf("Insert DB exec error: %v", err)
+	}
+
+	id, err := insertRes.LastInsertId()
+	return uint64(id), err
+}
+
+func (service *AgentService) updateEmployee(ctx context.Context, model *models.Employee) (uint64, error) {
+	if model.AgentFK == 0 {
+		return 0, fmt.Errorf("Update DB exec error: no fk_agent")
+	}
+	args := model.ToArgs()
+	fkUser := ""
+	if _, exists := args["fk_user"]; exists {
+		fkUser = "fk_user = :fk_user,"
+	}
+	sql := fmt.Sprintf(
+		`UPDATE motify_agent_employees SET
+                fk_agent = :fk_agent,
+                %s
+                employee_code = :employee_code,
+                hire_date = :hire_date,
+                number_of_dependants = :number_of_dependants,
+                gross_base_salary = :gross_base_salary,
+                role = :role
+            WHERE
+                id_employee = :id_employee`,
+		fkUser)
+	updateRes, err := service.db.Exec(sql, args)
+	if err != nil {
+		return 0, fmt.Errorf("Update DB exec error: %v", err)
+	}
+	rowsCount, err := updateRes.RowsAffected()
+	if rowsCount == 0 {
+		return 0, fmt.Errorf("Update DB exec error: nothing changed")
+	}
+	return model.ID, nil
+}
+
+func (service *AgentService) DeleteEmployee(ctx context.Context, modelID uint64) error {
+	deleteRes, err := service.db.Exec(`
+            DELETE FROM motify_agent_employees
+            WHERE
+                id_employee = :id_employee
+        `, map[string]interface{}{
+		"id_employee": modelID,
+	})
+	if err != nil {
+		return fmt.Errorf("Insert DB exec error: %v", err)
+	}
+	rowsCount, err := deleteRes.RowsAffected()
+	if rowsCount == 0 {
+		return fmt.Errorf("Delete DB exec error: nothing changed")
+	}
+	return nil
+}
