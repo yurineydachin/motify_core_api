@@ -33,7 +33,7 @@ func TestCreateDBAdapterAndService(t *testing.T) {
 
 func TestSetUser_Create(t *testing.T) {
 	service := getService(t)
-	user := models.User{
+	user := &models.User{
 		Name:        "user test",
 		Short:       "short test",
 		Description: "desc test",
@@ -61,7 +61,7 @@ func TestGetUserByID(t *testing.T) {
 
 func TestSetUser_Update(t *testing.T) {
 	service := getService(t)
-	user := models.User{
+	user := &models.User{
 		ID:          testUserID,
 		Name:        "user " + testUserIDStr,
 		Short:       "short " + testUserIDStr,
@@ -84,12 +84,14 @@ func TestSetUser_Update(t *testing.T) {
 }
 
 func TestSetUserAccess_Create(t *testing.T) {
+	phone := "phone 1"
+	email := "email_1@text.com"
 	service := getService(t)
-	access := models.UserAccess{
+	access := &models.UserAccess{
 		UserFK:   testUserID,
 		Type:     models.UserAccessEmail,
-		Phone:    "phone 1",
-		Email:    "email_1@text.com",
+		Phone:    &phone,
+		Email:    &email,
 		Password: "password 1",
 	}
 	var err error
@@ -105,20 +107,22 @@ func TestGetUserAssessListByUserID(t *testing.T) {
 	if assert.Nil(t, err) &&
 		assert.Equal(t, len(accessList), 1) {
 		assert.Equal(t, accessList[0].UserFK, testUserID)
-		assert.Equal(t, accessList[0].Email, utils.Hash("email_1@text.com"))
-		assert.Equal(t, accessList[0].Phone, utils.Hash("phone 1"))
-		assert.Equal(t, accessList[0].Phone, utils.Hash("phone 1"))
+		assert.Equal(t, *accessList[0].Email, utils.Hash("email_1@text.com"))
+		assert.Equal(t, *accessList[0].Phone, utils.Hash("phone 1"))
+		assert.Equal(t, accessList[0].Password, utils.Hash("password 1"))
 	}
 }
 
 func TestSetUserAccess_Update(t *testing.T) {
+	phone := "phone " + testUserIDStr
+	email := "email_" + testUserIDStr + "@text.com"
 	service := getService(t)
-	access := models.UserAccess{
+	access := &models.UserAccess{
 		ID:       testUserAccessID,
 		UserFK:   testUserID,
 		Type:     models.UserAccessEmail,
-		Phone:    "phone " + testUserIDStr,
-		Email:    "email_" + testUserIDStr + "@text.com",
+		Phone:    &phone,
+		Email:    &email,
 		Password: "password " + testUserIDStr,
 	}
 
@@ -132,8 +136,8 @@ func TestSetUserAccess_Update(t *testing.T) {
 		assert.Equal(t, len(accessNew) > 0, true, "user from DB is empty") {
 		assert.Equal(t, accessNew[0].ID, testUserAccessID)
 		assert.Equal(t, accessNew[0].UserFK, testUserID)
-		assert.Equal(t, accessNew[0].Email, utils.Hash("email_"+testUserIDStr+"@text.com"))
-		assert.Equal(t, accessNew[0].Phone, utils.Hash("phone "+testUserIDStr))
+		assert.Equal(t, *accessNew[0].Email, utils.Hash("email_"+testUserIDStr+"@text.com"))
+		assert.Equal(t, *accessNew[0].Phone, utils.Hash("phone "+testUserIDStr))
 		assert.Equal(t, accessNew[0].Password, utils.Hash("password "+testUserIDStr))
 	}
 }

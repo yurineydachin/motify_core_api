@@ -11,3 +11,15 @@ type User struct {
 	UpdatedAt   string `db:"updated_at"`
 	CreatedAt   string `db:"created_at"`
 }
+
+func (user *User) ToArgs() map[string]interface{} {
+	return map[string]interface{}{
+		"id_user":       user.ID,
+		"user_name":     user.Name,
+		"p_description": user.Short,
+		"description":   user.Description,
+		"awatar":        user.Awatar,
+		"phone":         user.Phone,
+		"email":         user.Email,
+	}
+}

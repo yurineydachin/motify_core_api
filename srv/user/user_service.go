@@ -19,34 +19,27 @@ func NewUserService(db *database.DbAdapter) *UserService {
 	}
 }
 
-func (service *UserService) GetUserByID(ctx context.Context, id uint64) (*models.User, error) {
+func (service *UserService) GetUserByID(ctx context.Context, modelID uint64) (*models.User, error) {
 	res := models.User{}
 	err := service.db.Get(&res, `
         SELECT id_user, name, p_description, description, awatar, phone, email, updated_at, created_at
         FROM motify_users WHERE id_user = ?
-    `, id)
+    `, modelID)
 	return &res, err
 }
 
-func (service *UserService) SetUser(ctx context.Context, user models.User) (uint64, error) {
-	if user.ID > 0 {
-		return service.updateUser(ctx, user)
+func (service *UserService) SetUser(ctx context.Context, model *models.User) (uint64, error) {
+	if model.ID > 0 {
+		return service.updateUser(ctx, model)
 	}
-	return service.createUser(ctx, user)
+	return service.createUser(ctx, model)
 }
 
-func (service *UserService) createUser(ctx context.Context, user models.User) (uint64, error) {
+func (service *UserService) createUser(ctx context.Context, model *models.User) (uint64, error) {
 	insertRes, err := service.db.Exec(`
             INSERT INTO motify_users (name, p_description, description, awatar, phone, email)
             VALUES (:user_name, :p_description, :description, :awatar, :phone, :email)
-        `, map[string]interface{}{
-		"user_name":     user.Name,
-		"p_description": user.Short,
-		"description":   user.Description,
-		"awatar":        user.Awatar,
-		"phone":         user.Phone,
-		"email":         user.Email,
-	})
+        `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
 	}
@@ -55,7 +48,7 @@ func (service *UserService) createUser(ctx context.Context, user models.User) (u
 	return uint64(id), err
 }
 
-func (service *UserService) updateUser(ctx context.Context, user models.User) (uint64, error) {
+func (service *UserService) updateUser(ctx context.Context, model *models.User) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_users SET
                 name = :user_name,
@@ -65,15 +58,7 @@ func (service *UserService) updateUser(ctx context.Context, user models.User) (u
                 phone = :phone,
                 email = :email
             WHERE id_user = :id_user
-        `, map[string]interface{}{
-		"id_user":       user.ID,
-		"user_name":     user.Name,
-		"p_description": user.Short,
-		"description":   user.Description,
-		"awatar":        user.Awatar,
-		"phone":         user.Phone,
-		"email":         user.Email,
-	})
+        `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
 	}
@@ -81,15 +66,15 @@ func (service *UserService) updateUser(ctx context.Context, user models.User) (u
 	if rowsCount == 0 {
 		return 0, fmt.Errorf("Update DB exec error: nothing changed")
 	}
-	return user.ID, nil
+	return model.ID, nil
 }
 
-func (service *UserService) DeleteUser(ctx context.Context, userID uint64) error {
+func (service *UserService) DeleteUser(ctx context.Context, modelID uint64) error {
 	deleteRes, err := service.db.Exec(`
             DELETE FROM motify_users
             WHERE id_user = :id_user
         `, map[string]interface{}{
-		"id_user": userID,
+		"id_user": modelID,
 	})
 	if err != nil {
 		return fmt.Errorf("Delete DB exec error: %v", err)
@@ -101,21 +86,21 @@ func (service *UserService) DeleteUser(ctx context.Context, userID uint64) error
 	return nil
 }
 
-func (service *UserService) SetUserAccess(ctx context.Context, access models.UserAccess) (uint64, error) {
-	if access.ID > 0 {
-		return service.updateUserAccess(ctx, access)
+func (service *UserService) SetUserAccess(ctx context.Context, model *models.UserAccess) (uint64, error) {
+	if model.ID > 0 {
+		return service.updateUserAccess(ctx, model)
 	}
-	return service.createUserAccess(ctx, access)
+	return service.createUserAccess(ctx, model)
 }
 
-func (service *UserService) createUserAccess(ctx context.Context, access models.UserAccess) (uint64, error) {
-	if access.UserFK == 0 {
+func (service *UserService) createUserAccess(ctx context.Context, model *models.UserAccess) (uint64, error) {
+	if model.UserFK == 0 {
 		return 0, fmt.Errorf("Insert DB exec error: no fk_user")
 	}
 	insertRes, err := service.db.Exec(`
             INSERT INTO motify_user_access (fk_user, type_access, phone, email, password)
             VALUES (:fk_user, :type_access, :phone, :email, :password)
-        `, access.ToArgs())
+        `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
 	}
@@ -124,7 +109,7 @@ func (service *UserService) createUserAccess(ctx context.Context, access models.
 	return uint64(id), err
 }
 
-func (service *UserService) updateUserAccess(ctx context.Context, access models.UserAccess) (uint64, error) {
+func (service *UserService) updateUserAccess(ctx context.Context, model *models.UserAccess) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_user_access SET
                 type_access = :type_access,
@@ -132,7 +117,7 @@ func (service *UserService) updateUserAccess(ctx context.Context, access models.
                 email = :email,
                 password = :password
             WHERE id_user_access = :id_user_access
-        `, access.ToArgs())
+        `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
 	}
@@ -140,7 +125,7 @@ func (service *UserService) updateUserAccess(ctx context.Context, access models.
 	if rowsCount == 0 {
 		return 0, fmt.Errorf("Update DB exec error: nothing changed")
 	}
-	return access.ID, nil
+	return model.ID, nil
 }
 
 func (service *UserService) Authentificate(ctx context.Context, login, password string) (uint64, error) {
