@@ -15,6 +15,21 @@ type Agent struct {
 	CreatedAt   string `db:"created_at"`
 }
 
+func (agent *Agent) ToArgs() map[string]interface{} {
+	return map[string]interface{}{
+		"id_agent":    agent.ID,
+		"name":        agent.Name,
+		"company_id":  agent.CompanyID,
+		"description": agent.Description,
+		"logo":        agent.Logo,
+		"bg_image":    agent.Background,
+		"address":     agent.Address,
+		"phone":       agent.Phone,
+		"email":       agent.Email,
+		"site":        agent.Site,
+	}
+}
+
 type AgentWithSettings struct {
 	Agent
 	AgentSettings
