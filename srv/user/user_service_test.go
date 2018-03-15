@@ -172,3 +172,42 @@ func TestDeleteUser(t *testing.T) {
 	service := getService(t)
 	assert.Nil(t, service.DeleteUser(context.Background(), testUserID))
 }
+
+/*
+// create test user
+func TestSetUser_Create1(t *testing.T) {
+	service := getService(t)
+	user := &models.User{
+		Name:        "yuri",
+		Short:       "short no",
+		Description: "desc no",
+		Awatar:      "no",
+		Phone:       "123456",
+		Email:       "yuri@test.com",
+	}
+	var err error
+	testUserID, err = service.SetUser(context.Background(), user)
+	testUserIDStr = fmt.Sprintf("%d", testUserID)
+	if assert.Nil(t, err) {
+		assert.Equal(t, testUserID > 0, true)
+	}
+}
+
+func TestSetUserAccess_Create1(t *testing.T) {
+	phone := "123456"
+	email := "yuri@test.com"
+	service := getService(t)
+	access := &models.UserAccess{
+		UserFK:   testUserID,
+		Type:     models.UserAccessEmail,
+		Phone:    &phone,
+		Email:    &email,
+		Password: "123456",
+	}
+	var err error
+	testUserAccessID, err = service.SetUserAccess(context.Background(), access)
+	if assert.Nil(t, err) {
+		assert.Equal(t, testUserAccessID > 0, true, "user_access result from db is empty")
+	}
+}
+*/

@@ -15,19 +15,33 @@ CREATE TABLE IF NOT EXISTS `motify_agents` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_agents_updated_at` BEFORE UPDATE ON `motify_agents`
+ FOR EACH ROW BEGIN SET NEW.UPDATED_AT = CURRENT_TIMESTAMP; END
+//
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS `motify_agent_employees` (
 `id_employee` int(11) NOT NULL,
   `fk_agent` int(11) NOT NULL,
   `fk_user` int(11) DEFAULT NULL,
   `employee_code` varchar(50) NOT NULL,
-  `hire_date` date DEFAULT NULL,
+  `name` varchar(255) NOT NULL,
+  `role` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `hire_date` date NOT NULL,
   `number_of_dependants` int(2) NOT NULL DEFAULT '0',
   `gross_base_salary` float NOT NULL,
-  `role` varchar(255) NOT NULL,
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_agent_employees_updated_at` BEFORE UPDATE ON `motify_agent_employees`
+ FOR EACH ROW BEGIN
+	SET NEW.UPDATED_AT = CURRENT_TIMESTAMP;
+END
+//
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS `motify_agent_settings` (
 `id_setting` int(11) NOT NULL,
@@ -40,6 +54,11 @@ CREATE TABLE IF NOT EXISTS `motify_agent_settings` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_agent_settings_updated_at` BEFORE UPDATE ON `motify_agent_settings`
+ FOR EACH ROW BEGIN SET NEW.UPDATED_AT = CURRENT_TIMESTAMP; END
+//
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS `motify_payslip` (
 `id_payslip` int(11) NOT NULL,
@@ -50,6 +69,11 @@ CREATE TABLE IF NOT EXISTS `motify_payslip` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_payslip_updated_at` BEFORE UPDATE ON `motify_payslip`
+ FOR EACH ROW BEGIN SET NEW.UPDATED_AT = CURRENT_TIMESTAMP; END
+//
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS `motify_users` (
 `id_user` int(11) NOT NULL,
@@ -62,6 +86,11 @@ CREATE TABLE IF NOT EXISTS `motify_users` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_users_updated_at` BEFORE UPDATE ON `motify_users`
+ FOR EACH ROW BEGIN SET NEW.UPDATED_AT = CURRENT_TIMESTAMP; END
+//
+DELIMITER ;
 
 CREATE TABLE IF NOT EXISTS `motify_user_access` (
 `id_user_access` int(11) NOT NULL,
@@ -73,6 +102,11 @@ CREATE TABLE IF NOT EXISTS `motify_user_access` (
   `updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+DELIMITER //
+CREATE TRIGGER `motify_user_access_updated_at` BEFORE UPDATE ON `motify_user_access`
+ FOR EACH ROW BEGIN SET NEW.UPDATED_AT = CURRENT_TIMESTAMP; END
+//
+DELIMITER ;
 
 
 ALTER TABLE `motify_agents`

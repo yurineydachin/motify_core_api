@@ -9,12 +9,16 @@ import (
 	"godep.lzd.co/service/handlersmanager"
 	"godep.lzd.co/service/logger"
 
-	resourceSearchEngine "motify_core_api/resources/searchengine"
+	//resourceSearchEngine "motify_core_api/resources/searchengine"
 	"motify_core_api/resources/database"
 
-	handlerHelloWorld "motify_core_api/handlers/hello/world"
+	"motify_core_api/token"
+	"motify_core_api/srv/user"
+
 	"motify_core_api/handlers/payslip/set"
-	handlerSearchGoogle "motify_core_api/handlers/search/google"
+	"motify_core_api/handlers/user/login"
+	//handlerHelloWorld "motify_core_api/handlers/hello/world"
+	//handlerSearchGoogle "motify_core_api/handlers/search/google"
 )
 
 const serviceName = "MotifyCoreAPI"
@@ -42,6 +46,8 @@ func init() {
 	config.RegisterString("mysql-db-read-nodes", "DB read nodes", "root:123456@tcp(localhost:3306)/motify_core_api")
 	config.RegisterString("mysql-db-write-nodes", "DB write nodes", "root:123456@tcp(localhost:3306)/motify_core_api")
 
+	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "123456789012345678901234")
+	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "12345678")
 }
 
 func main() {
@@ -51,6 +57,11 @@ func main() {
 		os.Exit(1)
 	}
     */
+
+	if err := initToken(); err != nil {
+		logger.Critical(nil, "failed to init token encryption: %v", err)
+		os.Exit(1)
+	}
 
 	dbReadNodes, _ := config.GetStringSlice("mysql-db-read-nodes")
 	dbWriteNodes, _ := config.GetStringSlice("mysql-db-write-nodes")
@@ -76,14 +87,24 @@ func main() {
 	}
 
 	srvc := service.New(serviceName, "motify_core_api/handlers")
-	se := &resourceSearchEngine.SearchEngine{}
-	srvc.RegisterResource(se)
+	//se := &resourceSearchEngine.SearchEngine{}
+	//srvc.RegisterResource(se)
+
+    userService := user_service.NewUserService(db)
 
 	srvc.SetOptions(service.Options{HM: handlersmanager.New("motify_core_api/handlers")})
 	srvc.MustRegisterHandlers(
+    /*
+- login/ singup/ restore pass/ set new pass/ social logins
+- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию 
+- enter magic code (enroll new enployer)
+- get employers, employer details
+- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
+    */
 		payslip_set.New(),
-		handlerHelloWorld.New(),
-		handlerSearchGoogle.New(se),
+		user_login.New(userService),
+		//handlerHelloWorld.New(),
+		//handlerSearchGoogle.New(se),
 	)
 
 	logger.Error(nil, "dbNodes: %#v, DB adapter %#v", dbNodes, db)
@@ -94,4 +115,10 @@ func main() {
 	} else {
 		logger.Info(nil, "Server stopped")
 	}
+}
+
+func initToken() error {
+	key, _ := config.GetString("token-triple-des-key")
+	salt, _ := config.GetString("token-salt")
+	return token.InitTokenV1([]byte(key), []byte(salt), "", "")
 }

@@ -150,7 +150,7 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 func (service *AgentService) GetEmployeeByID(ctx context.Context, modelID uint64) (*models.Employee, error) {
 	res := models.Employee{}
 	err := service.db.Get(&res, `
-        SELECT id_employee, fk_agent, fk_user, employee_code, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
+        SELECT id_employee, fk_agent, fk_user, employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
         FROM motify_agent_employees WHERE id_employee = ?
     `, modelID)
 	return &res, err
@@ -175,8 +175,8 @@ func (service *AgentService) createEmployee(ctx context.Context, model *models.E
 		fkValue = ":fk_user, "
 	}
 	sql := fmt.Sprintf(
-		`INSERT INTO motify_agent_employees (fk_agent, %s employee_code, hire_date, number_of_dependants, gross_base_salary, role) 
-        VALUES (:fk_agent, %s :employee_code, :hire_date, :number_of_dependants, :gross_base_salary, :role)`,
+		`INSERT INTO motify_agent_employees (fk_agent, %s employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role) 
+        VALUES (:fk_agent, %s :employee_code, :name, :email, :hire_date, :number_of_dependants, :gross_base_salary, :role)`,
 		fkField, fkValue)
 	insertRes, err := service.db.Exec(sql, model.ToArgs())
 	if err != nil {
@@ -201,6 +201,8 @@ func (service *AgentService) updateEmployee(ctx context.Context, model *models.E
                 fk_agent = :fk_agent,
                 %s
                 employee_code = :employee_code,
+                name = :name,
+                email = :email,
                 hire_date = :hire_date,
                 number_of_dependants = :number_of_dependants,
                 gross_base_salary = :gross_base_salary,
