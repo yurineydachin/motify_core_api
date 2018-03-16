@@ -189,6 +189,19 @@ func (service *UserService) getUserAssessListByLoginAndPass(login, password stri
 	return res, err
 }
 
+func (service *UserService) GetUserAssessByUserIDAndType(ctx context.Context, userID uint64, t string) (*models.UserAccess, error) {
+	list, err := service.GetUserAssessListByUserID(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	for _, access := range list {
+		if access.Type == t {
+			return access, nil
+		}
+	}
+	return nil, nil
+}
+
 func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
 	err := service.db.Select(&res, `
