@@ -1,8 +1,8 @@
 package main
 
 import (
-"os"
-    "time"
+	"os"
+	"time"
 
 	"godep.lzd.co/service"
 	"godep.lzd.co/service/config"
@@ -12,12 +12,14 @@ import (
 	//resourceSearchEngine "motify_core_api/resources/searchengine"
 	"motify_core_api/resources/database"
 
-	"motify_core_api/token"
+	"motify_core_api/srv/agent"
 	"motify_core_api/srv/user"
+	"motify_core_api/token"
 
+	"motify_core_api/handlers/agent/create"
 	"motify_core_api/handlers/payslip/set"
-	"motify_core_api/handlers/user/login"
 	"motify_core_api/handlers/user/create"
+	"motify_core_api/handlers/user/login"
 	"motify_core_api/handlers/user/update"
 	//handlerHelloWorld "motify_core_api/handlers/hello/world"
 	//handlerSearchGoogle "motify_core_api/handlers/search/google"
@@ -53,12 +55,12 @@ func init() {
 }
 
 func main() {
-    /*
-	if err := config.ParseAll(); err != nil {
-		logger.Critical(nil, err.Error())
-		os.Exit(1)
-	}
-    */
+	/*
+		if err := config.ParseAll(); err != nil {
+			logger.Critical(nil, err.Error())
+			os.Exit(1)
+		}
+	*/
 
 	if err := initToken(); err != nil {
 		logger.Critical(nil, "failed to init token encryption: %v", err)
@@ -67,7 +69,7 @@ func main() {
 
 	dbReadNodes, _ := config.GetStringSlice("mysql-db-read-nodes")
 	dbWriteNodes, _ := config.GetStringSlice("mysql-db-write-nodes")
-    config.Dump()
+	config.Dump()
 	if len(dbReadNodes) == 0 || len(dbWriteNodes) == 0 {
 		logger.Critical(nil, "No DB nodes in config: %v, %v", dbReadNodes, dbWriteNodes)
 		os.Exit(1)
@@ -92,18 +94,20 @@ func main() {
 	//se := &resourceSearchEngine.SearchEngine{}
 	//srvc.RegisterResource(se)
 
-    userService := user_service.NewUserService(db)
+	agentService := agent_service.NewAgentService(db)
+	userService := user_service.NewUserService(db)
 
 	srvc.SetOptions(service.Options{HM: handlersmanager.New("motify_core_api/handlers")})
 	srvc.MustRegisterHandlers(
-    /*
-- login/ singup/ restore pass/ set new pass/ social logins
-- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию 
-- enter magic code (enroll new enployer)
-- get employers, employer details
-- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
-    */
+		/*
+			- login/ singup/ restore pass/ set new pass/ social logins
+			- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
+			- enter magic code (enroll new enployer)
+			- get employers, employer details
+			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
+		*/
 		payslip_set.New(),
+		agent_create.New(agentService),
 		user_login.New(userService),
 		user_create.New(userService),
 		user_update.New(userService),
