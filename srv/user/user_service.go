@@ -128,6 +128,17 @@ func (service *UserService) updateUserAccess(ctx context.Context, model *models.
 	return model.ID, nil
 }
 
+func (service *UserService) IsEmailOrPhoneBusy(ctx context.Context, login string) (bool, error) {
+	accessList, err := service.getUserAssessListByLogin(login)
+	if err != nil {
+		return false, err
+	}
+	if len(accessList) > 0 {
+		return true, nil
+	}
+	return false, nil
+}
+
 func (service *UserService) Authentificate(ctx context.Context, login, password string) (uint64, error) {
 	accessList, err := service.getUserAssessListByLoginAndPass(login, password)
 	if err != nil {
@@ -147,6 +158,20 @@ func (service *UserService) Authentificate(ctx context.Context, login, password 
 		return accessList[i].UserFK, nil
 	}
 	return 0, nil
+}
+
+func (service *UserService) getUserAssessListByLogin(login string) ([]*models.UserAccess, error) {
+	res := []*models.UserAccess{}
+	loginHash := utils.Hash(login)
+	err := service.db.Select(&res, `
+        SELECT id_user_access,fk_user,type_access,email,phone,password,updated_at,created_at
+        FROM motify_user_access WHERE email = ? OR phone = ?
+    `, loginHash, loginHash)
+	for i, access := range res {
+		access.MarkAllHashed()
+		res[i] = access
+	}
+	return res, err
 }
 
 func (service *UserService) getUserAssessListByLoginAndPass(login, password string) ([]*models.UserAccess, error) {

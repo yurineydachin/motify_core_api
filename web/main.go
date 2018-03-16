@@ -17,6 +17,7 @@ import (
 
 	"motify_core_api/handlers/payslip/set"
 	"motify_core_api/handlers/user/login"
+	"motify_core_api/handlers/user/create"
 	//handlerHelloWorld "motify_core_api/handlers/hello/world"
 	//handlerSearchGoogle "motify_core_api/handlers/search/google"
 )
@@ -103,6 +104,7 @@ func main() {
     */
 		payslip_set.New(),
 		user_login.New(userService),
+		user_create.New(userService),
 		//handlerHelloWorld.New(),
 		//handlerSearchGoogle.New(se),
 	)

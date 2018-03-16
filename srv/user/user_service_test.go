@@ -142,11 +142,35 @@ func TestSetUserAccess_Update(t *testing.T) {
 	}
 }
 
+func TestIsEmailOrPhoneBusy_OldEmail(t *testing.T) {
+	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "email_1@text.com")
+	assert.Nil(t, err)
+	assert.Equal(t, isExist, false)
+}
+
+func TestIsEmailOrPhoneBusy_OldPhone(t *testing.T) {
+	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "phone 1")
+	assert.Nil(t, err)
+	assert.Equal(t, isExist, false)
+}
+
 func TestCanNotAuthentificateByOldEmailAndPassword(t *testing.T) {
 	service := getService(t)
 	userID, err := service.Authentificate(context.Background(), "email_1@text.com", "password "+testUserIDStr)
 	assert.NotNil(t, err)
 	assert.Equal(t, userID, uint64(0))
+}
+
+func TestIsEmailOrPhoneBusy_NewEmail(t *testing.T) {
+	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "email_"+testUserIDStr+"@text.com")
+	assert.Nil(t, err)
+	assert.Equal(t, isExist, true)
+}
+
+func TestIsEmailOrPhoneBusy_NewPhone(t *testing.T) {
+	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "phone "+testUserIDStr)
+	assert.Nil(t, err)
+	assert.Equal(t, isExist, true)
 }
 
 func TestAuthentificateByEmailAndPassword(t *testing.T) {

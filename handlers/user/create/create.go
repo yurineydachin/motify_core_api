@@ -1,4 +1,4 @@
-package user_login
+package user_create
 
 import (
 	"motify_core_api/srv/user"
@@ -15,9 +15,9 @@ func New(userService *user_service.UserService) *Handler {
 }
 
 func (*Handler) Caption() string {
-	return "Login user"
+	return "Create user"
 }
 
 func (*Handler) Description() string {
-	return "Try login user and return user with token if success"
+	return "create user and return user with token if success"
 }

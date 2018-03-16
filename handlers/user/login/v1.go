@@ -16,7 +16,7 @@ type V1Args struct {
 
 type V1Res struct {
 	Token string `json:"token" description:"Authorized token"`
-	User  *User  `json:"user_id" description:"User if success"`
+	User  *User  `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -65,7 +65,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.USER_NOT_FOUND
 	}
 	return &V1Res{
-		Token: token.NewTokenV1(userID).String(),
+		Token: token.NewTokenV1(user.ID).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,
