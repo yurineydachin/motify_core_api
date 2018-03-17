@@ -13,6 +13,7 @@ import (
 	"motify_core_api/resources/database"
 
 	"motify_core_api/srv/agent"
+	"motify_core_api/srv/payslip"
 	"motify_core_api/srv/user"
 	"motify_core_api/token"
 
@@ -20,6 +21,7 @@ import (
 	"motify_core_api/handlers/agent/update"
 	"motify_core_api/handlers/employee/create"
 	"motify_core_api/handlers/employee/update"
+	"motify_core_api/handlers/payslip/create"
 	"motify_core_api/handlers/payslip/set"
 	"motify_core_api/handlers/setting/create"
 	"motify_core_api/handlers/setting/update"
@@ -101,6 +103,7 @@ func main() {
 
 	agentService := agent_service.NewAgentService(db)
 	userService := user_service.NewUserService(db)
+	payslipService := payslip_service.NewPaySlipService(db)
 
 	srvc.SetOptions(service.Options{HM: handlersmanager.New("motify_core_api/handlers")})
 	srvc.MustRegisterHandlers(
@@ -112,6 +115,7 @@ func main() {
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
 		payslip_set.New(),
+		payslip_create.New(agentService, payslipService),
 		agent_create.New(agentService),
 		agent_update.New(agentService),
 		employee_create.New(agentService, userService),
