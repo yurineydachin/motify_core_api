@@ -147,6 +147,15 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 	return nil
 }
 
+func (service *AgentService) GetEmployeeByAgentAndUser(ctx context.Context, agentFK, userFK uint64) (*models.Employee, error) {
+	res := models.Employee{}
+	err := service.db.Get(&res, `
+        SELECT id_employee, fk_agent, fk_user, employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
+        FROM motify_agent_employees WHERE fk_agent = ? AND fk_user = ?
+    `, agentFK, userFK)
+	return &res, err
+}
+
 func (service *AgentService) GetEmployeeByID(ctx context.Context, modelID uint64) (*models.Employee, error) {
 	res := models.Employee{}
 	err := service.db.Get(&res, `

@@ -1,4 +1,4 @@
-package employee_create
+package employee_update
 
 import (
 	"context"
@@ -11,10 +11,11 @@ import (
 )
 
 type V1Args struct {
-	AgentFK            uint64   `key:"fk_agent" description:"Agent ID"`
+	ID                 *uint64  `key:"id_employee" description:"Employee ID"`
+	AgentFK            *uint64  `key:"fk_agent" description:"Agent ID"`
 	UserFK             *uint64  `key:"fk_user" description:"User ID"`
 	Code               *string  `key:"employee_code" description:"Employee code"`
-	Name               string   `key:"name" description:"Name"`
+	Name               *string  `key:"name" description:"Name"`
 	Role               *string  `key:"role" description:"Role"`
 	Email              *string  `key:"email" description:"Email"`
 	HireDate           *string  `key:"hire_date" description:"Hire date"`
@@ -70,10 +71,12 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
+	NOT_ENOUGH_PARAMS       error `text:"need params id_employee or fk_agent and fk_user to find employee"`
 	AGENT_NOT_FOUND         error `text:"agent not found"`
+	EMPLOYEE_NOT_FOUND      error `text:"employee not found"`
 	USER_NOT_FOUND          error `text:"user not found"`
-	CREATE_FAILED           error `text:"creating employee is failed"`
-	EMPLOYEE_NOT_CREATED    error `text:"created employee not found"`
+	UPDATE_FAILED           error `text:"updating employee is failed"`
+	EMPLOYEE_NOT_UPDATED    error `text:"updated employee not found"`
 	EMPLOYEE_ALREADY_EXISTS error `text:"employee already exists for this agent and user"`
 }
 
@@ -84,30 +87,66 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 }
 
 func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
-	logger.Debug(ctx, "Employee/Create/V1")
+	logger.Debug(ctx, "Employee/Update/V1")
 	cache.DisableTransportCache(ctx)
 
-	agent, err := handler.agentService.GetAgentByID(ctx, opts.AgentFK)
+	var employee *models.Employee
+	var err error
+	if opts.ID != nil && *opts.ID > 0 {
+		employee, err = handler.agentService.GetEmployeeByID(ctx, *opts.ID)
+	} else if opts.AgentFK != nil && *opts.AgentFK > 0 && opts.UserFK != nil && *opts.UserFK > 0 {
+		employee, err = handler.agentService.GetEmployeeByAgentAndUser(ctx, *opts.AgentFK, *opts.UserFK)
+	} else {
+		return nil, v1Errors.NOT_ENOUGH_PARAMS
+	}
 	if err != nil {
-		logger.Error(ctx, "Failed login: %v", err)
+		logger.Error(ctx, "Failed loading from DB: %v", err)
+		return nil, v1Errors.EMPLOYEE_NOT_FOUND
+	}
+	if employee == nil {
+		logger.Error(ctx, "Failed loading employee is nil")
+		return nil, v1Errors.EMPLOYEE_NOT_FOUND
+	}
+
+	needUpdate := false
+	agentID := employee.AgentFK
+	if opts.AgentFK != nil && *opts.AgentFK > 0 && employee.AgentFK != *opts.AgentFK {
+		agentID = *opts.AgentFK
+		needUpdate = true
+	}
+
+	agent, err := handler.agentService.GetAgentByID(ctx, agentID)
+	if err != nil {
+		logger.Error(ctx, "Failed loading agent %d: %v", agentID, err)
 		return nil, v1Errors.AGENT_NOT_FOUND
 	}
 	if agent == nil {
-		logger.Error(ctx, "Failed login: agent is nil")
+		logger.Error(ctx, "Failed loading agent (%d) is nil", agentID)
 		return nil, v1Errors.AGENT_NOT_FOUND
 	}
+	employee.AgentFK = agent.ID
 
 	var userRes *User
+	userID := uint64(0)
 	if opts.UserFK != nil && *opts.UserFK > 0 {
-		user, err := handler.userService.GetUserByID(ctx, *opts.UserFK)
+		userID = *opts.UserFK
+		if employee.UserFK != nil && *employee.UserFK != *opts.UserFK {
+			needUpdate = true
+		}
+	} else if employee.UserFK != nil && *employee.UserFK > 0 {
+		userID = *employee.UserFK
+	}
+	if userID > 0 {
+		user, err := handler.userService.GetUserByID(ctx, userID)
 		if err != nil {
-			logger.Error(ctx, "Failed login: %v", err)
+			logger.Error(ctx, "Failed loading %v", err)
 			return nil, v1Errors.USER_NOT_FOUND
 		}
 		if user == nil {
-			logger.Error(ctx, "Failed login: user is nil")
+			logger.Error(ctx, "Failed loading user is nil")
 			return nil, v1Errors.USER_NOT_FOUND
 		}
+		employee.UserFK = &user.ID
 		userRes = &User{
 			ID:          user.ID,
 			Name:        user.Name,
@@ -121,51 +160,58 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		}
 	}
 
-	employee := &models.Employee{
-		AgentFK: opts.AgentFK,
-		UserFK:  opts.UserFK,
-		Name:    opts.Name,
+	if opts.Name != nil && *opts.Name != "" && employee.Name != *opts.Name {
+		employee.Name = *opts.Name
+		needUpdate = true
 	}
-	if opts.Code != nil && *opts.Code != "" {
+	if opts.Code != nil && *opts.Code != "" && employee.Code != *opts.Code {
 		employee.Code = *opts.Code
+		needUpdate = true
 	}
-	if opts.Role != nil && *opts.Role != "" {
+	if opts.Role != nil && *opts.Role != "" && employee.Role != *opts.Role {
 		employee.Role = *opts.Role
+		needUpdate = true
 	}
-	if opts.Email != nil && *opts.Email != "" {
+	if opts.Email != nil && *opts.Email != "" && employee.Email != *opts.Email {
 		employee.Email = *opts.Email
+		needUpdate = true
 	}
-	if opts.HireDate != nil && *opts.HireDate != "" {
+	if opts.HireDate != nil && *opts.HireDate != "" && employee.HireDate != *opts.HireDate {
 		employee.HireDate = *opts.HireDate
+		needUpdate = true
 	}
-	if opts.NumberOfDepandants != nil && *opts.NumberOfDepandants > 0 {
+	if opts.NumberOfDepandants != nil && *opts.NumberOfDepandants > 0 && employee.NumberOfDepandants != *opts.NumberOfDepandants {
 		employee.NumberOfDepandants = *opts.NumberOfDepandants
+		needUpdate = true
 	}
-	if opts.GrossBaseSalary != nil && *opts.GrossBaseSalary > 0 {
+	if opts.GrossBaseSalary != nil && *opts.GrossBaseSalary > 0 && employee.GrossBaseSalary != *opts.GrossBaseSalary {
 		employee.GrossBaseSalary = *opts.GrossBaseSalary
+		needUpdate = true
 	}
 
-	employeeID, err := handler.agentService.SetEmployee(ctx, employee)
-	if err != nil {
-		if strings.Index(err.Error(), "uniq_fk_agent_fk_user") > -1 {
-			return nil, v1Errors.EMPLOYEE_ALREADY_EXISTS
+	if needUpdate {
+		employeeID, err := handler.agentService.SetEmployee(ctx, employee)
+		if err != nil {
+			if strings.Index(err.Error(), "uniq_fk_agent_fk_user") > -1 {
+				return nil, v1Errors.EMPLOYEE_ALREADY_EXISTS
+			}
+			logger.Error(ctx, "Failed updating employee: %v", err)
+			return nil, v1Errors.UPDATE_FAILED
 		}
-		logger.Error(ctx, "Failed creating employee: %v", err)
-		return nil, v1Errors.CREATE_FAILED
-	}
-	if employeeID == 0 {
-		logger.Error(ctx, "Failed creating employee: employeeID is 0")
-		return nil, v1Errors.CREATE_FAILED
-	}
+		if employeeID == 0 {
+			logger.Error(ctx, "Failed updating employee: employeeID is 0")
+			return nil, v1Errors.UPDATE_FAILED
+		}
 
-	employee, err = handler.agentService.GetEmployeeByID(ctx, employeeID)
-	if err != nil {
-		logger.Error(ctx, "Failed loading from DB: %v", err)
-		return nil, v1Errors.EMPLOYEE_NOT_CREATED
-	}
-	if employee == nil {
-		logger.Error(ctx, "Failed login: employee is nil")
-		return nil, v1Errors.EMPLOYEE_NOT_CREATED
+		employee, err = handler.agentService.GetEmployeeByID(ctx, employeeID)
+		if err != nil {
+			logger.Error(ctx, "Failed loading from DB: %v", err)
+			return nil, v1Errors.EMPLOYEE_NOT_UPDATED
+		}
+		if agent == nil {
+			logger.Error(ctx, "Failed loading employee is nil")
+			return nil, v1Errors.EMPLOYEE_NOT_UPDATED
+		}
 	}
 
 	return &V1Res{
