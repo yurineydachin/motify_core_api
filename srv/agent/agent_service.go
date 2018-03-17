@@ -258,6 +258,16 @@ func (service *AgentService) GetSettingByID(ctx context.Context, modelID uint64)
 	return &res, err
 }
 
+func (service *AgentService) GetSettingByAgentAndUser(ctx context.Context, agentFK, userFK uint64) (*models.AgentSetting, error) {
+	res := models.AgentSetting{}
+
+	err := service.db.Get(&res, `
+        SELECT id_setting, fk_agent, fk_agent_processed, fk_user, role, notifications_enabled, is_main_agent, updated_at, created_at
+        FROM motify_agent_settings WHERE fk_agent = ? AND fk_user = ?
+    `, agentFK, userFK)
+	return &res, err
+}
+
 func (service *AgentService) SetSetting(ctx context.Context, model *models.AgentSetting) (uint64, error) {
 	if model.ID > 0 {
 		return service.updateSetting(ctx, model)
