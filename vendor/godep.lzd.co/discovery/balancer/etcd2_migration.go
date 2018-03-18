@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	defaultNamespace = "lazada_api"
+	defaultNamespace = "motify_api"
 )
 
 // FallbackBalancerEtcd2Options contains config for fallback balancer constructor
@@ -31,7 +31,7 @@ type FallbackBalancerEtcd2Options struct {
 	Venture     string
 	Environment string
 	// Namespace is etcd2 key namespace
-	// If not specified, "lazada_api" is used by default
+	// If not specified, "motify_api" is used by default
 	Namespace string
 }
 

@@ -15,7 +15,7 @@ import (
 
 const (
 	// namespace is a common namespace for all Lazada services in discovery V2
-	namespace = "lazada_api"
+	namespace = "motify_api"
 )
 
 // registratorV2V3 is temp IRegistrator implementation, aggregating both V2 and V3 registrators under single interface.
