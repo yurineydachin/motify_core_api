@@ -99,7 +99,7 @@ func main() {
 
 	srvc := service.New(serviceName, "motify_core_api/handlers")
 	//se := &resourceSearchEngine.SearchEngine{}
-	//srvc.RegisterResource(se)
+	srvc.RegisterResource(db)
 
 	agentService := agent_service.NewAgentService(db)
 	userService := user_service.NewUserService(db)

@@ -12,6 +12,7 @@ import (
 	"github.com/jmoiron/sqlx"
 	"godep.lzd.co/metrics"
 	"godep.lzd.co/metrics/mysqlmon"
+	"godep.lzd.co/service/interfaces"
 )
 
 const (
@@ -32,9 +33,56 @@ type DbAdapter struct {
 	debug bool
 }
 
+func (db *DbAdapter) Caption() string {
+	return "Database"
+}
+
+func (db *DbAdapter) Status() interfaces.Status {
+	rows := make([]interfaces.StatusRow, 0, len(db.dbs))
+	for i := range db.dbs {
+		rows = append(rows, db.dbs[i].getStatusRow())
+	}
+	return interfaces.Status{
+		Header: []string{
+			"DB",
+			"Connections",
+			"Requests",
+			"Errors",
+			"Time avg (ms)",
+		},
+		Rows: rows,
+	}
+}
+
 type MonitoringWrapper struct {
 	Db   *sqlx.DB
 	Conf *mysql.Config
+
+	conn      int
+	requests  uint64
+	errors    uint64
+	timeSpend int64
+}
+
+func (db *MonitoringWrapper) addRequest(err error, started time.Time) {
+	db.requests++
+	db.timeSpend += time.Since(started).Nanoseconds() / 1000000
+	if err != nil {
+		db.errors++
+	}
+}
+
+func (db *MonitoringWrapper) getStatusRow() interfaces.StatusRow {
+	return interfaces.StatusRow{
+		Level: "",
+		Data: []string{
+			db.Conf.DBName,
+			fmt.Sprintf("%d", db.conn),
+			fmt.Sprintf("%d", db.requests),
+			fmt.Sprintf("%d", db.errors),
+			fmt.Sprintf("%0.2f", float64(db.timeSpend)/float64(db.requests)),
+		},
+	}
 }
 
 func NewMonitoringWrapper(db *sqlx.DB, dsn string) *MonitoringWrapper {
@@ -81,6 +129,7 @@ func NewDbAdapter(dsns []string, tz string, debug bool) (*DbAdapter, error) {
 				time.Sleep(15 * time.Second)
 				stats := monitoringWrapper.Db.Stats()
 				mysqlmon.ConnectionNumber.WithLabelValues(monitoringWrapper.GetHost(), monitoringWrapper.Conf.DBName).Set(float64(stats.OpenConnections))
+				monitoringWrapper.conn = stats.OpenConnections
 			}
 		}(monitoringWrapper)
 	}
@@ -99,6 +148,7 @@ func (this *DbAdapter) Select(dest interface{}, query string, args ...interface{
 	started := time.Now()
 	dbMonitoring := this.Slave()
 	err := dbMonitoring.Db.Select(dest, query, args...)
+	dbMonitoring.addRequest(err, started)
 	mysqlmon.ResponseTime.WithLabelValues(dbMonitoring.GetHost(), dbMonitoring.Conf.DBName, metrics.IsError(err), "SELECT").Observe(metrics.SinceMs(started))
 	return err
 
@@ -106,8 +156,11 @@ func (this *DbAdapter) Select(dest interface{}, query string, args ...interface{
 
 // Get one row from a DB.
 func (this *DbAdapter) Get(dest interface{}, query string, args ...interface{}) error {
+	started := time.Now()
 	dbMonitoring := this.Slave()
-	return dbMonitoring.Db.Get(dest, query, args...)
+	err := dbMonitoring.Db.Get(dest, query, args...)
+	dbMonitoring.addRequest(err, started)
+	return err
 }
 
 // Exec a query.
@@ -115,6 +168,7 @@ func (this *DbAdapter) Exec(query string, args map[string]interface{}) (sql.Resu
 	started := time.Now()
 	dbMonitoring := this.Master()
 	result, err := dbMonitoring.Db.NamedExec(query, args)
+	dbMonitoring.addRequest(err, started)
 	mysqlmon.ResponseTime.WithLabelValues(dbMonitoring.GetHost(), dbMonitoring.Conf.DBName, metrics.IsError(err), strings.SplitN(query, " ", 2)[0]).Observe(metrics.SinceMs(started))
 	return result, err
 }
