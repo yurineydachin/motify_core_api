@@ -6,7 +6,9 @@ import (
 	"sync"
 )
 
-const singletonCallStackLevelSkip = 3
+const (
+	singletonCallStackLevelSkip = 3
+)
 
 var (
 	mtx            sync.RWMutex

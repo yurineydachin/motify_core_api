@@ -47,7 +47,7 @@ type object struct {
 var CleanPeriod = 12 * time.Hour
 
 func init() {
-	config.RegisterString("sessions-logs-path", "Path to sessions logs", "")
+	config.RegisterString("sessions-logs-path", "Path to sessions logs", "/tmp/motify_core_api/sessions")
 	config.RegisterUint("sessions-logs-store-days", "How long store logs in days", 1)
 }
 

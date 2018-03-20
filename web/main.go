@@ -6,9 +6,16 @@ import (
 
 	"godep.lzd.co/service"
 	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/handlersmanager"
-	"godep.lzd.co/service/logger"
+	//"godep.lzd.co/service/dconfig"
+	"godep.lzd.co/go-dconfig"
+	//"godep.lzd.co/service/handlersmanager"
+	mobConfig "godep.lzd.co/go-config"
+	"godep.lzd.co/mobapi_lib/handler"
+	"godep.lzd.co/mobapi_lib/handlersmanager"
+	mobLogger "godep.lzd.co/mobapi_lib/logger"
+	"godep.lzd.co/mobapi_lib/sessionlogger"
 	"godep.lzd.co/mobapi_lib/token"
+	"godep.lzd.co/service/logger"
 
 	//resourceSearchEngine "motify_core_api/resources/searchengine"
 	"motify_core_api/resources/database"
@@ -51,8 +58,6 @@ func init() {
 	service.GitHash = GitHash
 	service.GitDescribe = GitDescribe
 
-	config.RegisterBool("something-enabled", "Turn off/on something", false)
-
 	config.RegisterString("config-shop-timezone", "Config shop timezone", "Local")
 	config.RegisterString("mysql-db-read-nodes", "DB read nodes", "")
 	config.RegisterString("mysql-db-write-nodes", "DB write nodes", "")
@@ -63,6 +68,9 @@ func init() {
 
 func main() {
 	srvc := service.New(serviceName, "motify_core_api/handlers")
+	if err := mobConfig.ParseAll(); err != nil {
+		logger.Error(nil, err.Error())
+	}
 
 	if err := initToken(); err != nil {
 		logger.Critical(nil, "failed to init token encryption: %v", err)
@@ -89,6 +97,7 @@ func main() {
 	db, err := database.NewDbAdapter(dbNodes, location, false)
 	if err != nil {
 		logger.Critical(nil, "DB adapter init error: %v", err)
+		os.Exit(1)
 	}
 
 	//se := &resourceSearchEngine.SearchEngine{}
@@ -98,7 +107,18 @@ func main() {
 	userService := user_service.NewUserService(db)
 	payslipService := payslip_service.NewPaySlipService(db)
 
-	srvc.SetOptions(service.Options{HM: handlersmanager.New("motify_core_api/handlers")})
+	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
+	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
+	if err != nil {
+		logger.Critical(nil, err.Error())
+		os.Exit(1)
+	}
+	srvc.SetOptions(
+		service.Options{
+			HM:                  handlersmanager.New("motify_core_api/handlers"),
+			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+		},
+	)
 	srvc.MustRegisterHandlers(
 		/*
 			- login/ singup/ restore pass/ set new pass/ social logins

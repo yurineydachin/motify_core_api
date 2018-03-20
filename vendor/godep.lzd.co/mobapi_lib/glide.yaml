@@ -31,7 +31,7 @@ import:
   - transport/http_json/adapter
 - package: github.com/vaughan0/go-ini
 - package: godep.lzd.co/go-trace
-  version: ^4.7.0
+  version: ^5.0.0
 - package: github.com/prometheus/client_golang/prometheus
   version: 0.8.0
 - package: godep.lzd.co/go-config

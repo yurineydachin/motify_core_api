@@ -1,5 +1,5 @@
 hash: 8b8d9f9596d9ddc05a00093d5b782d2a491cc845899835cab555405b10b94108
-updated: 2018-03-20T14:27:01.644879568+03:00
+updated: 2018-03-20T14:59:33.068558398+03:00
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
@@ -73,6 +73,8 @@ imports:
   version: c12348ce28de40eed0136aa2b644d0ee0650e56c
   subpackages:
   - pbutil
+- name: github.com/moul/http2curl
+  version: 9ac6cf4d929b2fa8fd2d2e6dec5bb0feb4f4911d
 - name: github.com/opentracing/opentracing-go
   version: 1949ddbfd147afd4d964a9f00b24eb291e0e7c38
   subpackages:
@@ -135,6 +137,8 @@ imports:
   version: 9bb4bbeb35234dd4bf755d5fd0baf5643e185267
 - name: godep.lzd.co/go-config
   version: dff418ebac39626734c217cfa2a797ff8d436f79
+- name: godep.lzd.co/go-dconfig
+  version: e7e902af4530d99545aa9ae4eb5bd98cdb954868
 - name: godep.lzd.co/go-errors
   version: cecadd6e9fc7c535df6b2c561f4b1718034dfaa1
   subpackages:
@@ -162,13 +166,20 @@ imports:
   version: 6433119104da3efa895fd22b473902f273e2cc43
   subpackages:
   - cache/inmem
+  - closer
   - context
   - handler
+  - handlersmanager
   - logger
+  - response
   - sessionlogger
+  - sessionlogger/libs/file
+  - sessionlogger/libs/locker
+  - sessionlogger/libs/uniq_dumper
   - sessionmocker
   - token
   - utils
+  - watcher
 - name: godep.lzd.co/service
   version: a48e3fcb443a1effa1350731c7bfe16ca255a1ca
   subpackages:
@@ -236,6 +247,4 @@ imports:
   - status
   - tap
   - transport
-testImports:
-- name: godep.lzd.co/awg
-  version: 87a4b42e4e11a05cafc401fe4b20ae6e415267f9
+testImports: []

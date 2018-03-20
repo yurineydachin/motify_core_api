@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
 	"godep.lzd.co/mobapi_lib/token"
+	"godep.lzd.co/service/logger"
 
 	"motify_core_api/models"
 )

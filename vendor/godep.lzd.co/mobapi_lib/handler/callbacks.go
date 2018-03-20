@@ -32,10 +32,10 @@ import (
 const (
 	HeaderAPIToken      = "X-API-TOKEN"
 	HeaderAppVersion    = "X-APP-VERSION"
-	HeaderDebug         = "X-LZD-DEBUG"
-	HeaderMock          = "X-LZD-MOCK"
+	HeaderDebug         = "X-MTF-DEBUG"
+	HeaderMock          = "X-MTF-MOCK"
 	HeaderCID           = "X-CID"
-	HeaderLang          = "X-LZD-LANG"
+	HeaderLang          = "X-MTF-LANG"
 	HeaderWebPSupported = "X-WEBP-SUPPORTED"
 	HeaderScreenWidth   = "X-SCREEN-WIDTH"
 	HeaderScreenHeight  = "X-SCREEN-HEIGHT"
