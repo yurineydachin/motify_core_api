@@ -383,9 +383,6 @@ func (service *Service) Init() error {
 	addr, hostname, port := getAddr()
 	_, admPort := getAdmAddr(port)
 	_, profilePort := getProfileAddr()
-	if profilePort == 0 {
-		profilePort = admPort + 2
-	}
 
 	service.venture, _ = config.GetString("venture")
 	_, grpcPort := getGrpcAddr(port)
