@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/config"
 	"godep.lzd.co/service/handlersmanager"
 	"godep.lzd.co/service/logger"
+	"godep.lzd.co/mobapi_lib/token"
 
 	//resourceSearchEngine "motify_core_api/resources/searchengine"
 	"motify_core_api/resources/database"
@@ -15,7 +16,6 @@ import (
 	"motify_core_api/srv/agent"
 	"motify_core_api/srv/payslip"
 	"motify_core_api/srv/user"
-	"motify_core_api/token"
 
 	"motify_core_api/handlers/agent/create"
 	"motify_core_api/handlers/agent/update"
@@ -133,5 +133,5 @@ func main() {
 func initToken() error {
 	key, _ := config.GetString("token-triple-des-key")
 	salt, _ := config.GetString("token-salt")
-	return token.InitTokenV1([]byte(key), []byte(salt), "", "")
+	return token.InitTokenV1([]byte(key), []byte(salt))
 }

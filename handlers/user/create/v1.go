@@ -5,9 +5,9 @@ import (
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/service/logger"
+	"godep.lzd.co/mobapi_lib/token"
 
 	"motify_core_api/models"
-	"motify_core_api/token"
 )
 
 type V1Args struct {

@@ -1,5 +1,5 @@
 hash: 8b8d9f9596d9ddc05a00093d5b782d2a491cc845899835cab555405b10b94108
-updated: 2018-03-20T14:08:49.703142013+03:00
+updated: 2018-03-20T14:27:01.644879568+03:00
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
@@ -133,6 +133,8 @@ imports:
   - registrator
 - name: godep.lzd.co/etcd
   version: 9bb4bbeb35234dd4bf755d5fd0baf5643e185267
+- name: godep.lzd.co/go-config
+  version: dff418ebac39626734c217cfa2a797ff8d436f79
 - name: godep.lzd.co/go-errors
   version: cecadd6e9fc7c535df6b2c561f4b1718034dfaa1
   subpackages:
