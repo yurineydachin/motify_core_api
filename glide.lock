@@ -1,5 +1,5 @@
-hash: f10d9671ae6c43550efdf3e340278c7652614d1fa3a245c01a5247068b3f2637
-updated: 2018-03-09T16:46:08.271927159+03:00
+hash: 8b8d9f9596d9ddc05a00093d5b782d2a491cc845899835cab555405b10b94108
+updated: 2018-03-20T14:08:49.703142013+03:00
 imports:
 - name: github.com/beorn7/perks
   version: 4c0e84591b9aa9e6dcfdf3e020114cd81f89d5f9
@@ -156,6 +156,17 @@ imports:
   - httpmon
   - mysqlmon
   - structcachemon
+- name: godep.lzd.co/mobapi_lib
+  version: 6433119104da3efa895fd22b473902f273e2cc43
+  subpackages:
+  - cache/inmem
+  - context
+  - handler
+  - logger
+  - sessionlogger
+  - sessionmocker
+  - token
+  - utils
 - name: godep.lzd.co/service
   version: a48e3fcb443a1effa1350731c7bfe16ca255a1ca
   subpackages:
@@ -223,4 +234,6 @@ imports:
   - status
   - tap
   - transport
-testImports: []
+testImports:
+- name: godep.lzd.co/awg
+  version: 87a4b42e4e11a05cafc401fe4b20ae6e415267f9

@@ -2,6 +2,17 @@ package: motify_core_api
 import:
 - package: godep.lzd.co/service
   version: ^5.9.1
+- package: godep.lzd.co/mobapi_lib
+  version: ^3.0.0
+  subpackages:
+  - cache/inmem
+  - context
+  - handler
+  - logger
+  - sessionlogger
+  - sessionmocker
+  - token
+  - utils
 - package: github.com/go-sql-driver/mysql
 - package: github.com/jmoiron/sqlx
 testImphort:

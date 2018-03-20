@@ -16,7 +16,7 @@ func init() {
 	globalConf.flagSet.StringVar(&deprecatedConfDir, "config_dir", "", "DEPRECATED. It's used for backwards compatibility. Please use 'config-dir'.")
 
 	RegisterString("config", "Single config file. Overwrites core config file 'app.ini' and env config file", "")
-	RegisterString("config-dir", "directory to config files to search for 'app.ini' and env config file", "./etc/")
+	RegisterString("config-dir", "directory to config files to search for 'app.ini' and env config file", "./")
 	RegisterString("config-env", "env config file to apply, e.g. dev for dev.ini", "")
 }
 
