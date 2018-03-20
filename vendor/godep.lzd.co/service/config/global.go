@@ -5,7 +5,6 @@ import (
 	"os"
 	"path"
 	"time"
-//	"godep.lzd.co/service/logger"
 )
 
 var globalConf = newConfig(flag.NewFlagSet(os.Args[0], flag.ExitOnError), os.Args[0])
@@ -93,10 +92,6 @@ func Parse() error {
 	return globalConf.Parse()
 }
 
-func Dump() {
-	globalConf.Dump()
-}
-
 // ParseAll parses flags and provided config files.
 func ParseAll() error {
 	if err := Parse(); err != nil {
@@ -104,13 +99,11 @@ func ParseAll() error {
 	}
 
 	configFile, _ := GetString("config")
-    //logger.Error(nil, "configFile %s", configFile)
 	if configFile != "" {
 		return loadConfigFromFile(configFile)
 	}
 
 	confDir := deprecatedConfDir
-    //logger.Error(nil, "confDir %s", confDir)
 	if confDir == "" {
 		confDir, _ = GetString("config-dir")
 	}
@@ -132,6 +125,5 @@ func ParseAll() error {
 }
 
 func loadConfigFromFile(filename string) error {
-    //logger.Error(nil, "loadConfigFromFile %s", filename)
 	return globalConf.LoadFile(filename)
 }

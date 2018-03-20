@@ -9,7 +9,6 @@ import (
 	"strings"
 	"sync"
 	"time"
-//	"godep.lzd.co/service/logger"
 )
 
 type config struct {
@@ -66,7 +65,6 @@ func (c *config) GetString(name string) (string, bool) {
 	}
 
 	value, ok := variable.(*string)
-//logger.Error(nil, fmt.Sprintf("config GetString(%s) = %#v  ", name, *value))
 	if !ok {
 		return "", false
 	}
@@ -202,12 +200,7 @@ func (c *config) get(name string) (interface{}, bool) {
 
 	key := normalizeKey(name)
 	value, exists := c.values[key]
-    //logger.Error(nil, fmt.Sprintf("config value for name %s key %s : %v", name, key, value))
 	return value, exists
-}
-
-func (c *config) Dump() {
-    //logger.Error(nil, "config dump %#v", c.values)
 }
 
 // Parse parses flags.

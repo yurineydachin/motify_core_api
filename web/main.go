@@ -54,20 +54,15 @@ func init() {
 	config.RegisterBool("something-enabled", "Turn off/on something", false)
 
 	config.RegisterString("config-shop-timezone", "Config shop timezone", "Local")
-	config.RegisterString("mysql-db-read-nodes", "DB read nodes", "root:123456@tcp(localhost:3306)/motify_core_api")
-	config.RegisterString("mysql-db-write-nodes", "DB write nodes", "root:123456@tcp(localhost:3306)/motify_core_api")
+	config.RegisterString("mysql-db-read-nodes", "DB read nodes", "")
+	config.RegisterString("mysql-db-write-nodes", "DB write nodes", "")
 
-	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "123456789012345678901234")
-	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "12345678")
+	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
+	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 }
 
 func main() {
-	/*
-		if err := config.ParseAll(); err != nil {
-			logger.Critical(nil, err.Error())
-			os.Exit(1)
-		}
-	*/
+	srvc := service.New(serviceName, "motify_core_api/handlers")
 
 	if err := initToken(); err != nil {
 		logger.Critical(nil, "failed to init token encryption: %v", err)
@@ -76,7 +71,6 @@ func main() {
 
 	dbReadNodes, _ := config.GetStringSlice("mysql-db-read-nodes")
 	dbWriteNodes, _ := config.GetStringSlice("mysql-db-write-nodes")
-	config.Dump()
 	if len(dbReadNodes) == 0 || len(dbWriteNodes) == 0 {
 		logger.Critical(nil, "No DB nodes in config: %v, %v", dbReadNodes, dbWriteNodes)
 		os.Exit(1)
@@ -97,7 +91,6 @@ func main() {
 		logger.Critical(nil, "DB adapter init error: %v", err)
 	}
 
-	srvc := service.New(serviceName, "motify_core_api/handlers")
 	//se := &resourceSearchEngine.SearchEngine{}
 	srvc.RegisterResource(db)
 
@@ -128,8 +121,6 @@ func main() {
 		//handlerHelloWorld.New(),
 		//handlerSearchGoogle.New(se),
 	)
-
-	logger.Error(nil, "dbNodes: %#v, DB adapter %#v", dbNodes, db)
 
 	err = srvc.Run()
 	if err != nil {
