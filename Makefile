@@ -95,12 +95,12 @@ build-ci: deps fast-build
 
 build-static: deps get-bindata download-translations ${GO}
 	${BINDATA_ASSETFS_BIN} -pkg=motify_core_api translations/...
-	${GO} build -ldflags "$(LDFLAGS_STATIC)" -o $(BIN) ./web/main.go
+	${GO} build -ldflags "$(LDFLAGS_STATIC)" -o $(BIN) ./web/core_api/main.go
 
 fast-build:            ##building binary with translations
 fast-build: get-bindata download-translations ${GO}
 	${BINDATA_ASSETFS_BIN} -pkg=motify_core_api translations/...
-	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN) -i ./web/main.go
+	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN) -i ./web/core_api/main.go
 
 get-bindata: ${GO}
 ifeq ($(wildcard $(BINDATA_BIN)),)

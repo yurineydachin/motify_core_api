@@ -14,8 +14,8 @@ import (
 	"godep.lzd.co/mobapi_lib/logger"
 	"godep.lzd.co/mobapi_lib/utils"
 
-	"motify_core_api/utils/monitoring"
 	"motify_core_api/resources/service_error"
+	"motify_core_api/utils/monitoring"
 )
 
 type MotifyCoreAPI struct {

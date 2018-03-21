@@ -42,7 +42,7 @@ func init() {
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 
-    config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
+	config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
 }
 
 func main() {
@@ -56,9 +56,9 @@ func main() {
 		os.Exit(1)
 	}
 
-    coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
-    coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, coreApiTimeout * time.Second)
-    logger.Error(nil, "core api: %#v", coreApi)
+	coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
+	coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, coreApiTimeout*time.Second)
+	logger.Error(nil, "core api: %#v", coreApi)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -74,13 +74,13 @@ func main() {
 	)
 
 	//srvc.MustRegisterHandlers(
-		/*
-			- login/ singup/ restore pass/ set new pass/ social logins
-			- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
-			- enter magic code (enroll new enployer)
-			- get employers, employer details
-			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
-		*/
+	/*
+		- login/ singup/ restore pass/ set new pass/ social logins
+		- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
+		- enter magic code (enroll new enployer)
+		- get employers, employer details
+		- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
+	*/
 	//)
 
 	err = srvc.Run()
