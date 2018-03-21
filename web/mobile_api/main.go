@@ -1,0 +1,98 @@
+package main
+
+import (
+	"os"
+	"time"
+
+	"godep.lzd.co/service"
+	"godep.lzd.co/service/config"
+	//"godep.lzd.co/service/dconfig"
+	"godep.lzd.co/go-dconfig"
+	//"godep.lzd.co/service/handlersmanager"
+	mobConfig "godep.lzd.co/go-config"
+	"godep.lzd.co/mobapi_lib/handler"
+	"godep.lzd.co/mobapi_lib/handlersmanager"
+	mobLogger "godep.lzd.co/mobapi_lib/logger"
+	"godep.lzd.co/mobapi_lib/sessionlogger"
+	"godep.lzd.co/mobapi_lib/token"
+	"godep.lzd.co/service/logger"
+
+	coreApiAdapter "motify_mobile_api/resources/motify_core_api"
+)
+
+const serviceName = "MotifyMobileAPI"
+
+var (
+	AppVersion  string // this value set by compiler
+	GoVersion   string // this value set by compiler
+	BuildDate   string // this value set by compiler
+	GitRev      string // this value set by compiler
+	GitHash     string // this value set by compiler
+	GitDescribe string // this value set by compiler
+)
+
+func init() {
+	service.AppVersion = AppVersion
+	service.GoVersion = GoVersion
+	service.BuildDate = BuildDate
+	service.GitRev = GitRev
+	service.GitHash = GitHash
+	service.GitDescribe = GitDescribe
+
+	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
+	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
+
+    config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
+}
+
+func main() {
+	srvc := service.New(serviceName, "motify_core_api/handlers/mobile_api")
+	if err := mobConfig.ParseAll(); err != nil {
+		logger.Error(nil, err.Error())
+	}
+
+	if err := initToken(); err != nil {
+		logger.Critical(nil, "failed to init token encryption: %v", err)
+		os.Exit(1)
+	}
+
+    coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
+    coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, coreApiTimeout * time.Second)
+    logger.Error(nil, "core api: %#v", coreApi)
+
+	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
+	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
+	if err != nil {
+		logger.Critical(nil, err.Error())
+		os.Exit(1)
+	}
+	srvc.SetOptions(
+		service.Options{
+			HM:                  handlersmanager.New("motify_core_api/handlers/mobile_api"),
+			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+		},
+	)
+
+	//srvc.MustRegisterHandlers(
+		/*
+			- login/ singup/ restore pass/ set new pass/ social logins
+			- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
+			- enter magic code (enroll new enployer)
+			- get employers, employer details
+			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
+		*/
+	//)
+
+	err = srvc.Run()
+	if err != nil {
+		logger.Critical(nil, "Server stopped with error: %v", err)
+	} else {
+		logger.Info(nil, "Server stopped")
+	}
+}
+
+func initToken() error {
+	key, _ := config.GetString("token-triple-des-key")
+	salt, _ := config.GetString("token-salt")
+	return token.InitTokenV1([]byte(key), []byte(salt))
+}

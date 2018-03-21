@@ -17,26 +17,23 @@ import (
 	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
-	//resourceSearchEngine "motify_core_api/resources/searchengine"
 	"motify_core_api/resources/database"
 
 	"motify_core_api/srv/agent"
 	"motify_core_api/srv/payslip"
 	"motify_core_api/srv/user"
 
-	"motify_core_api/handlers/agent/create"
-	"motify_core_api/handlers/agent/update"
-	"motify_core_api/handlers/employee/create"
-	"motify_core_api/handlers/employee/update"
-	"motify_core_api/handlers/payslip/create"
-	"motify_core_api/handlers/payslip/set"
-	"motify_core_api/handlers/setting/create"
-	"motify_core_api/handlers/setting/update"
-	"motify_core_api/handlers/user/create"
-	"motify_core_api/handlers/user/login"
-	"motify_core_api/handlers/user/update"
-	//handlerHelloWorld "motify_core_api/handlers/hello/world"
-	//handlerSearchGoogle "motify_core_api/handlers/search/google"
+	"motify_core_api/handlers/core_api/agent/create"
+	"motify_core_api/handlers/core_api/agent/update"
+	"motify_core_api/handlers/core_api/employee/create"
+	"motify_core_api/handlers/core_api/employee/update"
+	"motify_core_api/handlers/core_api/payslip/create"
+	"motify_core_api/handlers/core_api/payslip/set"
+	"motify_core_api/handlers/core_api/setting/create"
+	"motify_core_api/handlers/core_api/setting/update"
+	"motify_core_api/handlers/core_api/user/create"
+	"motify_core_api/handlers/core_api/user/login"
+	"motify_core_api/handlers/core_api/user/update"
 )
 
 const serviceName = "MotifyCoreAPI"
@@ -67,7 +64,7 @@ func init() {
 }
 
 func main() {
-	srvc := service.New(serviceName, "motify_core_api/handlers")
+	srvc := service.New(serviceName, "motify_core_api/handlers/core_api")
 	if err := mobConfig.ParseAll(); err != nil {
 		logger.Error(nil, err.Error())
 	}
@@ -100,7 +97,6 @@ func main() {
 		os.Exit(1)
 	}
 
-	//se := &resourceSearchEngine.SearchEngine{}
 	srvc.RegisterResource(db)
 
 	agentService := agent_service.NewAgentService(db)
@@ -115,7 +111,7 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers"),
+			HM:                  handlersmanager.New("motify_core_api/handlers/core_api"),
 			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
 		},
 	)
@@ -138,8 +134,6 @@ func main() {
 		user_update.New(userService),
 		setting_create.New(agentService, userService),
 		setting_update.New(agentService, userService),
-		//handlerHelloWorld.New(),
-		//handlerSearchGoogle.New(se),
 	)
 
 	err = srvc.Run()
