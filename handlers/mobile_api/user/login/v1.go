@@ -47,10 +47,10 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	logger.Debug(ctx, "User/Login/V1")
 	cache.DisableTransportCache(ctx)
 
-    loginData, err := handler.coreApi.UserLoginV1(ctx, coreApiAdapter.UserLoginV1Args{
-        Login: opts.Login,
-        Password: opts.Password,
-    })
+	loginData, err := handler.coreApi.UserLoginV1(ctx, coreApiAdapter.UserLoginV1Args{
+		Login:    opts.Login,
+		Password: opts.Password,
+	})
 	if err != nil {
 		logger.Error(ctx, "Failed login: %v", err)
 		return nil, v1Errors.USER_NOT_FOUND
@@ -59,7 +59,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		logger.Error(ctx, "Failed login: user is nil")
 		return nil, v1Errors.USER_NOT_FOUND
 	}
-    user := loginData.User
+	user := loginData.User
 
 	return &V1Res{
 		Token: token.NewTokenV1(user.ID).String(),

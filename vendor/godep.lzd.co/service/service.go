@@ -35,7 +35,7 @@ import (
 	"godep.lzd.co/service/closer"
 	"godep.lzd.co/service/config"
 	"godep.lzd.co/service/dconfig"
-	"godep.lzd.co/service/handlersmanager"
+	//"godep.lzd.co/service/handlersmanager"
 	"godep.lzd.co/service/interfaces"
 	"godep.lzd.co/service/k8s"
 	"godep.lzd.co/service/logger"
@@ -418,7 +418,7 @@ func (service *Service) Init() error {
 	<-etcdReady
 
 	if service.hm == nil {
-		service.hm = handlersmanager.New(service.handlersPath)
+		//service.hm = handlersmanager.New(service.handlersPath)
 	}
 
 	if service.DconfManager == nil {
@@ -445,74 +445,6 @@ func (service *Service) Init() error {
 			logger.Debug(nil, "handler_timeout changed, new value: %s", timeout)
 		}
 	})
-
-	timeout, _ := dconfig.GetDuration("handler_timeout")
-	gorpcHM := service.hm.GetGoRPCHandlersManager()
-	service.gorpcHM = gorpcHM
-	service.httpJSONHandler = http_json.NewAPIHandler(
-		gorpcHM, service.transportCache, service.getApiHandlerCallbacks()).SetTimeout(timeout)
-
-	var (
-		docsUIHandler http.Handler
-		swaggerPort   uint64
-	)
-	if port != admPort {
-		swaggerPort = port
-	}
-	if service.swaggerUIHandler == nil {
-		service.swaggerUIHandler = admin.NewDocsHandler(service.swaggerDocsPostProcess)
-		docsUIHandler = http.StripPrefix("/docs", service.swaggerUIHandler)
-	} else if _, ok := service.swaggerUIHandler.(*swgui.Handler); ok {
-		docsUIHandler = service.swaggerUIHandler
-	}
-
-	if service.swaggerJSONHandler == nil {
-		service.swaggerJSONHandler = http_json.NewSwaggerJSONHandler(gorpcHM, uint16(swaggerPort), service.swaggerJSONCallbacks)
-	}
-
-	service.clientGenHandler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
-		code, err := service.GenerateClientLib()
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Write(code)
-	})
-
-	mux := http.NewServeMux()
-
-	// TODO: shouldn't it all be hidden behind certs?
-	mux.Handle("/jsonrpc", &jsonRPCHandler{service.id, hostname, service.httpJSONHandler})
-
-	if enabled, _ := config.GetBool("docs-on-public-port"); enabled {
-		mux.Handle("/swagger.json", service.swaggerJSONHandler)
-		mux.Handle("/docs/", docsUIHandler)
-		mux.Handle("/client.go", service.clientGenHandler)
-	} else if certs, ok := config.GetStringSlice("docs-certificates"); ok {
-		mux.Handle("/swagger.json", admin.CheckCertificate(certs, service.swaggerJSONHandler))
-		mux.Handle("/docs/", admin.CheckCertificate(certs, docsUIHandler))
-		mux.Handle("/client.go", admin.CheckCertificate(certs, service.clientGenHandler))
-	}
-
-	mux.HandleFunc("/rev.txt", func(w http.ResponseWriter, req *http.Request) {
-		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
-		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
-		w.Header().Set("Pragma", "no-cache")
-		w.Header().Set("Expires", "0")
-		fmt.Fprintln(w, AppVersion)
-	})
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		admin.RPSCounter.Inc(1)
-		switch r.URL.Path {
-		case "", "/", "/health_check", "/health_check/":
-			service.hc.HandlerFunc()(w, r)
-		default:
-			service.httpJSONHandler.ServeHTTP(w, r)
-		}
-	})
-	service.httpMux = mux
 
 	// TODO(axel) replace it with metrics call
 	// TODO: send it in goroutine in case if gracehttp can't be started
@@ -703,7 +635,7 @@ func (service *Service) Run() error {
 }
 
 func (service *Service) run() error {
-	addr, _, port := getAddr()
+	addr, hostname, port := getAddr()
 	admAddr, admPort := getAdmAddr(port)
 	profileAddr, _ := getProfileAddr()
 	env, _ := config.GetString("env")
@@ -714,6 +646,74 @@ func (service *Service) run() error {
 	sslCertificate, _ := config.GetString("ssl-certificate")
 	sslCertificateKey, _ := config.GetString("ssl-certificate-key")
 	sslClientCertificate, _ := config.GetString("ssl-client-certificate")
+
+	// init -- start
+
+	timeout, _ := dconfig.GetDuration("handler_timeout")
+	gorpcHM := service.hm.GetGoRPCHandlersManager()
+	service.gorpcHM = gorpcHM
+	service.httpJSONHandler = http_json.NewAPIHandler(
+		gorpcHM, service.transportCache, service.getApiHandlerCallbacks()).SetTimeout(timeout)
+
+	var (
+		docsUIHandler http.Handler
+	)
+	if service.swaggerUIHandler == nil {
+		service.swaggerUIHandler = admin.NewDocsHandler(service.swaggerDocsPostProcess)
+		docsUIHandler = http.StripPrefix("/docs", service.swaggerUIHandler)
+	} else if _, ok := service.swaggerUIHandler.(*swgui.Handler); ok {
+		docsUIHandler = service.swaggerUIHandler
+	}
+
+	if service.swaggerJSONHandler == nil {
+		service.swaggerJSONHandler = http_json.NewSwaggerJSONHandler(gorpcHM, uint16(port), service.swaggerJSONCallbacks)
+	}
+
+	service.clientGenHandler = http.HandlerFunc(func(w http.ResponseWriter, req *http.Request) {
+		code, err := service.GenerateClientLib()
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+			return
+		}
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Write(code)
+	})
+
+	mux := http.NewServeMux()
+
+	// TODO: shouldn't it all be hidden behind certs?
+	mux.Handle("/jsonrpc", &jsonRPCHandler{service.id, hostname, service.httpJSONHandler})
+
+	if enabled, _ := config.GetBool("docs-on-public-port"); enabled {
+		mux.Handle("/swagger.json", service.swaggerJSONHandler)
+		mux.Handle("/docs/", docsUIHandler)
+		mux.Handle("/client.go", service.clientGenHandler)
+	} else if certs, ok := config.GetStringSlice("docs-certificates"); ok {
+		mux.Handle("/swagger.json", admin.CheckCertificate(certs, service.swaggerJSONHandler))
+		mux.Handle("/docs/", admin.CheckCertificate(certs, docsUIHandler))
+		mux.Handle("/client.go", admin.CheckCertificate(certs, service.clientGenHandler))
+	}
+
+	mux.HandleFunc("/rev.txt", func(w http.ResponseWriter, req *http.Request) {
+		w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+		w.Header().Set("Cache-Control", "no-cache, no-store, must-revalidate")
+		w.Header().Set("Pragma", "no-cache")
+		w.Header().Set("Expires", "0")
+		fmt.Fprintln(w, AppVersion)
+	})
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+		admin.RPSCounter.Inc(1)
+		switch r.URL.Path {
+		case "", "/", "/health_check", "/health_check/":
+			service.hc.HandlerFunc()(w, r)
+		default:
+			service.httpJSONHandler.ServeHTTP(w, r)
+		}
+	})
+	service.httpMux = mux
+
+	// init -- end
 
 	logger.Info(nil, "Service %s is starting; venture: %s, env: %s, version: %s, commit: %s", service.id, service.venture, env, AppVersion, GitRev)
 

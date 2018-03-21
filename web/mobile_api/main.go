@@ -79,14 +79,14 @@ func main() {
 	)
 
 	srvc.MustRegisterHandlers(
-	/*
-		- login/ singup/ restore pass/ set new pass/ social logins
-		- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
-		- enter magic code (enroll new enployer)
-		- get employers, employer details
-		- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
-	*/
-    user_login.New(coreApi),
+		/*
+			- login/ singup/ restore pass/ set new pass/ social logins
+			- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
+			- enter magic code (enroll new enployer)
+			- get employers, employer details
+			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
+		*/
+		user_login.New(coreApi),
 	)
 
 	err = srvc.Run()

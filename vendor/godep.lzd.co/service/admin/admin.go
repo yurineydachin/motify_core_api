@@ -15,8 +15,8 @@ import (
 	"godep.lzd.co/service/config"
 	"godep.lzd.co/service/dconfig"
 	"godep.lzd.co/service/interfaces"
-	"godep.lzd.co/service/logger"
 	"godep.lzd.co/service/k8s"
+	"godep.lzd.co/service/logger"
 	"godep.lzd.co/swgui"
 )
 

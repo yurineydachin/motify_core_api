@@ -6,14 +6,14 @@ import (
 	"net/http"
 	"time"
 
-//	"godep.lzd.co/go-trace"
-	"godep.lzd.co/service"
-	"godep.lzd.co/service/tracking"
+	//	"godep.lzd.co/go-trace"
 	"godep.lzd.co/mobapi_lib/cache/inmem"
 	ctxmanager "godep.lzd.co/mobapi_lib/context"
 	"godep.lzd.co/mobapi_lib/handler"
-	"godep.lzd.co/service/logger"
 	"godep.lzd.co/mobapi_lib/utils"
+	"godep.lzd.co/service"
+	"godep.lzd.co/service/logger"
+	"godep.lzd.co/service/tracking"
 
 	"motify_core_api/resources/service_error"
 	"motify_core_api/utils/monitoring"
