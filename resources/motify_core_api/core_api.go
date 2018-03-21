@@ -24,7 +24,7 @@ type MotifyCoreAPI struct {
 }
 
 func NewMotifyCoreAPIClient(srv *service.Service, apiTimeout time.Duration) *MotifyCoreAPI {
-	serviceName := "motify_core_api"
+	serviceName := "MotifyCoreAPI"
 	client := &http.Client{
 		Transport: &http.Transport{
 			//DisableCompression: true,

@@ -18,6 +18,8 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+
+	"motify_core_api/handlers/mobile_api/user/login"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -62,7 +64,6 @@ func main() {
 
 	coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
 	coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, time.Duration(coreApiTimeout)*time.Second)
-	logger.Error(nil, "core api: %#v", coreApi)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -77,7 +78,7 @@ func main() {
 		},
 	)
 
-	//srvc.MustRegisterHandlers(
+	srvc.MustRegisterHandlers(
 	/*
 		- login/ singup/ restore pass/ set new pass/ social logins
 		- get payslips (одним наверно запросом все данные можно получать). тут надо подумать про апдейт, когда надо получить только новые данные и про пагинацию
@@ -85,7 +86,8 @@ func main() {
 		- get employers, employer details
 		- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 	*/
-	//)
+    user_login.New(coreApi),
+	)
 
 	err = srvc.Run()
 	if err != nil {
