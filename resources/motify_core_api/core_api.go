@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"time"
 
-	"godep.lzd.co/go-trace"
-	"godep.lzd.co/mobapi_lib"
+//	"godep.lzd.co/go-trace"
+	"godep.lzd.co/service"
+	"godep.lzd.co/service/tracking"
 	"godep.lzd.co/mobapi_lib/cache/inmem"
 	ctxmanager "godep.lzd.co/mobapi_lib/context"
 	"godep.lzd.co/mobapi_lib/handler"
-	"godep.lzd.co/mobapi_lib/logger"
+	"godep.lzd.co/service/logger"
 	"godep.lzd.co/mobapi_lib/utils"
 
 	"motify_core_api/resources/service_error"
@@ -33,7 +34,7 @@ func NewMotifyCoreAPIClient(srv *service.Service, apiTimeout time.Duration) *Mot
 	}
 	cb := Callbacks{
 		OnPrepareRequest: func(ctx context.Context, req *http.Request, data interface{}) context.Context {
-			gotrace.SetHeaderRequestFromContext(ctx, req.Header)
+			tracking.SetRequestHeaders(ctx, req.Header)
 			if s, e := ctxmanager.GetLoggerSession(ctx); e == nil {
 				serviceSession := s.NewSession(serviceName, handler.CurlFromRequest(req))
 				ctx = ctxmanager.NewContext(ctx, &ctxmanager.Context{
@@ -82,9 +83,9 @@ func NewMotifyCoreAPIClient(srv *service.Service, apiTimeout time.Duration) *Mot
 			return service_error.AddServiceName(fmt.Errorf("panic while calling service: %v", r), serviceName)
 		},
 	}
-	pm := MotifyCoreAPI{
+	coreApi := MotifyCoreAPI{
 		NewMotifyCoreAPIGoRPC(client, srv.AddExternalService(serviceName), cb).
-			SetCache(inmem.NewFromFlags("motify_core_api")),
+			SetCache(inmem.NewFromFlags(serviceName)),
 	}
-	return &pm
+	return &coreApi
 }

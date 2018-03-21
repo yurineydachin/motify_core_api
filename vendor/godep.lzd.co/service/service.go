@@ -703,11 +703,6 @@ func (service *Service) Run() error {
 }
 
 func (service *Service) run() error {
-	err := service.Init()
-	if err != nil {
-		return err
-	}
-
 	addr, _, port := getAddr()
 	admAddr, admPort := getAdmAddr(port)
 	profileAddr, _ := getProfileAddr()
@@ -731,11 +726,11 @@ func (service *Service) run() error {
 	profileMux := http.NewServeMux()
 
 	if registrationEnabled, _ := config.GetBool("etcd-registration-enabled"); registrationEnabled {
-		if err = service.etcdRegistrator.Register(); err != nil {
+		if err := service.etcdRegistrator.Register(); err != nil {
 			return fmt.Errorf("Cannot register service to ETCD discovery: %s", err)
 		}
 
-		if err = service.etcdRegistrator.EnableDiscovery(); err != nil {
+		if err := service.etcdRegistrator.EnableDiscovery(); err != nil {
 			return fmt.Errorf("Cannot enable dicovery ability: %s", err)
 		}
 		//cancelRegister := service.register(ns, venture, env, fmt.Sprintf("%d", port), fmt.Sprintf("%d", profilePort))

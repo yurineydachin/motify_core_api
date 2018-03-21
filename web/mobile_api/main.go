@@ -17,7 +17,7 @@ import (
 	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
-	coreApiAdapter "motify_mobile_api/resources/motify_core_api"
+	coreApiAdapter "motify_core_api/resources/motify_core_api"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -47,6 +47,10 @@ func init() {
 
 func main() {
 	srvc := service.New(serviceName, "motify_core_api/handlers/mobile_api")
+	if err := srvc.Init(); err != nil {
+		logger.Critical(nil, "failed to init service: %v", err)
+		os.Exit(1)
+	}
 	if err := mobConfig.ParseAll(); err != nil {
 		logger.Error(nil, err.Error())
 	}
@@ -57,7 +61,7 @@ func main() {
 	}
 
 	coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
-	coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, coreApiTimeout*time.Second)
+	coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, time.Duration(coreApiTimeout)*time.Second)
 	logger.Error(nil, "core api: %#v", coreApi)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())

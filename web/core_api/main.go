@@ -65,6 +65,10 @@ func init() {
 
 func main() {
 	srvc := service.New(serviceName, "motify_core_api/handlers/core_api")
+	if err := srvc.Init(); err != nil {
+		logger.Critical(nil, "failed to init service: %v", err)
+		os.Exit(1)
+	}
 	if err := mobConfig.ParseAll(); err != nil {
 		logger.Error(nil, err.Error())
 	}
