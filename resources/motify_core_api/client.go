@@ -72,6 +72,16 @@ func (api *MotifyCoreAPIGoRPC) AgentCreateV1(ctx context.Context, options AgentC
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) AgentListV1(ctx context.Context, options AgentListV1Args) (*AgentListV1Res, error) {
+	var result *AgentListV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/agent/list/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**AgentListV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) AgentUpdateV1(ctx context.Context, options AgentUpdateV1Args) (*AgentUpdateV1Res, error) {
 	var result *AgentUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -214,6 +224,48 @@ const (
 var _AgentCreateV1ErrorsMapping = map[string]int{
 	"CREATE_FAILED":     AgentCreateV1Errors_CREATE_FAILED,
 	"AGENT_NOT_CREATED": AgentCreateV1Errors_AGENT_NOT_CREATED,
+}
+
+// easyjson:json
+type AgentListV1Args struct {
+	UserID uint64  `json:"user_id"`
+	Limit  *uint64 `json:"limit,omitempty"`
+	Offset *uint64 `json:"offset,omitempty"`
+}
+
+// easyjson:json
+type AgentListV1Res struct {
+	List []AgentListListItem `json:"list"`
+}
+
+type AgentListListItem struct {
+	Agent    AgentListAgent    `json:"agent"`
+	Employee AgentListEmployee `json:"employee"`
+}
+
+type AgentListAgent struct {
+	ID          uint64 `json:"id_agent"`
+	Name        string `json:"name"`
+	CompanyID   string `json:"company_id"`
+	Description string `json:"description"`
+	Logo        string `json:"Logo"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	Address     string `json:"address"`
+	Site        string `json:"site"`
+}
+
+type AgentListEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
 }
 
 // easyjson:json
