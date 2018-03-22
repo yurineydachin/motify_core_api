@@ -19,6 +19,7 @@ import (
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
+	"motify_core_api/handlers/mobile_api/employee/adduser"
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/signup"
 	"motify_core_api/handlers/mobile_api/user/update"
@@ -91,6 +92,7 @@ func main() {
 		user_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
+		employee_adduser.New(coreApi),
 	)
 
 	err = srvc.Run()
