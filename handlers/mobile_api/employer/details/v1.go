@@ -1,22 +1,18 @@
-package employee_details
+package employer_details
 
 import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
+	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
-	"motify_core_api/models"
-)
-
-const (
-	PayslipLimit = 10
+	coreApiAdapter "motify_core_api/resources/motify_core_api"
 )
 
 type V1Args struct {
 	ID      *uint64 `key:"id_employee" description:"Employee ID"`
-	AgentFK *uint64 `key:"fk_agent" description:"Agent ID"`
-	UserFK  *uint64 `key:"fk_user" description:"User ID"`
+	AgentFK *uint64 `key:"id_agent" description:"Agent ID"`
 }
 
 type V1Res struct {
@@ -35,8 +31,6 @@ type Agent struct {
 	Email       string `json:"email"`
 	Address     string `json:"address"`
 	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
 }
 
 type Employee struct {
@@ -50,8 +44,6 @@ type Employee struct {
 	HireDate           string  `json:"hire_date"`
 	NumberOfDepandants uint    `json:"number_of_dependants"`
 	GrossBaseSalary    float64 `json:"gross_base_salary"`
-	UpdatedAt          string  `json:"updated_at"`
-	CreatedAt          string  `json:"created_at"`
 }
 
 type Payslip struct {
@@ -59,8 +51,6 @@ type Payslip struct {
 	EmployeeFK uint64  `json:"fk_employee"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	UpdateAt   string  `json:"updated_at"`
-	CreatedAt  string  `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -75,55 +65,47 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 	return &v1Errors
 }
 
-func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
-	logger.Debug(ctx, "Employee/Update/V1")
+func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.IToken) (*V1Res, error) {
+	logger.Debug(ctx, "Employeer/List/V1")
 	cache.DisableTransportCache(ctx)
 
-	var employee *models.Employee
-	var err error
-	if opts.ID != nil && *opts.ID > 0 {
-		employee, err = handler.agentService.GetEmployeeByID(ctx, *opts.ID)
-	} else if opts.AgentFK != nil && *opts.AgentFK > 0 && opts.UserFK != nil && *opts.UserFK > 0 {
-		employee, err = handler.agentService.GetEmployeeByAgentAndUser(ctx, *opts.AgentFK, *opts.UserFK)
-	} else {
-		return nil, v1Errors.MISSED_REQUIRED_FIELDS
+	userID := uint64(apiToken.GetCustomerID())
+	coreOpts := coreApiAdapter.EmployeeDetailsV1Args{
+		ID:      opts.ID,
+		AgentFK: opts.AgentFK,
+		UserFK:  &userID,
 	}
+
+	data, err := handler.coreApi.EmployeeDetailsV1(ctx, coreOpts)
 	if err != nil {
-		logger.Error(ctx, "Failed loading from DB: %v", err)
-		return nil, v1Errors.EMPLOYEE_NOT_FOUND
+		if err.Error() == "MotifyCoreAPI: MISSED_REQUIRED_FIELDS" {
+			return nil, v1Errors.MISSED_REQUIRED_FIELDS
+		} else if err.Error() == "MotifyCoreAPI: AGENT_NOT_FOUND" {
+			return nil, v1Errors.AGENT_NOT_FOUND
+		} else if err.Error() == "MotifyCoreAPI: EMPLOYEE_NOT_FOUND" {
+			return nil, v1Errors.EMPLOYEE_NOT_FOUND
+		}
+		return nil, err
 	}
-	if employee == nil {
-		logger.Error(ctx, "Failed loading employee is nil")
+	if data.Agent == nil {
+		return nil, v1Errors.AGENT_NOT_FOUND
+	} else if data.Employee == nil {
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
 
-	agent, err := handler.agentService.GetAgentByID(ctx, employee.AgentFK)
-	if err != nil {
-		logger.Error(ctx, "Failed loading agent %d: %v", employee.AgentFK, err)
-		return nil, v1Errors.AGENT_NOT_FOUND
-	}
-	if agent == nil {
-		logger.Error(ctx, "Failed loading agent (%d) is nil", employee.AgentFK)
-		return nil, v1Errors.AGENT_NOT_FOUND
-	}
-
-	payslips, err := handler.payslipService.GetListByEmployeeID(ctx, employee.ID, PayslipLimit, 0)
-	if err != nil {
-		logger.Error(ctx, "Failed loading payslips %d: %v", employee.ID, err)
-	}
-	payslipsRes := make([]Payslip, 0, len(payslips))
-	for i := range payslips {
-		p := payslips[i]
+	payslipsRes := make([]Payslip, 0, len(data.Payslips))
+	for i := range data.Payslips {
+		p := data.Payslips[i]
 		payslipsRes = append(payslipsRes, Payslip{
 			ID:         p.ID,
 			EmployeeFK: p.EmployeeFK,
 			Currency:   p.Currency,
 			Amount:     p.Amount,
-			UpdateAt:   p.UpdateAt,
-			CreatedAt:  p.CreatedAt,
 		})
 	}
 
+	agent := data.Agent
+	employee := data.Employee
 	return &V1Res{
 		Agent: &Agent{
 			ID:          agent.ID,
@@ -135,8 +117,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			Email:       agent.Email,
 			Address:     agent.Address,
 			Site:        agent.Site,
-			UpdatedAt:   agent.UpdatedAt,
-			CreatedAt:   agent.CreatedAt,
 		},
 		Employee: &Employee{
 			ID:                 employee.ID,
@@ -149,8 +129,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			HireDate:           employee.HireDate,
 			NumberOfDepandants: employee.NumberOfDepandants,
 			GrossBaseSalary:    employee.GrossBaseSalary,
-			UpdatedAt:          employee.UpdatedAt,
-			CreatedAt:          employee.CreatedAt,
 		},
 		Payslips: payslipsRes,
 	}, nil

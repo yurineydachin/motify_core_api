@@ -20,6 +20,7 @@ import (
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
 	"motify_core_api/handlers/mobile_api/employer/adduser"
+	"motify_core_api/handlers/mobile_api/employer/details"
 	"motify_core_api/handlers/mobile_api/employer/list"
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/signup"
@@ -94,6 +95,7 @@ func main() {
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
 		employer_adduser.New(coreApi),
+		employer_details.New(coreApi),
 		employer_list.New(coreApi),
 	)
 

@@ -102,6 +102,16 @@ func (api *MotifyCoreAPIGoRPC) EmployeeCreateV1(ctx context.Context, options Emp
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) EmployeeDetailsV1(ctx context.Context, options EmployeeDetailsV1Args) (*EmployeeDetailsV1Res, error) {
+	var result *EmployeeDetailsV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/employee/details/v1/", options, &entry, _EmployeeDetailsV1ErrorsMapping)
+	if result, ok := entry.Body.(**EmployeeDetailsV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) EmployeeUpdateV1(ctx context.Context, options EmployeeUpdateV1Args) (*EmployeeUpdateV1Res, error) {
 	var result *EmployeeUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -392,6 +402,73 @@ var _EmployeeCreateV1ErrorsMapping = map[string]int{
 	"CREATE_FAILED":           EmployeeCreateV1Errors_CREATE_FAILED,
 	"EMPLOYEE_NOT_CREATED":    EmployeeCreateV1Errors_EMPLOYEE_NOT_CREATED,
 	"EMPLOYEE_ALREADY_EXISTS": EmployeeCreateV1Errors_EMPLOYEE_ALREADY_EXISTS,
+}
+
+// easyjson:json
+type EmployeeDetailsV1Args struct {
+	ID      *uint64 `json:"id_employee,omitempty"`
+	AgentFK *uint64 `json:"fk_agent,omitempty"`
+	UserFK  *uint64 `json:"fk_user,omitempty"`
+}
+
+// easyjson:json
+type EmployeeDetailsV1Res struct {
+	Agent    *EmployeeDetailsAgent    `json:"agent"`
+	Employee *EmployeeDetailsEmployee `json:"employee"`
+	Payslips []EmployeeDetailsPayslip `json:"payslips"`
+}
+
+type EmployeeDetailsAgent struct {
+	ID          uint64 `json:"id_agent"`
+	Name        string `json:"name"`
+	CompanyID   string `json:"company_id"`
+	Description string `json:"description"`
+	Logo        string `json:"Logo"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	Address     string `json:"address"`
+	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
+}
+
+type EmployeeDetailsEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
+}
+
+type EmployeeDetailsPayslip struct {
+	ID         uint64  `json:"id_payslip"`
+	EmployeeFK uint64  `json:"fk_employee"`
+	Currency   string  `json:"currency"`
+	Amount     float64 `json:"amount"`
+	Data       []uint8 `json:"data"`
+	UpdateAt   string  `json:"updated_at"`
+	CreatedAt  string  `json:"created_at"`
+}
+
+type EmployeeDetailsV1Errors int
+
+const (
+	EmployeeDetailsV1Errors_MISSED_REQUIRED_FIELDS = iota
+	EmployeeDetailsV1Errors_AGENT_NOT_FOUND
+	EmployeeDetailsV1Errors_EMPLOYEE_NOT_FOUND
+)
+
+var _EmployeeDetailsV1ErrorsMapping = map[string]int{
+	"MISSED_REQUIRED_FIELDS": EmployeeDetailsV1Errors_MISSED_REQUIRED_FIELDS,
+	"AGENT_NOT_FOUND":        EmployeeDetailsV1Errors_AGENT_NOT_FOUND,
+	"EMPLOYEE_NOT_FOUND":     EmployeeDetailsV1Errors_EMPLOYEE_NOT_FOUND,
 }
 
 // easyjson:json
