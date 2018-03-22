@@ -28,13 +28,12 @@ type User struct {
 	Awatar      string `json:"awatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
-	LOGIN_FAILED   error `text:"Login is failed"`
-	USER_NOT_FOUND error `text:"User not found"`
+	LOGIN_FAILED           error `text:"Login is failed"`
+	USER_NOT_FOUND         error `text:"User not found"`
+	USER_ALREADY_LOGGED_IN error `text:"Request with already authorized apiToken"`
 }
 
 var v1Errors V1ErrorTypes
@@ -43,9 +42,12 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 	return &v1Errors
 }
 
-func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
+func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INullToken) (*V1Res, error) {
 	logger.Debug(ctx, "User/Login/V1")
 	cache.DisableTransportCache(ctx)
+	if apiToken != nil && !apiToken.IsGuest() {
+		return nil, v1Errors.USER_ALREADY_LOGGED_IN
+	}
 
 	loginData, err := handler.coreApi.UserLoginV1(ctx, coreApiAdapter.UserLoginV1Args{
 		Login:    opts.Login,
