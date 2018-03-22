@@ -32,12 +32,12 @@ func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID
         SELECT
             a.id_agent, a.name, a.company_id, a.description, a.logo, a.bg_image, a.address, a.phone, a.email, a.site, a.updated_at, a.created_at,
             s.role, s.notifications_enabled, s.is_main_agent
-        INNER JOIN motify_agent_settings s ON s.fk_agent = a.id_agent
         FROM motify_agents a
+        INNER JOIN motify_agent_settings s ON s.fk_agent = a.id_agent
         WHERE s.fk_user = ?
+        ORDER BY s.created_at DESC
         LIMIT ?
         OFFSET ?
-        ORDER BY s.created_at DESC
     `, userID, limit, offset)
 	return res, err
 }
@@ -50,14 +50,14 @@ func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.name, a.company_id, a.description, a.logo, a.bg_image, a.address, a.phone, a.email, a.site, a.updated_at, a.created_at,
+            a.id_agent, a.name, a.company_id, a.description, a.logo, a.bg_image, a.address, a.phone, a.email, a.site,
             e.fk_user, e.employee_code, e.hire_date, e.number_of_dependants, e.gross_base_salary, e.role
-        INNER JOIN motify_agent_employee e ON e.fk_agent = a.id_agent
         FROM motify_agents a
+        INNER JOIN motify_agent_employees e ON e.fk_agent = a.id_agent
         WHERE e.fk_user = ?
+        ORDER BY e.created_at DESC
         LIMIT ?
         OFFSET ?
-        ORDER BY e.created_at DESC
     `, userID, limit, offset)
 	return res, err
 }

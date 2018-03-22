@@ -24,6 +24,7 @@ import (
 	"motify_core_api/srv/user"
 
 	"motify_core_api/handlers/core_api/agent/create"
+	"motify_core_api/handlers/core_api/agent/list"
 	"motify_core_api/handlers/core_api/agent/update"
 	"motify_core_api/handlers/core_api/employee/create"
 	"motify_core_api/handlers/core_api/employee/update"
@@ -131,6 +132,7 @@ func main() {
 		payslip_create.New(agentService, payslipService),
 		agent_create.New(agentService),
 		agent_update.New(agentService),
+		agent_list.New(agentService),
 		employee_create.New(agentService, userService),
 		employee_update.New(agentService, userService),
 		user_login.New(userService),
