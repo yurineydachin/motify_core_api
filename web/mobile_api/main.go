@@ -21,6 +21,7 @@ import (
 
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/signup"
+	"motify_core_api/handlers/mobile_api/user/update"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -89,6 +90,7 @@ func main() {
 		*/
 		user_login.New(coreApi),
 		user_signup.New(coreApi),
+		user_update.New(coreApi),
 	)
 
 	err = srvc.Run()

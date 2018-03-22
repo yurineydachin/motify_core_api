@@ -1,4 +1,4 @@
-package user_signup
+package user_update
 
 import (
 	"context"
@@ -17,7 +17,7 @@ type V1Args struct {
 	Awatar      *string `key:"awatar" description:"Awatar url"`
 	Phone       *string `key:"phone" description:"Phone number"`
 	Email       *string `key:"email" description:"Email"`
-	Password    string  `key:"password" description:"Password"`
+	Password    *string `key:"password" description:"Password"`
 }
 
 type V1Res struct {
@@ -35,10 +35,9 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
-	MISSED_REQUIRED_FIELDS    error `text:"Missed required fields. You should set 'phone' or 'email'"`
-	USER_CREATE_FAILED        error `text:"User creating failed"`
+	USER_UPDATE_FAILED        error `text:"User creating failed"`
 	USER_EMAIL_ALLREADY_EXIST error `text:"User with this email allready exist"`
-	USER_ALREADY_LOGGED_IN    error `text:"Request with already authorized apiToken"`
+	USER_PHONE_ALLREADY_EXIST error `text:"User with this phone allready exist"`
 }
 
 var v1Errors V1ErrorTypes
@@ -47,14 +46,12 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 	return &v1Errors
 }
 
-func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INullToken) (*V1Res, error) {
-	logger.Debug(ctx, "User/Signup/V1")
+func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.IToken) (*V1Res, error) {
+	logger.Debug(ctx, "User/Update/V1")
 	cache.DisableTransportCache(ctx)
-	if apiToken != nil && !apiToken.IsGuest() {
-		return nil, v1Errors.USER_ALREADY_LOGGED_IN
-	}
 
-	coreOpts := coreApiAdapter.UserCreateV1Args{
+	coreOpts := coreApiAdapter.UserUpdateV1Args{
+		ID:          uint64(apiToken.GetCustomerID()),
 		Name:        opts.Name,
 		Short:       opts.Short,
 		Description: opts.Description,
@@ -64,21 +61,21 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		Password:    opts.Password,
 	}
 
-	createData, err := handler.coreApi.UserCreateV1(ctx, coreOpts)
+	createData, err := handler.coreApi.UserUpdateV1(ctx, coreOpts)
 	if err != nil {
-		if err.Error() == "MotifyCoreAPI: MISSED_REQUIRED_FIELDS" {
-			return nil, v1Errors.MISSED_REQUIRED_FIELDS
-		} else if err.Error() == "MotifyCoreAPI: USER_EXISTS" {
+		if err.Error() == "MotifyCoreAPI: NEW_EMAIL_IS_BUSY" {
 			return nil, v1Errors.USER_EMAIL_ALLREADY_EXIST
-		} else if err.Error() == "MotifyCoreAPI: CREATE_FAILED" {
-			return nil, v1Errors.USER_CREATE_FAILED
-		} else if err.Error() == "MotifyCoreAPI: USER_NOT_CREATED" {
-			return nil, v1Errors.USER_CREATE_FAILED
+		} else if err.Error() == "MotifyCoreAPI: NEW_PHONE_IS_BUSY" {
+			return nil, v1Errors.USER_PHONE_ALLREADY_EXIST
+		} else if err.Error() == "MotifyCoreAPI: USER_NOT_FOUND" {
+			return nil, v1Errors.USER_UPDATE_FAILED
+		} else if err.Error() == "MotifyCoreAPI: UPDATE_FAILED" {
+			return nil, v1Errors.USER_UPDATE_FAILED
 		}
 		return nil, err
 	}
 	if createData.User == nil {
-		return nil, v1Errors.USER_CREATE_FAILED
+		return nil, v1Errors.USER_UPDATE_FAILED
 	}
 
 	user := createData.User
