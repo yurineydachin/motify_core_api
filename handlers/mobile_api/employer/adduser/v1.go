@@ -1,4 +1,4 @@
-package employee_adduser
+package employer_adduser
 
 import (
 	"context"
