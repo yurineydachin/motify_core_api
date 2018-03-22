@@ -15,6 +15,7 @@ type V1Args struct {
 }
 
 type PayslipData struct {
+	Title    string  `key:"title" description:"Title"`
 	Currency string  `key:"currency" description:"Currency"`
 	Amount   float64 `key:"amount" description:"Amount"`
 	Data     string  `key:"data" description:"Data"`
@@ -43,6 +44,7 @@ type Employee struct {
 type Payslip struct {
 	ID         uint64  `json:"id_payslip"`
 	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
 	Data       []byte  `json:"data"`
@@ -78,6 +80,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 
 	newPayslip := &models.Payslip{
 		EmployeeFK: opts.EmployeeFK,
+		Title:      opts.Payslip.Title,
 		Currency:   opts.Payslip.Currency,
 		Amount:     opts.Payslip.Amount,
 		Data:       []byte(opts.Payslip.Data),

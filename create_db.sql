@@ -63,6 +63,7 @@ DELIMITER ;
 CREATE TABLE IF NOT EXISTS `motify_payslip` (
 `id_payslip` int(11) NOT NULL,
   `fk_employee` int(11) NOT NULL,
+  `title` varchar(100) NOT NULL,
   `currency` varchar(10) NOT NULL,
   `amount` float NOT NULL,
   `data` text NOT NULL,

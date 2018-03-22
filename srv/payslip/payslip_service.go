@@ -29,7 +29,7 @@ func (service *PayslipService) GetListByUserID(ctx context.Context, userID, limi
 	res := []*models.Payslip{}
 	err := service.db.Select(&res, `
         SELECT
-            p.id_payslip, p.fk_employee, p.currency, p.amount, p.updated_at, p.created_at
+            p.id_payslip, p.fk_employee, p.title, p.currency, p.amount, p.updated_at, p.created_at
         FROM motify_payslip p
         INNER JOIN motify_agent_employees e ON e.id_employee = p.fk_employee
         WHERE e.fk_user = ?
@@ -47,7 +47,7 @@ func (service *PayslipService) GetListByEmployeeID(ctx context.Context, employee
 	res := []*models.Payslip{}
 	err := service.db.Select(&res, `
         SELECT
-            p.id_payslip, p.fk_employee, p.currency, p.amount, p.updated_at, p.created_at
+            p.id_payslip, p.fk_employee, p.title, p.currency, p.amount, p.updated_at, p.created_at
         FROM motify_payslip p
         WHERE p.fk_employee = ?
         ORDER BY p.created_at DESC
@@ -60,7 +60,7 @@ func (service *PayslipService) GetListByEmployeeID(ctx context.Context, employee
 func (service *PayslipService) GetPayslipByID(ctx context.Context, modelID uint64) (*models.Payslip, error) {
 	res := models.Payslip{}
 	err := service.db.Get(&res, `
-        SELECT id_payslip, fk_employee, currency, amount, data, updated_at, created_at
+        SELECT id_payslip, fk_employee, title, currency, amount, data, updated_at, created_at
         FROM motify_payslip WHERE id_payslip = ?
     `, modelID)
 	return &res, err
@@ -78,8 +78,8 @@ func (service *PayslipService) createPayslip(ctx context.Context, model *models.
 		return 0, fmt.Errorf("Insert DB exec error: no fk_employee")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_payslip (fk_employee, currency, amount, data)
-            VALUES (:fk_employee, :currency, :amount, :data)
+            INSERT INTO motify_payslip (fk_employee, title, currency, amount, data)
+            VALUES (:fk_employee, :title, :currency, :amount, :data)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -93,6 +93,7 @@ func (service *PayslipService) updatePayslip(ctx context.Context, model *models.
 	updateRes, err := service.db.Exec(`
             UPDATE motify_payslip SET
                 fk_employee = :fk_employee,
+                title = :title,
                 currency = :currency,
                 amount = :amount,
                 data = :data
