@@ -20,6 +20,7 @@ import (
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
 	"motify_core_api/handlers/mobile_api/user/login"
+	"motify_core_api/handlers/mobile_api/user/signup"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -87,6 +88,7 @@ func main() {
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
 		user_login.New(coreApi),
+		user_signup.New(coreApi),
 	)
 
 	err = srvc.Run()

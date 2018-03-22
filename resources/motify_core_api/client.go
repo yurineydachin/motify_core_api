@@ -689,13 +689,13 @@ var _SettingUpdateV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type UserCreateV1Args struct {
-	Name        string  `json:"name"`
-	Short       string  `json:"p_description"`
-	Description string  `json:"description"`
-	Awatar      string  `json:"awatar"`
-	Phone       string  `json:"phone"`
-	Email       string  `json:"email"`
-	Password    *string `json:"password,omitempty"`
+	Name        *string `json:"name,omitempty"`
+	Short       *string `json:"p_description,omitempty"`
+	Description *string `json:"description,omitempty"`
+	Awatar      *string `json:"awatar,omitempty"`
+	Phone       *string `json:"phone,omitempty"`
+	Email       *string `json:"email,omitempty"`
+	Password    string  `json:"password"`
 }
 
 // easyjson:json
@@ -719,15 +719,17 @@ type UserCreateUser struct {
 type UserCreateV1Errors int
 
 const (
-	UserCreateV1Errors_USER_EXISTS = iota
+	UserCreateV1Errors_MISSED_REQUIRED_FIELDS = iota
+	UserCreateV1Errors_USER_EXISTS
 	UserCreateV1Errors_CREATE_FAILED
 	UserCreateV1Errors_USER_NOT_CREATED
 )
 
 var _UserCreateV1ErrorsMapping = map[string]int{
-	"USER_EXISTS":      UserCreateV1Errors_USER_EXISTS,
-	"CREATE_FAILED":    UserCreateV1Errors_CREATE_FAILED,
-	"USER_NOT_CREATED": UserCreateV1Errors_USER_NOT_CREATED,
+	"MISSED_REQUIRED_FIELDS": UserCreateV1Errors_MISSED_REQUIRED_FIELDS,
+	"USER_EXISTS":            UserCreateV1Errors_USER_EXISTS,
+	"CREATE_FAILED":          UserCreateV1Errors_CREATE_FAILED,
+	"USER_NOT_CREATED":       UserCreateV1Errors_USER_NOT_CREATED,
 }
 
 // easyjson:json
