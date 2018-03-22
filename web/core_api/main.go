@@ -27,6 +27,7 @@ import (
 	"motify_core_api/handlers/core_api/agent/list"
 	"motify_core_api/handlers/core_api/agent/update"
 	"motify_core_api/handlers/core_api/employee/create"
+	"motify_core_api/handlers/core_api/employee/details"
 	"motify_core_api/handlers/core_api/employee/update"
 	"motify_core_api/handlers/core_api/payslip/create"
 	"motify_core_api/handlers/core_api/payslip/set"
@@ -106,7 +107,7 @@ func main() {
 
 	agentService := agent_service.NewAgentService(db)
 	userService := user_service.NewUserService(db)
-	payslipService := payslip_service.NewPaySlipService(db)
+	payslipService := payslip_service.NewPayslipService(db)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -134,6 +135,7 @@ func main() {
 		agent_update.New(agentService),
 		agent_list.New(agentService),
 		employee_create.New(agentService, userService),
+		employee_details.New(agentService, payslipService),
 		employee_update.New(agentService, userService),
 		user_login.New(userService),
 		user_create.New(userService),

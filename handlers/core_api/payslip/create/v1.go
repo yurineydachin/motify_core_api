@@ -83,7 +83,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		Data:       []byte(opts.Payslip.Data),
 	}
 
-	payslipID, err := handler.paySlipService.SetPayslip(ctx, newPayslip)
+	payslipID, err := handler.payslipService.SetPayslip(ctx, newPayslip)
 	if err != nil {
 		logger.Error(ctx, "Failed creating payslip: %v", err)
 		return nil, v1Errors.CREATE_FAILED
@@ -93,7 +93,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.CREATE_FAILED
 	}
 
-	payslip, err := handler.paySlipService.GetPayslipByID(ctx, payslipID)
+	payslip, err := handler.payslipService.GetPayslipByID(ctx, payslipID)
 	if err != nil {
 		logger.Error(ctx, "Failed login: %v", err)
 		return nil, v1Errors.PAYSLIP_NOT_CREATED

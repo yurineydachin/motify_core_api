@@ -17,11 +17,11 @@ var (
 	testPayslipID  = uint64(0)
 )
 
-func getService(t *testing.T) *PaySlipService {
+func getService(t *testing.T) *PayslipService {
 	db, err := database.NewDbAdapter([]string{"root:123456@tcp(localhost:3306)/motify_core_api"}, "Europe/Moscow", false)
 	if assert.Nil(t, err, "DB adapter init error") &&
 		assert.NotNil(t, db, "DB adapter is empty") {
-		return NewPaySlipService(db)
+		return NewPayslipService(db)
 	}
 	return nil
 }

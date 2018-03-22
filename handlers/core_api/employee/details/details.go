@@ -1,4 +1,4 @@
-package payslip_create
+package employee_details
 
 import (
 	"motify_core_api/srv/agent"
@@ -18,9 +18,9 @@ func New(agentService *agent_service.AgentService, payslipService *payslip_servi
 }
 
 func (*Handler) Caption() string {
-	return "Create payslip"
+	return "Employee details"
 }
 
 func (*Handler) Description() string {
-	return "Create payslip"
+	return "Employee details"
 }
