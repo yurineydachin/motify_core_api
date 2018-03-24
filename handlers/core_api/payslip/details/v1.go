@@ -2,6 +2,7 @@ package payslip_details
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/service/logger"
@@ -60,6 +61,7 @@ type Payslip struct {
 type PayslipData struct {
 	Transaction Transaction `json:"transaction"`
 	Sections    []Section   `json:"sections"`
+	Footnote    string      `json:"footnote,omitempty"`
 }
 
 type Transaction struct {
@@ -68,44 +70,47 @@ type Transaction struct {
 }
 
 type Section struct {
-	Title      string       `json:"title,omitempty"`
-	Term       string       `json:"title,omitempty"`
-	Definition string       `json:"definition,omitempty"`
 	Type       string       `json:"section_type,omitempty"`
+	Title      string       `json:"title,omitempty"`
+	Term       string       `json:"term,omitempty"`
+	Definition string       `json:"definition,omitempty"`
 	Amount     *float64     `json:"amount,omitempty"`
-	Operations *[]Operation `json:"operations,omitempty"`
+	Operations *[]Operation `json:"rows,omitempty"`
 	Person     *Person      `json:"person,omitempty"`
 	Company    *Company     `json:"company,omitempty"`
 }
 
 type Operation struct {
-	Title    string       `json:"title,omitempty"`
-	Term     string       `json:"title,omitempty"`
-	Type     string       `json:"type,omitempty"`
-	Footnote string       `json:"footnote,omitempty"`
-	Amount   *float64     `json:"amount,omitempty"`
-	Float    *float64     `json:"float,omitempty"`
-	Int      *int64       `json:"int,omitempty"`
-	Text     string       `json:"text,omitempty"`
-	Children *[]Operation `json:"children,omitempty"`
+	Title      string       `json:"title,omitempty"`
+	Term       string       `json:"term,omitempty"`
+	Definition string       `json:"definition,omitempty"`
+	Type       string       `json:"type,omitempty"`
+	Footnote   string       `json:"footnote,omitempty"`
+	Amount     *float64     `json:"amount,omitempty"`
+	Float      *float64     `json:"float,omitempty"`
+	Int        *int64       `json:"int,omitempty"`
+	Text       string       `json:"text,omitempty"`
+	Children   *[]Operation `json:"rows,omitempty"`
 }
 
 type Person struct {
 	Name        string       `json:"name"`
-	Avatar      string       `json:"awatar_image"`
+	Avatar      string       `json:"avatar_image"`
 	Role        string       `json:"job_title"`
 	Description string       `json:"description"`
 	Details     *[]Operation `json:"details,omitempty"`
 	Contacts    []Contact    `json:"contacts"`
+	Footnote    string       `json:"footnote,omitempty"`
 }
 
 type Company struct {
 	Title       string    `json:"title"`
-	Name        string    `json:"name"`
+	Name        string    `json:"official_name"`
 	Logo        string    `json:"logo_image,omitempty"`
 	BGImage     string    `json:"bg_image,omitempty"`
 	Description string    `json:"description,omitempty"`
 	Contacts    []Contact `json:"contacts"`
+	Footnote    string    `json:"footnote,omitempty"`
 }
 
 type Contact struct {
@@ -149,6 +154,16 @@ func (handler *Handler) V1(ctx context.Context, opts *v1Args) (*V1Res, error) {
 		Amount:     payslip.Amount,
 		UpdatedAt:  payslip.UpdatedAt,
 		CreatedAt:  payslip.CreatedAt,
+	}
+
+	if len(payslip.Data) > 0 {
+		data := PayslipData{}
+		err := json.Unmarshal(payslip.Data, &data)
+		if err != nil {
+			logger.Error(ctx, "Error parsing payslip data: %v", err)
+			return nil, v1Errors.ERROR_PARSING_PAYSLIP
+		}
+		payslipRes.Data = data
 	}
 
 	employee, err := handler.agentService.GetEmployeeByID(ctx, payslip.EmployeeFK)
