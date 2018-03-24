@@ -132,6 +132,16 @@ func (api *MotifyCoreAPIGoRPC) PayslipCreateV1(ctx context.Context, options Pays
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) PayslipListV1(ctx context.Context, options PayslipListV1Args) (*PayslipListV1Res, error) {
+	var result *PayslipListV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/payslip/list/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**PayslipListV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) PayslipSetV1(ctx context.Context, options PayslipSetV1Args) (string, error) {
 	var result string
 	var entry = cache.CacheEntry{Body: &result}
@@ -450,9 +460,9 @@ type EmployeeDetailsEmployee struct {
 type EmployeeDetailsPayslip struct {
 	ID         uint64  `json:"id_payslip"`
 	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	Data       []uint8 `json:"data"`
 	UpdateAt   string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
@@ -562,6 +572,7 @@ type PayslipCreateV1Args struct {
 }
 
 type PayslipCreatePayslipData struct {
+	Title    string  `json:"title"`
 	Currency string  `json:"currency"`
 	Amount   float64 `json:"amount"`
 	Data     string  `json:"data"`
@@ -591,6 +602,7 @@ type PayslipCreateEmployee struct {
 type PayslipCreatePayslip struct {
 	ID         uint64  `json:"id_payslip"`
 	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
 	Data       []uint8 `json:"data"`
@@ -610,6 +622,28 @@ var _PayslipCreateV1ErrorsMapping = map[string]int{
 	"EMPLOYEE_NOT_FOUND":  PayslipCreateV1Errors_EMPLOYEE_NOT_FOUND,
 	"CREATE_FAILED":       PayslipCreateV1Errors_CREATE_FAILED,
 	"PAYSLIP_NOT_CREATED": PayslipCreateV1Errors_PAYSLIP_NOT_CREATED,
+}
+
+// easyjson:json
+type PayslipListV1Args struct {
+	UserID uint64  `json:"user_id"`
+	Limit  *uint64 `json:"limit,omitempty"`
+	Offset *uint64 `json:"offset,omitempty"`
+}
+
+// easyjson:json
+type PayslipListV1Res struct {
+	Payslips []PayslipListPayslip `json:"payslips"`
+}
+
+type PayslipListPayslip struct {
+	ID         uint64  `json:"id_payslip"`
+	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
+	Currency   string  `json:"currency"`
+	Amount     float64 `json:"amount"`
+	UpdateAt   string  `json:"updated_at"`
+	CreatedAt  string  `json:"created_at"`
 }
 
 // easyjson:json

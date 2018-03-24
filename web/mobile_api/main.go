@@ -22,6 +22,7 @@ import (
 	"motify_core_api/handlers/mobile_api/employer/adduser"
 	"motify_core_api/handlers/mobile_api/employer/details"
 	"motify_core_api/handlers/mobile_api/employer/list"
+	"motify_core_api/handlers/mobile_api/payslip/list"
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/signup"
 	"motify_core_api/handlers/mobile_api/user/update"
@@ -97,6 +98,7 @@ func main() {
 		employer_adduser.New(coreApi),
 		employer_details.New(coreApi),
 		employer_list.New(coreApi),
+		payslip_list.New(coreApi),
 	)
 
 	err = srvc.Run()

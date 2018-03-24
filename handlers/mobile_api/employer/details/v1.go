@@ -49,6 +49,7 @@ type Employee struct {
 type Payslip struct {
 	ID         uint64  `json:"id_payslip"`
 	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
 }
@@ -99,6 +100,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		payslipsRes = append(payslipsRes, Payslip{
 			ID:         p.ID,
 			EmployeeFK: p.EmployeeFK,
+			Title:      p.Title,
 			Currency:   p.Currency,
 			Amount:     p.Amount,
 		})
