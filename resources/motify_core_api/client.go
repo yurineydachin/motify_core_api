@@ -273,6 +273,8 @@ type AgentListAgent struct {
 	Email       string `json:"email"`
 	Address     string `json:"address"`
 	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
 }
 
 type AgentListEmployee struct {
@@ -286,6 +288,8 @@ type AgentListEmployee struct {
 	HireDate           string  `json:"hire_date"`
 	NumberOfDepandants uint    `json:"number_of_dependants"`
 	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
 }
 
 // easyjson:json
@@ -633,7 +637,38 @@ type PayslipListV1Args struct {
 
 // easyjson:json
 type PayslipListV1Res struct {
-	Payslips []PayslipListPayslip `json:"payslips"`
+	List []PayslipListListItem `json:"list"`
+}
+
+type PayslipListListItem struct {
+	Agent    PayslipListAgent    `json:"agent"`
+	Employee PayslipListEmployee `json:"employee"`
+	Payslip  PayslipListPayslip  `json:"payslip"`
+}
+
+type PayslipListAgent struct {
+	ID          uint64 `json:"id_agent"`
+	Name        string `json:"name"`
+	CompanyID   string `json:"company_id"`
+	Description string `json:"description"`
+	Logo        string `json:"Logo"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	Address     string `json:"address"`
+	Site        string `json:"site"`
+}
+
+type PayslipListEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
 }
 
 type PayslipListPayslip struct {

@@ -22,20 +22,27 @@ func NewPayslipService(db *database.DbAdapter) *PayslipService {
 	}
 }
 
-func (service *PayslipService) GetListByUserID(ctx context.Context, userID, limit, offset uint64) ([]*models.Payslip, error) {
+type PayslipAgentEmployee struct {
+	*models.Payslip
+	*models.Agent
+	*models.Employee
+}
+
+func (service *PayslipService) GetListByUserID(ctx context.Context, userID, limit, offset uint64) ([]PayslipAgentEmployee, error) {
 	if limit == 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
-	res := []*models.Payslip{}
+	res := []PayslipAgentEmployee{}
 	err := service.db.Select(&res, `
         SELECT
-            p.id_payslip, p.p_fk_employee, p.p_title, p.p_currency, p.p_amount, p.p_updated_at, p.p_created_at
-            p.p_role, 
-        FROM motify_payslip p
-        INNER JOIN motify_agent_employees e ON e.id_employee = p.p_fk_employee
-        INNER JOIN motify_agenta e ON a.id_agent = e.p_fk_agent
-        WHERE e.fk_user = ?
-        ORDER BY p.created_at DESC
+            id_payslip, p_fk_employee, p_title, p_currency, p_amount, p_updated_at, p_created_at,
+            id_agent, a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
+            id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_payslip
+        INNER JOIN motify_agent_employees ON id_employee = p_fk_employee
+        INNER JOIN motify_agents ON id_agent = e_fk_agent
+        WHERE e_fk_user = ?
+        ORDER BY p_created_at DESC
         LIMIT ?
         OFFSET ?
     `, userID, limit, offset)

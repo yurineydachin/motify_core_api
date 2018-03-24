@@ -32,6 +32,8 @@ type Agent struct {
 	Email       string `json:"email"`
 	Address     string `json:"address"`
 	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
 }
 
 type Employee struct {
@@ -45,6 +47,8 @@ type Employee struct {
 	HireDate           string  `json:"hire_date"`
 	NumberOfDepandants uint    `json:"number_of_dependants"`
 	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -89,6 +93,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			Email:       agent.Email,
 			Address:     agent.Address,
 			Site:        agent.Site,
+			UpdatedAt:   agent.UpdatedAt,
+			CreatedAt:   agent.CreatedAt,
 		}
 		employee := list[i].Employee
 		res.List[i].Employee = Employee{
@@ -102,6 +108,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			HireDate:           employee.HireDate,
 			NumberOfDepandants: employee.NumberOfDepandants,
 			GrossBaseSalary:    employee.GrossBaseSalary,
+			UpdatedAt:          employee.UpdatedAt,
+			CreatedAt:          employee.CreatedAt,
 		}
 	}
 
