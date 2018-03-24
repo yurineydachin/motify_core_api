@@ -22,7 +22,7 @@ func NewUserService(db *database.DbAdapter) *UserService {
 func (service *UserService) GetUserByID(ctx context.Context, modelID uint64) (*models.User, error) {
 	res := models.User{}
 	err := service.db.Get(&res, `
-        SELECT id_user, name, p_description, description, awatar, phone, email, updated_at, created_at
+        SELECT id_user, u_name, u_short, u_description, u_awatar, u_phone, u_email, u_updated_at, u_created_at
         FROM motify_users WHERE id_user = ?
     `, modelID)
 	return &res, err
@@ -37,8 +37,8 @@ func (service *UserService) SetUser(ctx context.Context, model *models.User) (ui
 
 func (service *UserService) createUser(ctx context.Context, model *models.User) (uint64, error) {
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_users (name, p_description, description, awatar, phone, email)
-            VALUES (:user_name, :p_description, :description, :awatar, :phone, :email)
+            INSERT INTO motify_users (u_name, u_short, u_description, u_awatar, u_phone, u_email)
+            VALUES (:u_name, :u_short, :u_description, :u_awatar, :u_phone, :u_email)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -51,12 +51,12 @@ func (service *UserService) createUser(ctx context.Context, model *models.User) 
 func (service *UserService) updateUser(ctx context.Context, model *models.User) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_users SET
-                name = :user_name,
-                p_description = :p_description,
-                description = :description,
-                awatar = :awatar,
-                phone = :phone,
-                email = :email
+                u_name = :u_name,
+                u_short = :u_short,
+                u_description = :u_description,
+                u_awatar = :u_awatar,
+                u_phone = :u_phone,
+                u_email = :u_email
             WHERE id_user = :id_user
         `, model.ToArgs())
 	if err != nil {
@@ -98,8 +98,8 @@ func (service *UserService) createUserAccess(ctx context.Context, model *models.
 		return 0, fmt.Errorf("Insert DB exec error: no fk_user")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_user_access (fk_user, type_access, phone, email, password)
-            VALUES (:fk_user, :type_access, :phone, :email, :password)
+            INSERT INTO motify_user_access (ua_fk_user, ua_type, ua_phone, ua_email, ua_password)
+            VALUES (:ua_fk_user, :ua_type, :ua_phone, :ua_email, :ua_password)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -112,10 +112,10 @@ func (service *UserService) createUserAccess(ctx context.Context, model *models.
 func (service *UserService) updateUserAccess(ctx context.Context, model *models.UserAccess) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_user_access SET
-                type_access = :type_access,
-                phone = :phone,
-                email = :email,
-                password = :password
+                ua_type = :ua_type,
+                ua_phone = :ua_phone,
+                ua_email = :ua_email,
+                ua_password = :ua_password
             WHERE id_user_access = :id_user_access
         `, model.ToArgs())
 	if err != nil {
@@ -164,8 +164,8 @@ func (service *UserService) getUserAssessListByLogin(login string) ([]*models.Us
 	res := []*models.UserAccess{}
 	loginHash := utils.Hash(login)
 	err := service.db.Select(&res, `
-        SELECT id_user_access,fk_user,type_access,email,phone,password,updated_at,created_at
-        FROM motify_user_access WHERE email = ? OR phone = ?
+        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
+        FROM motify_user_access WHERE ua_email = ? OR ua_phone = ?
     `, loginHash, loginHash)
 	for i, access := range res {
 		access.MarkAllHashed()
@@ -179,8 +179,8 @@ func (service *UserService) getUserAssessListByLoginAndPass(login, password stri
 	loginHash := utils.Hash(login)
 	passwordHash := utils.Hash(password)
 	err := service.db.Select(&res, `
-        SELECT id_user_access,fk_user,type_access,email,phone,password,updated_at,created_at
-        FROM motify_user_access WHERE (email = ? OR phone = ?) AND password = ?
+        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
+        FROM motify_user_access WHERE (ua_email = ? OR ua_phone = ?) AND ua_password = ?
     `, loginHash, loginHash, passwordHash)
 	for i, access := range res {
 		access.MarkAllHashed()
@@ -205,8 +205,8 @@ func (service *UserService) GetUserAssessByUserIDAndType(ctx context.Context, us
 func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
 	err := service.db.Select(&res, `
-        SELECT id_user_access,fk_user,type_access,email,phone,password,updated_at,created_at
-        FROM motify_user_access WHERE fk_user = ?
+        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
+        FROM motify_user_access WHERE ua_fk_user = ?
     `, userID)
 	for i, access := range res {
 		access.MarkAllHashed()
@@ -218,9 +218,9 @@ func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userI
 func (service *UserService) DeleteUserAccessByUserID(ctx context.Context, userID uint64) error {
 	deleteRes, err := service.db.Exec(`
             DELETE FROM motify_user_access
-            WHERE fk_user = :fk_user
+            WHERE ua_fk_user = :ua_fk_user
         `, map[string]interface{}{
-		"fk_user": userID,
+		"ua_fk_user": userID,
 	})
 	if err != nil {
 		return fmt.Errorf("Delete DB exec error: %v", err)

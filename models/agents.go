@@ -2,31 +2,31 @@ package models
 
 type Agent struct {
 	ID          uint64 `db:"id_agent"`
-	Name        string `db:"name"`
-	CompanyID   string `db:"company_id"`
-	Description string `db:"description"`
-	Logo        string `db:"logo"`
-	Background  string `db:"bg_image"`
-	Address     string `db:"address"`
-	Phone       string `db:"phone"`
-	Email       string `db:"email"`
-	Site        string `db:"site"`
-	UpdatedAt   string `db:"updated_at"`
-	CreatedAt   string `db:"created_at"`
+	Name        string `db:"a_name"`
+	CompanyID   string `db:"a_company_id"`
+	Description string `db:"a_description"`
+	Logo        string `db:"a_logo"`
+	Background  string `db:"a_bg_image"`
+	Address     string `db:"a_address"`
+	Phone       string `db:"a_phone"`
+	Email       string `db:"a_email"`
+	Site        string `db:"a_site"`
+	UpdatedAt   string `db:"a_updated_at"`
+	CreatedAt   string `db:"a_created_at"`
 }
 
 func (agent *Agent) ToArgs() map[string]interface{} {
 	return map[string]interface{}{
-		"id_agent":    agent.ID,
-		"name":        agent.Name,
-		"company_id":  agent.CompanyID,
-		"description": agent.Description,
-		"logo":        agent.Logo,
-		"bg_image":    agent.Background,
-		"address":     agent.Address,
-		"phone":       agent.Phone,
-		"email":       agent.Email,
-		"site":        agent.Site,
+		"id_agent":      agent.ID,
+		"a_name":        agent.Name,
+		"a_company_id":  agent.CompanyID,
+		"a_description": agent.Description,
+		"a_logo":        agent.Logo,
+		"a_bg_image":    agent.Background,
+		"a_address":     agent.Address,
+		"a_phone":       agent.Phone,
+		"a_email":       agent.Email,
+		"a_site":        agent.Site,
 	}
 }
 

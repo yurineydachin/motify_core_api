@@ -29,9 +29,11 @@ func (service *PayslipService) GetListByUserID(ctx context.Context, userID, limi
 	res := []*models.Payslip{}
 	err := service.db.Select(&res, `
         SELECT
-            p.id_payslip, p.fk_employee, p.title, p.currency, p.amount, p.updated_at, p.created_at
+            p.id_payslip, p.p_fk_employee, p.p_title, p.p_currency, p.p_amount, p.p_updated_at, p.p_created_at
+            p.p_role, 
         FROM motify_payslip p
-        INNER JOIN motify_agent_employees e ON e.id_employee = p.fk_employee
+        INNER JOIN motify_agent_employees e ON e.id_employee = p.p_fk_employee
+        INNER JOIN motify_agenta e ON a.id_agent = e.p_fk_agent
         WHERE e.fk_user = ?
         ORDER BY p.created_at DESC
         LIMIT ?
@@ -47,10 +49,10 @@ func (service *PayslipService) GetListByEmployeeID(ctx context.Context, employee
 	res := []*models.Payslip{}
 	err := service.db.Select(&res, `
         SELECT
-            p.id_payslip, p.fk_employee, p.title, p.currency, p.amount, p.updated_at, p.created_at
+            p.id_payslip, p.p_fk_employee, p.p_title, p.p_currency, p.p_amount, p.p_updated_at, p.p_created_at
         FROM motify_payslip p
-        WHERE p.fk_employee = ?
-        ORDER BY p.created_at DESC
+        WHERE p.p_fk_employee = ?
+        ORDER BY p.p_created_at DESC
         LIMIT ?
         OFFSET ?
     `, employeeID, limit, offset)
@@ -60,7 +62,7 @@ func (service *PayslipService) GetListByEmployeeID(ctx context.Context, employee
 func (service *PayslipService) GetPayslipByID(ctx context.Context, modelID uint64) (*models.Payslip, error) {
 	res := models.Payslip{}
 	err := service.db.Get(&res, `
-        SELECT id_payslip, fk_employee, title, currency, amount, data, updated_at, created_at
+        SELECT id_payslip, p_fk_employee, p_title, p_currency, p_amount, p_data, p_updated_at, p_created_at
         FROM motify_payslip WHERE id_payslip = ?
     `, modelID)
 	return &res, err
@@ -78,8 +80,8 @@ func (service *PayslipService) createPayslip(ctx context.Context, model *models.
 		return 0, fmt.Errorf("Insert DB exec error: no fk_employee")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_payslip (fk_employee, title, currency, amount, data)
-            VALUES (:fk_employee, :title, :currency, :amount, :data)
+            INSERT INTO motify_payslip (p_fk_employee, p_title, p_currency, p_amount, p_data)
+            VALUES (:p_fk_employee, :p_title, :p_currency, :p_amount, :p_data)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -92,11 +94,11 @@ func (service *PayslipService) createPayslip(ctx context.Context, model *models.
 func (service *PayslipService) updatePayslip(ctx context.Context, model *models.Payslip) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_payslip SET
-                fk_employee = :fk_employee,
-                title = :title,
-                currency = :currency,
-                amount = :amount,
-                data = :data
+                p_fk_employee = :p_fk_employee,
+                p_title = :p_title,
+                p_currency = :p_currency,
+                p_amount = :p_amount,
+                p_data = :p_data
             WHERE
                 id_payslip = :id_payslip
         `, model.ToArgs())

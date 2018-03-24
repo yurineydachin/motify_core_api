@@ -30,12 +30,12 @@ func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.name, a.company_id, a.description, a.logo, a.bg_image, a.address, a.phone, a.email, a.site, a.updated_at, a.created_at,
-            s.role, s.notifications_enabled, s.is_main_agent
+            a.id_agent, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site, a.a_updated_at, a.a_created_at,
+            s.s_role, s.s_notifications_enabled, s.s_is_main_agent
         FROM motify_agents a
-        INNER JOIN motify_agent_settings s ON s.fk_agent = a.id_agent
-        WHERE s.fk_user = ?
-        ORDER BY s.created_at DESC
+        INNER JOIN motify_agent_settings s ON s.s_fk_agent = a.id_agent
+        WHERE s.s_fk_user = ?
+        ORDER BY s.s_created_at DESC
         LIMIT ?
         OFFSET ?
     `, userID, limit, offset)
@@ -50,35 +50,22 @@ func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.name, a.company_id, a.description, a.logo, a.bg_image, a.address, a.phone, a.email, a.site,
-            e.fk_user, e.employee_code, e.hire_date, e.number_of_dependants, e.gross_base_salary, e.role
+            a.id_agent, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site,
+            e.e_fk_user, e.e_code, e.e_hire_date, e.e_number_of_dependants, e.e_gross_base_salary, e.e_role
         FROM motify_agents a
-        INNER JOIN motify_agent_employees e ON e.fk_agent = a.id_agent
-        WHERE e.fk_user = ?
-        ORDER BY e.created_at DESC
+        INNER JOIN motify_agent_employees e ON e.e_fk_agent = a.id_agent
+        WHERE e.e_fk_user = ?
+        ORDER BY e.e_created_at DESC
         LIMIT ?
         OFFSET ?
     `, userID, limit, offset)
 	return res, err
 }
 
-func (service *AgentService) GetListByCompanyIDs(ctx context.Context, companyIDs []string) ([]*models.Agent, error) {
-	res := []*models.Agent{}
-
-	err := service.db.Select(&res, `
-        SELECT
-            id_agent, name, company_id, description, logo, bg_image, address, phone, email, site, updated_at, created_at
-        FROM motify_agents a
-        WHERE e.company_id IN (?)
-        ORDER BY e.created_at DESC
-    `, companyIDs)
-	return res, err
-}
-
 func (service *AgentService) GetAgentByID(ctx context.Context, modelID uint64) (*models.Agent, error) {
 	res := models.Agent{}
 	err := service.db.Get(&res, `
-        SELECT id_agent, name, company_id, description, logo, bg_image, address, phone, email, site, updated_at, created_at
+        SELECT id_agent, a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at
         FROM motify_agents WHERE id_agent = ?
     `, modelID)
 	return &res, err
@@ -93,8 +80,8 @@ func (service *AgentService) SetAgent(ctx context.Context, model *models.Agent) 
 
 func (service *AgentService) createAgent(ctx context.Context, model *models.Agent) (uint64, error) {
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_agents (name, company_id, description, logo, bg_image, address, phone, email, site)
-            VALUES (:name, :company_id, :description, :logo, :bg_image, :address, :phone, :email, :site)
+            INSERT INTO motify_agents (a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site)
+            VALUES (:a_name, :a_company_id, :a_description, :a_logo, :a_bg_image, :a_address, :a_phone, :a_email, :a_site)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -107,15 +94,15 @@ func (service *AgentService) createAgent(ctx context.Context, model *models.Agen
 func (service *AgentService) updateAgent(ctx context.Context, model *models.Agent) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_agents SET
-                name = :name,
-                company_id = :company_id,
-                description = :description,
-                logo = :logo,
-                bg_image = :bg_image,
-                address =  :address,
-                phone = :phone,
-                email = :email,
-                site = :site
+                a_name = :a_name,
+                a_company_id = :a_company_id,
+                a_description = :a_description,
+                a_logo = :a_logo,
+                a_bg_image = :a_bg_image,
+                a_address =  :a_address,
+                a_phone = :a_phone,
+                a_email = :a_email,
+                a_site = :a_site
             WHERE
                 id_agent = :id_agent
         `, model.ToArgs())
@@ -150,8 +137,8 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 func (service *AgentService) GetEmployeeByAgentAndUser(ctx context.Context, agentFK, userFK uint64) (*models.Employee, error) {
 	res := models.Employee{}
 	err := service.db.Get(&res, `
-        SELECT id_employee, fk_agent, fk_user, employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
-        FROM motify_agent_employees WHERE fk_agent = ? AND fk_user = ?
+        SELECT id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_agent_employees WHERE e_fk_agent = ? AND e_fk_user = ?
     `, agentFK, userFK)
 	return &res, err
 }
@@ -159,7 +146,7 @@ func (service *AgentService) GetEmployeeByAgentAndUser(ctx context.Context, agen
 func (service *AgentService) GetEmployeeByID(ctx context.Context, modelID uint64) (*models.Employee, error) {
 	res := models.Employee{}
 	err := service.db.Get(&res, `
-        SELECT id_employee, fk_agent, fk_user, employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role, updated_at, created_at
+        SELECT id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
         FROM motify_agent_employees WHERE id_employee = ?
     `, modelID)
 	return &res, err
@@ -179,13 +166,13 @@ func (service *AgentService) createEmployee(ctx context.Context, model *models.E
 	args := model.ToArgs()
 	fkField := ""
 	fkValue := ""
-	if _, exists := args["fk_user"]; exists {
-		fkField = "fk_user, "
-		fkValue = ":fk_user, "
+	if _, exists := args["e_fk_user"]; exists {
+		fkField = "e_fk_user, "
+		fkValue = ":e_fk_user, "
 	}
 	sql := fmt.Sprintf(
-		`INSERT INTO motify_agent_employees (fk_agent, %s employee_code, name, email, hire_date, number_of_dependants, gross_base_salary, role) 
-        VALUES (:fk_agent, %s :employee_code, :name, :email, :hire_date, :number_of_dependants, :gross_base_salary, :role)`,
+		`INSERT INTO motify_agent_employees (e_fk_agent, %s e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role) 
+        VALUES (:e_fk_agent, %s :e_code, :e_name, :e_email, :e_hire_date, :e_number_of_dependants, :e_gross_base_salary, :e_role)`,
 		fkField, fkValue)
 	insertRes, err := service.db.Exec(sql, model.ToArgs())
 	if err != nil {
@@ -202,20 +189,20 @@ func (service *AgentService) updateEmployee(ctx context.Context, model *models.E
 	}
 	args := model.ToArgs()
 	fkField := ""
-	if _, exists := args["fk_user"]; exists {
-		fkField = "fk_user = :fk_user,"
+	if _, exists := args["e_fk_user"]; exists {
+		fkField = "e_fk_user = :e_fk_user,"
 	}
 	sql := fmt.Sprintf(
 		`UPDATE motify_agent_employees SET
-                fk_agent = :fk_agent,
+                e_fk_agent = :e_fk_agent,
                 %s
-                employee_code = :employee_code,
-                name = :name,
-                email = :email,
-                hire_date = :hire_date,
-                number_of_dependants = :number_of_dependants,
-                gross_base_salary = :gross_base_salary,
-                role = :role
+                e_code = :e_code,
+                e_name = :e_name,
+                e_email = :e_email,
+                e_hire_date = :e_hire_date,
+                e_number_of_dependants = :e_number_of_dependants,
+                e_gross_base_salary = :e_gross_base_salary,
+                e_role = :e_role
             WHERE
                 id_employee = :id_employee`,
 		fkField)
@@ -252,7 +239,7 @@ func (service *AgentService) GetSettingByID(ctx context.Context, modelID uint64)
 	res := models.AgentSetting{}
 
 	err := service.db.Get(&res, `
-        SELECT id_setting, fk_agent, fk_agent_processed, fk_user, role, notifications_enabled, is_main_agent, updated_at, created_at
+        SELECT id_setting, s_fk_agent, s_fk_agent_processed, s_fk_user, s_role, s_notifications_enabled, s_is_main_agent, s_updated_at, s_created_at
         FROM motify_agent_settings WHERE id_setting = ?
     `, modelID)
 	return &res, err
@@ -262,8 +249,8 @@ func (service *AgentService) GetSettingByAgentAndUser(ctx context.Context, agent
 	res := models.AgentSetting{}
 
 	err := service.db.Get(&res, `
-        SELECT id_setting, fk_agent, fk_agent_processed, fk_user, role, notifications_enabled, is_main_agent, updated_at, created_at
-        FROM motify_agent_settings WHERE fk_agent = ? AND fk_user = ?
+        SELECT id_setting, s_fk_agent, s_fk_agent_processed, s_fk_user, s_role, s_notifications_enabled, s_is_main_agent, s_updated_at, s_created_at
+        FROM motify_agent_settings WHERE s_fk_agent = ? AND s_fk_user = ?
     `, agentFK, userFK)
 	return &res, err
 }
@@ -283,16 +270,16 @@ func (service *AgentService) createSetting(ctx context.Context, model *models.Ag
 	fkField := ""
 	fkValue := ""
 	if _, exists := args["fk_user"]; exists {
-		fkField += "fk_user, "
-		fkValue += ":fk_user, "
+		fkField += "s_fk_user, "
+		fkValue += ":s_fk_user, "
 	}
-	if _, exists := args["fk_agent_processed"]; exists {
-		fkField += "fk_agent_processed, "
-		fkValue += ":fk_agent_processed, "
+	if _, exists := args["s_fk_agent_processed"]; exists {
+		fkField += "s_fk_agent_processed, "
+		fkValue += ":s_fk_agent_processed, "
 	}
 	sql := fmt.Sprintf(
-		`INSERT INTO motify_agent_settings (fk_agent, %s role, notifications_enabled, is_main_agent) 
-        VALUES (:fk_agent, %s :role, :notifications_enabled, :is_main_agent)`,
+		`INSERT INTO motify_agent_settings (s_fk_agent, %s s_role, s_notifications_enabled, s_is_main_agent) 
+        VALUES (:s_fk_agent, %s :s_role, :s_notifications_enabled, :s_is_main_agent)`,
 		fkField, fkValue)
 	insertRes, err := service.db.Exec(sql, model.ToArgs())
 	if err != nil {
@@ -309,19 +296,19 @@ func (service *AgentService) updateSetting(ctx context.Context, model *models.Ag
 	}
 	args := model.ToArgs()
 	fkField := ""
-	if _, exists := args["fk_user"]; exists {
-		fkField += "fk_user = :fk_user,"
+	if _, exists := args["s_fk_user"]; exists {
+		fkField += "s_fk_user = :s_fk_user,"
 	}
-	if _, exists := args["fk_agent_processed"]; exists {
-		fkField += "fk_agent_processed = :fk_agent_processed,"
+	if _, exists := args["s_fk_agent_processed"]; exists {
+		fkField += "s_fk_agent_processed = :s_fk_agent_processed,"
 	}
 	sql := fmt.Sprintf(
 		`UPDATE motify_agent_settings SET
-                fk_agent = :fk_agent,
+                s_fk_agent = :s_fk_agent,
                 %s
-                role = :role,
-                notifications_enabled = :notifications_enabled,
-                is_main_agent = :is_main_agent
+                s_role = :s_role,
+                s_notifications_enabled = :s_notifications_enabled,
+                s_is_main_agent = :s_is_main_agent
             WHERE
                 id_setting = :id_setting`,
 		fkField)
