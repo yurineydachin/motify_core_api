@@ -132,21 +132,21 @@ func (api *MotifyCoreAPIGoRPC) PayslipCreateV1(ctx context.Context, options Pays
 	return result, err
 }
 
-func (api *MotifyCoreAPIGoRPC) PayslipListV1(ctx context.Context, options PayslipListV1Args) (*PayslipListV1Res, error) {
-	var result *PayslipListV1Res
+func (api *MotifyCoreAPIGoRPC) PayslipDetailsV1(ctx context.Context, options PayslipDetailsV1Args) (*PayslipDetailsV1Res, error) {
+	var result *PayslipDetailsV1Res
 	var entry = cache.CacheEntry{Body: &result}
-	err := api.setWithCache(ctx, "/payslip/list/v1/", options, &entry, nil)
-	if result, ok := entry.Body.(**PayslipListV1Res); ok {
+	err := api.setWithCache(ctx, "/payslip/details/v1/", options, &entry, _PayslipDetailsV1ErrorsMapping)
+	if result, ok := entry.Body.(**PayslipDetailsV1Res); ok {
 		return *result, err
 	}
 	return result, err
 }
 
-func (api *MotifyCoreAPIGoRPC) PayslipSetV1(ctx context.Context, options PayslipSetV1Args) (string, error) {
-	var result string
+func (api *MotifyCoreAPIGoRPC) PayslipListV1(ctx context.Context, options PayslipListV1Args) (*PayslipListV1Res, error) {
+	var result *PayslipListV1Res
 	var entry = cache.CacheEntry{Body: &result}
-	err := api.setWithCache(ctx, "/payslip/set/v1/", options, &entry, nil)
-	if result, ok := entry.Body.(*string); ok {
+	err := api.setWithCache(ctx, "/payslip/list/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**PayslipListV1Res); ok {
 		return *result, err
 	}
 	return result, err
@@ -467,7 +467,7 @@ type EmployeeDetailsPayslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
 
@@ -571,21 +571,21 @@ var _EmployeeUpdateV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type PayslipCreateV1Args struct {
-	EmployeeFK uint64                   `json:"fk_employee"`
-	Payslip    PayslipCreatePayslipData `json:"payslip"`
+	Payslip PayslipCreatePayslipArgs `json:"payslip"`
 }
 
-type PayslipCreatePayslipData struct {
-	Title    string  `json:"title"`
-	Currency string  `json:"currency"`
-	Amount   float64 `json:"amount"`
-	Data     string  `json:"data"`
+type PayslipCreatePayslipArgs struct {
+	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
+	Currency   string  `json:"currency"`
+	Amount     float64 `json:"amount"`
+	Data       string  `json:"data"`
 }
 
 // easyjson:json
 type PayslipCreateV1Res struct {
 	Employee *PayslipCreateEmployee `json:"agent"`
-	Payslip  *PayslipCreatePayslip  `json:"agent"`
+	Payslip  *PayslipCreatePayslip  `json:"payslip"`
 }
 
 type PayslipCreateEmployee struct {
@@ -609,8 +609,7 @@ type PayslipCreatePayslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	Data       []uint8 `json:"data"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
 
@@ -626,6 +625,135 @@ var _PayslipCreateV1ErrorsMapping = map[string]int{
 	"EMPLOYEE_NOT_FOUND":  PayslipCreateV1Errors_EMPLOYEE_NOT_FOUND,
 	"CREATE_FAILED":       PayslipCreateV1Errors_CREATE_FAILED,
 	"PAYSLIP_NOT_CREATED": PayslipCreateV1Errors_PAYSLIP_NOT_CREATED,
+}
+
+// easyjson:json
+type PayslipDetailsV1Args struct {
+	ID uint64 `json:"payslip_id"`
+}
+
+// easyjson:json
+type PayslipDetailsV1Res struct {
+	Agent    *PayslipDetailsAgent    `json:"agent"`
+	Employee *PayslipDetailsEmployee `json:"employee"`
+	Payslip  PayslipDetailsPayslip   `json:"payslip"`
+}
+
+type PayslipDetailsAgent struct {
+	ID          uint64 `json:"id_agent"`
+	Name        string `json:"name"`
+	CompanyID   string `json:"company_id"`
+	Description string `json:"description"`
+	Logo        string `json:"logo"`
+	Phone       string `json:"phone"`
+	Email       string `json:"email"`
+	Address     string `json:"address"`
+	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
+}
+
+type PayslipDetailsEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
+}
+
+type PayslipDetailsPayslip struct {
+	ID         uint64                    `json:"id_payslip"`
+	EmployeeFK uint64                    `json:"fk_employee"`
+	Title      string                    `json:"title"`
+	Currency   string                    `json:"currency"`
+	Amount     float64                   `json:"amount"`
+	UpdatedAt  string                    `json:"updated_at"`
+	CreatedAt  string                    `json:"created_at"`
+	Data       PayslipDetailsPayslipData `json:"data"`
+}
+
+type PayslipDetailsPayslipData struct {
+	Transaction PayslipDetailsTransaction `json:"transaction"`
+	Sections    []PayslipDetailsSection   `json:"sections"`
+	Footnote    string                    `json:"footnote,omitempty"`
+}
+
+type PayslipDetailsTransaction struct {
+	Description string                  `json:"description"`
+	Sections    []PayslipDetailsSection `json:"sections"`
+}
+
+type PayslipDetailsSection struct {
+	Type       string                     `json:"section_type,omitempty"`
+	Title      string                     `json:"title,omitempty"`
+	Term       string                     `json:"term,omitempty"`
+	Definition string                     `json:"definition,omitempty"`
+	Amount     *float64                   `json:"amount,omitempty"`
+	Operations *[]PayslipDetailsOperation `json:"rows,omitempty"`
+	Person     *PayslipDetailsPerson      `json:"person,omitempty"`
+	Company    *PayslipDetailsCompany     `json:"company,omitempty"`
+}
+
+type PayslipDetailsOperation struct {
+	Title      string                     `json:"title,omitempty"`
+	Term       string                     `json:"term,omitempty"`
+	Definition string                     `json:"definition,omitempty"`
+	Type       string                     `json:"type,omitempty"`
+	Footnote   string                     `json:"footnote,omitempty"`
+	Amount     *float64                   `json:"amount,omitempty"`
+	Float      *float64                   `json:"float,omitempty"`
+	Int        *int64                     `json:"int,omitempty"`
+	Text       string                     `json:"text,omitempty"`
+	Children   *[]PayslipDetailsOperation `json:"rows,omitempty"`
+}
+
+type PayslipDetailsPerson struct {
+	Name        string                     `json:"name"`
+	Avatar      string                     `json:"avatar_image"`
+	Role        string                     `json:"job_title"`
+	Description string                     `json:"description"`
+	Details     *[]PayslipDetailsOperation `json:"details,omitempty"`
+	Contacts    []PayslipDetailsContact    `json:"contacts"`
+	Footnote    string                     `json:"footnote,omitempty"`
+}
+
+type PayslipDetailsContact struct {
+	Title string `json:"title"`
+	Type  string `json:"type"`
+	Text  string `json:"text"`
+}
+
+type PayslipDetailsCompany struct {
+	Title       string                  `json:"title"`
+	Name        string                  `json:"official_name"`
+	Logo        string                  `json:"logo_image,omitempty"`
+	BGImage     string                  `json:"bg_image,omitempty"`
+	Description string                  `json:"description,omitempty"`
+	Contacts    []PayslipDetailsContact `json:"contacts"`
+	Footnote    string                  `json:"footnote,omitempty"`
+}
+
+type PayslipDetailsV1Errors int
+
+const (
+	PayslipDetailsV1Errors_AGENT_NOT_FOUND = iota
+	PayslipDetailsV1Errors_EMPLOYEE_NOT_FOUND
+	PayslipDetailsV1Errors_PAYSLIP_NOT_FOUND
+	PayslipDetailsV1Errors_ERROR_PARSING_PAYSLIP
+)
+
+var _PayslipDetailsV1ErrorsMapping = map[string]int{
+	"AGENT_NOT_FOUND":       PayslipDetailsV1Errors_AGENT_NOT_FOUND,
+	"EMPLOYEE_NOT_FOUND":    PayslipDetailsV1Errors_EMPLOYEE_NOT_FOUND,
+	"PAYSLIP_NOT_FOUND":     PayslipDetailsV1Errors_PAYSLIP_NOT_FOUND,
+	"ERROR_PARSING_PAYSLIP": PayslipDetailsV1Errors_ERROR_PARSING_PAYSLIP,
 }
 
 // easyjson:json
@@ -656,6 +784,8 @@ type PayslipListAgent struct {
 	Email       string `json:"email"`
 	Address     string `json:"address"`
 	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
 }
 
 type PayslipListEmployee struct {
@@ -669,6 +799,8 @@ type PayslipListEmployee struct {
 	HireDate           string  `json:"hire_date"`
 	NumberOfDepandants uint    `json:"number_of_dependants"`
 	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
 }
 
 type PayslipListPayslip struct {
@@ -677,59 +809,8 @@ type PayslipListPayslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
-}
-
-// easyjson:json
-type PayslipSetV1Args struct {
-	ID               *uint64               `json:"payslip_id,omitempty"`
-	Employee         PayslipSetPerson      `json:"employee"`
-	ProcessedByUser  *PayslipSetPerson     `json:"processed_by_user,omitempty"`
-	Agent            PayslipSetCompany     `json:"agent"`
-	ProcessedByAgent *PayslipSetCompany    `json:"processed_by_agent,omitempty"`
-	Data             PayslipSetPayslipData `json:"data"`
-}
-
-type PayslipSetPerson struct {
-	ID          *uint64            `json:"id,omitempty"`
-	Name        string             `json:"name"`
-	RoleDesc    string             `json:"p_description"`
-	Description string             `json:"description"`
-	Contacts    PayslipSetContacts `json:"contacts"`
-	Avatar      string             `json:"awatar"`
-}
-
-type PayslipSetContacts struct {
-	Address string `json:"address"`
-	Phone   string `json:"phone"`
-	Email   string `json:"email"`
-	Site    string `json:"site"`
-}
-
-type PayslipSetCompany struct {
-	ID          *uint64            `json:"id,omitempty"`
-	Name        string             `json:"name"`
-	RoleDesc    string             `json:"c_description"`
-	Description string             `json:"description"`
-	Contacts    PayslipSetContacts `json:"contacts"`
-	BGImage     string             `json:"bg_image"`
-	Logo        string             `json:"logo"`
-}
-
-type PayslipSetPayslipData struct {
-	Currency string              `json:"currency"`
-	Payslip  PayslipSetOperation `json:"payslip"`
-	Details  PayslipSetOperation `json:"details"`
-}
-
-type PayslipSetOperation struct {
-	Amount  *float64               `json:"amount,omitempty"`
-	Float   *float64               `json:"float,omitempty"`
-	Int     *int64                 `json:"int,omitempty"`
-	Text    *string                `json:"text,omitempty"`
-	Title   *string                `json:"title,omitempty"`
-	Details *[]PayslipSetOperation `json:"details,omitempty"`
 }
 
 // easyjson:json
