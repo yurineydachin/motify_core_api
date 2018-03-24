@@ -30,6 +30,7 @@ import (
 	"motify_core_api/handlers/core_api/employee/details"
 	"motify_core_api/handlers/core_api/employee/update"
 	"motify_core_api/handlers/core_api/payslip/create"
+	"motify_core_api/handlers/core_api/payslip/list"
 	"motify_core_api/handlers/core_api/payslip/set"
 	"motify_core_api/handlers/core_api/setting/create"
 	"motify_core_api/handlers/core_api/setting/update"
@@ -131,6 +132,7 @@ func main() {
 		*/
 		payslip_set.New(),
 		payslip_create.New(agentService, payslipService),
+		payslip_list.New(payslipService),
 		agent_create.New(agentService),
 		agent_update.New(agentService),
 		agent_list.New(agentService),
