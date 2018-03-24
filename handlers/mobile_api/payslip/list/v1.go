@@ -56,7 +56,7 @@ type Payslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
 
@@ -120,7 +120,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 				Title:      p.Title,
 				Currency:   p.Currency,
 				Amount:     p.Amount,
-				UpdateAt:   p.UpdateAt,
+				UpdatedAt:  p.UpdatedAt,
 				CreatedAt:  p.CreatedAt,
 			},
 		})

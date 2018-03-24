@@ -10,20 +10,26 @@ import (
 )
 
 type V1Args struct {
-	EmployeeFK uint64      `key:"fk_employee" description:"Employee ID"`
-	Payslip    PayslipData `key:"payslip" description:"Payslip"`
+	Payslip PayslipArgs `key:"payslip" description:"Payslip Args"`
+}
+
+type PayslipArgs struct {
+	EmployeeFK uint64  `key:"fk_employee" description:"Employee ID"`
+	Title      string  `key:"title" description:"Title"`
+	Currency   string  `key:"currency" description:"Currency"`
+	Amount     float64 `key:"amount" description:"Amount"`
+	Data       string  `key:"data" description:"Data"`
 }
 
 type PayslipData struct {
 	Title    string  `key:"title" description:"Title"`
 	Currency string  `key:"currency" description:"Currency"`
 	Amount   float64 `key:"amount" description:"Amount"`
-	Data     string  `key:"data" description:"Data"`
 }
 
 type V1Res struct {
 	Employee *Employee `json:"agent" description:"Agent"`
-	Payslip  *Payslip  `json:"agent" description:"Agent"`
+	Payslip  *Payslip  `json:"payslip" description:"Payslip"`
 }
 
 type Employee struct {
@@ -47,8 +53,7 @@ type Payslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	Data       []byte  `json:"data"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
 
@@ -68,7 +73,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	logger.Debug(ctx, "Payslip/Create/V1")
 	cache.DisableTransportCache(ctx)
 
-	employee, err := handler.agentService.GetEmployeeByID(ctx, opts.EmployeeFK)
+	employee, err := handler.agentService.GetEmployeeByID(ctx, opts.Payslip.EmployeeFK)
 	if err != nil {
 		logger.Error(ctx, "Failed loading: %v", err)
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
@@ -79,7 +84,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	newPayslip := &models.Payslip{
-		EmployeeFK: opts.EmployeeFK,
+		EmployeeFK: opts.Payslip.EmployeeFK,
 		Title:      opts.Payslip.Title,
 		Currency:   opts.Payslip.Currency,
 		Amount:     opts.Payslip.Amount,
@@ -112,9 +117,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			EmployeeFK: payslip.EmployeeFK,
 			Currency:   payslip.Currency,
 			Amount:     payslip.Amount,
-			//Data:       payslip.Data,
-			UpdateAt:  payslip.UpdateAt,
-			CreatedAt: payslip.CreatedAt,
+			UpdatedAt:  payslip.UpdatedAt,
+			CreatedAt:  payslip.CreatedAt,
 		},
 		Employee: &Employee{
 			ID:                 employee.ID,

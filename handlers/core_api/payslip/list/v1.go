@@ -33,6 +33,8 @@ type Agent struct {
 	Email       string `json:"email"`
 	Address     string `json:"address"`
 	Site        string `json:"site"`
+	UpdatedAt   string `json:"updated_at"`
+	CreatedAt   string `json:"created_at"`
 }
 
 type Employee struct {
@@ -46,6 +48,8 @@ type Employee struct {
 	HireDate           string  `json:"hire_date"`
 	NumberOfDepandants uint    `json:"number_of_dependants"`
 	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
 }
 
 type Payslip struct {
@@ -54,7 +58,7 @@ type Payslip struct {
 	Title      string  `json:"title"`
 	Currency   string  `json:"currency"`
 	Amount     float64 `json:"amount"`
-	UpdateAt   string  `json:"updated_at"`
+	UpdatedAt  string  `json:"updated_at"`
 	CreatedAt  string  `json:"created_at"`
 }
 
@@ -103,6 +107,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 				Email:       agent.Email,
 				Address:     agent.Address,
 				Site:        agent.Site,
+				UpdatedAt:   agent.UpdatedAt,
+				CreatedAt:   agent.CreatedAt,
 			},
 			Employee: Employee{
 				ID:                 employee.ID,
@@ -115,6 +121,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 				HireDate:           employee.HireDate,
 				NumberOfDepandants: employee.NumberOfDepandants,
 				GrossBaseSalary:    employee.GrossBaseSalary,
+				UpdatedAt:          employee.UpdatedAt,
+				CreatedAt:          employee.CreatedAt,
 			},
 			Payslip: Payslip{
 				ID:         p.ID,
@@ -122,7 +130,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 				Title:      p.Title,
 				Currency:   p.Currency,
 				Amount:     p.Amount,
-				UpdateAt:   p.UpdateAt,
+				UpdatedAt:  p.UpdatedAt,
 				CreatedAt:  p.CreatedAt,
 			},
 		})

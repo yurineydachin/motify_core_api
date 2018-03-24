@@ -7,7 +7,7 @@ type Payslip struct {
 	Currency   string  `db:"p_currency"`
 	Amount     float64 `db:"p_amount"`
 	Data       []byte  `db:"p_data"`
-	UpdateAt   string  `db:"p_updated_at"`
+	UpdatedAt  string  `db:"p_updated_at"`
 	CreatedAt  string  `db:"p_created_at"`
 }
 

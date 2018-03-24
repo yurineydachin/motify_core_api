@@ -30,8 +30,8 @@ import (
 	"motify_core_api/handlers/core_api/employee/details"
 	"motify_core_api/handlers/core_api/employee/update"
 	"motify_core_api/handlers/core_api/payslip/create"
+	"motify_core_api/handlers/core_api/payslip/details"
 	"motify_core_api/handlers/core_api/payslip/list"
-	"motify_core_api/handlers/core_api/payslip/set"
 	"motify_core_api/handlers/core_api/setting/create"
 	"motify_core_api/handlers/core_api/setting/update"
 	"motify_core_api/handlers/core_api/user/create"
@@ -130,7 +130,7 @@ func main() {
 			- get employers, employer details
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
-		payslip_set.New(),
+		payslip_details.New(agentService, payslipService),
 		payslip_create.New(agentService, payslipService),
 		payslip_list.New(payslipService),
 		agent_create.New(agentService),
