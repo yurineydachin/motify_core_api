@@ -18,25 +18,11 @@ func init() {
 	}
 }
 
-func TestObsoleteToken(t *testing.T) {
-	customerID := uint64(3004272)
-	hash := "AdjIgPtFgm1WdAdr0n376eWCKMcunYOl9S7krcNkQj+IqE8N2bi0D8DtGWHt01sUVw=="
-
-	decodedToken, err := ParseToken(hash)
-	if err != nil {
-		t.Errorf("GetTokenV1ByHash error: %s", err)
-	}
-
-	// compare all fields
-	if decodedToken.GetCustomerID() != customerID {
-		t.Errorf("Token customerID does not match. expected: %d, decoded: %d", customerID, decodedToken.GetCustomerID())
-	}
-}
-
 // TestTokenV1EncodingAndDecoding tries to encode API Token and decode new one from hash same as source one
 func TestTokenV1EncodingAndDecoding(t *testing.T) {
-	customerID := uint64(8763)
-	originToken := NewTokenV1(customerID)
+	ID := uint64(3004272)
+    model := uint64(2)
+	originToken := NewTokenV1(ID, model)
 
 	// encode new hash by token struct
 	hash := originToken.String()
@@ -48,11 +34,17 @@ func TestTokenV1EncodingAndDecoding(t *testing.T) {
 	}
 
 	// compare all fields
-	if originToken.GetCustomerID() != uint64(customerID) {
-		t.Errorf("Token customerID does not match. Original: %d, encoded: %d", customerID, originToken.GetCustomerID())
+	if originToken.GetID() != uint64(ID) {
+		t.Errorf("Token ID does not match. Original: %d, encoded: %d", ID, originToken.GetID())
 	}
-	if originToken.GetCustomerID() != decodedToken.GetCustomerID() {
-		t.Errorf("Token customerID does not match. Encoded: %d, decoded: %d", originToken.GetCustomerID(), decodedToken.GetCustomerID())
+	if originToken.GetID() != decodedToken.GetID() {
+		t.Errorf("Token ID does not match. Encoded: %d, decoded: %d", originToken.GetID(), decodedToken.GetID())
+	}
+	if originToken.GetModel() != model {
+		t.Errorf("Token model does not match. Original: %d, encoded: %d", model, originToken.GetModel())
+	}
+	if originToken.GetModel() != decodedToken.GetModel() {
+		t.Errorf("Token model does not match. Encoded: %d, decoded: %d", originToken.GetModel(), decodedToken.GetModel())
 	}
 	if originToken.GetDate() != decodedToken.GetDate() {
 		t.Errorf("Token datetime does not match. Encoded: %s, decoded: %s", originToken.GetDate(), decodedToken.GetDate())
@@ -120,7 +112,10 @@ func TestGuestToken(t *testing.T) {
 	if !token.IsGuest() {
 		t.Error("Token should be guest")
 	}
-	if token.GetCustomerID() > 0 {
+	if token.GetID() > 0 {
 		t.Error("Token should have zero customer ID")
+	}
+	if token.GetModel() != 0 {
+		t.Error("Token should have zero model")
 	}
 }

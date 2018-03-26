@@ -38,7 +38,8 @@ var (
 
 // V1 is base struct for token data storing
 type V1 struct {
-	CustomerID int64
+	ID int64
+	Model      int64
 	IssuedAt   int64
 	Checksum   [32]byte
 }
@@ -68,9 +69,10 @@ func InitTokenV1(tripleKey, salt []byte) error {
 	return err
 }
 
-func newTokenV1(customerID int) *V1 {
+func newTokenV1(ID int, model int) *V1 {
 	token := &V1{
-		CustomerID: int64(customerID),
+		ID: int64(ID),
+		Model: int64(model),
 		IssuedAt:   time.Now().UnixNano(),
 	}
 	var err error
@@ -83,8 +85,8 @@ func newTokenV1(customerID int) *V1 {
 }
 
 // NewTokenV1 creates new valid token struct by provided client ID
-func NewTokenV1(customerID uint64) *V1 {
-	return newTokenV1(int(customerID))
+func NewTokenV1(ID uint64, model uint64) *V1 {
+	return newTokenV1(int(ID), int(model))
 }
 
 // NewGuestTokenV1 creates new token for guest user
@@ -94,7 +96,7 @@ func NewGuestTokenV1() *V1 {
 	// convert []byte ti uint64
 	number := binary.BigEndian.Uint64(rnd)
 	// make it negative and create new token
-	return newTokenV1(int(number) * -1)
+	return newTokenV1(int(number) * -1, 0)
 }
 
 // GetTokenV1ByHash returns new V1 decoded from hash
@@ -139,10 +141,18 @@ func (token *V1) GetCartHash() string {
 	return GetCartHashByTokenV1Hash(token.String())
 }
 
-// GetCustomerID getcustomerid
-func (token *V1) GetCustomerID() uint64 {
-	if token != nil && token.CustomerID > 0 {
-		return uint64(token.CustomerID)
+// GetID getID
+func (token *V1) GetID() uint64 {
+	if token != nil && token.ID > 0 {
+		return uint64(token.ID)
+	}
+	return uint64(0)
+}
+
+// GetModel
+func (token *V1) GetModel() uint64 {
+	if token != nil {
+		return uint64(token.Model)
 	}
 	return uint64(0)
 }
@@ -187,7 +197,11 @@ func (token *V1) calcCheckSumValue(hashSalt []byte) ([32]byte, error) {
 	salt := sha256.Sum256(buf.Bytes())
 	buf.Reset()
 	buf.Write(salt[:])
-	if err := binary.Write(&buf, binary.LittleEndian, token.CustomerID); err != nil {
+	if err := binary.Write(&buf, binary.LittleEndian, token.ID); err != nil {
+		var empty [32]byte
+		return empty, err
+	}
+	if err := binary.Write(&buf, binary.LittleEndian, token.Model); err != nil {
 		var empty [32]byte
 		return empty, err
 	}
@@ -223,7 +237,7 @@ func (token *V1) isValid(checksum [32]byte, err error) bool {
 
 // IsGuest returns true for guest users
 func (token *V1) IsGuest() bool {
-	return token.GetCustomerID() == 0
+	return token.GetID() == 0
 }
 
 // RandomCreateBytes generate random []byte by specify chars.

@@ -51,7 +51,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	cache.DisableTransportCache(ctx)
 
 	coreOpts := coreApiAdapter.UserUpdateV1Args{
-		ID:          uint64(apiToken.GetCustomerID()),
+		ID:          uint64(apiToken.GetID()),
 		Name:        opts.Name,
 		Short:       opts.Short,
 		Description: opts.Description,

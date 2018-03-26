@@ -10,7 +10,8 @@ import (
 type IToken interface {
 	IsValid() bool
 	IsGuest() bool
-	GetCustomerID() uint64
+	GetID() uint64
+	GetModel() uint64
 	GetDate() time.Time
 	String() string // return base64 string (1st byte - version, all other bytes - encoded data)
 	GetCartHash() string

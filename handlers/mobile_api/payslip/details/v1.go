@@ -158,7 +158,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	if data.Employee == nil {
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
-	userID := uint64(apiToken.GetCustomerID())
+	userID := uint64(apiToken.GetID())
 	if data.Employee.UserFK == nil || *data.Employee.UserFK != userID {
 		logger.Error(ctx, "Payslip user (%#v) does not equals current user (%d)", data.Employee.UserFK, userID)
 		return nil, v1Errors.PAYSLIP_NOT_FOUND

@@ -28,7 +28,7 @@ func (emp *Employee) ToArgs() map[string]interface{} {
 		"e_role":                 emp.Role,
 	}
 	if emp.UserFK != nil && *emp.UserFK > 0 {
-		res["fk_user"] = *emp.UserFK
+		res["e_fk_user"] = *emp.UserFK
 	}
 	return res
 }

@@ -64,7 +64,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	user := loginData.User
 
 	return &V1Res{
-		Token: token.NewTokenV1(user.ID).String(),
+		Token: token.NewTokenV1(user.ID, 1).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,

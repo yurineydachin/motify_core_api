@@ -85,12 +85,13 @@ func getHmCallbacks() gorpc.HandlersManagerCallbacks {
 			}
 
 			if apiToken != nil {
-				fields := make(map[string]string, 2)
+				fields := make(map[string]string, 3)
 
 				customerType := "guest"
 				if !apiToken.IsGuest() {
 					customerType = "customer"
-					fields["customer-id"] = fmt.Sprintf("%d", apiToken.GetCustomerID())
+					fields["id"] = fmt.Sprintf("%d", apiToken.GetID())
+					fields["model"] = fmt.Sprintf("%d", apiToken.GetModel())
 				}
 				fields["customer-type"] = customerType
 

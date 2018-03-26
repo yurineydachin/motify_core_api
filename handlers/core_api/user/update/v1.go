@@ -4,7 +4,6 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
 	"motify_core_api/models"
@@ -22,8 +21,7 @@ type V1Args struct {
 }
 
 type V1Res struct {
-	Token string `json:"token" description:"Authorized token"`
-	User  *User  `json:"user" description:"User if success"`
+	User *User `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -156,7 +154,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	return &V1Res{
-		Token: token.NewTokenV1(user.ID).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,

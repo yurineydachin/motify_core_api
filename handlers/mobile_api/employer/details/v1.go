@@ -70,7 +70,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	logger.Debug(ctx, "Employeer/List/V1")
 	cache.DisableTransportCache(ctx)
 
-	userID := uint64(apiToken.GetCustomerID())
+	userID := uint64(apiToken.GetID())
 	coreOpts := coreApiAdapter.EmployeeDetailsV1Args{
 		ID:      opts.ID,
 		AgentFK: opts.AgentFK,

@@ -130,7 +130,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	userID := uint64(0)
 	if opts.UserFK != nil && *opts.UserFK > 0 {
 		userID = *opts.UserFK
-		if employee.UserFK != nil && *employee.UserFK != *opts.UserFK {
+		if employee.UserFK == nil {
+			needUpdate = true
+		} else if employee.UserFK != nil && *employee.UserFK != *opts.UserFK {
 			needUpdate = true
 		}
 	} else if employee.UserFK != nil && *employee.UserFK > 0 {

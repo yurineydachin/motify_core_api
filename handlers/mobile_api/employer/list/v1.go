@@ -63,7 +63,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	cache.DisableTransportCache(ctx)
 
 	coreOpts := coreApiAdapter.AgentListV1Args{
-		UserID: uint64(apiToken.GetCustomerID()),
+		UserID: uint64(apiToken.GetID()),
 		Limit:  opts.Limit,
 		Offset: opts.Offset,
 	}

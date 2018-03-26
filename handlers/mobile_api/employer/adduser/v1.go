@@ -75,12 +75,12 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		logger.Error(ctx, "Error parse magic code: ", err)
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
 	}
-	if employeeToken.GetCustomerID() == 0 {
+	if employeeToken.GetID() == 0 || employeeToken.GetModel() != 2 {
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
 	}
 
-	employeeID := uint64(employeeToken.GetCustomerID())
-	userID := uint64(apiToken.GetCustomerID())
+	employeeID := uint64(employeeToken.GetID())
+	userID := uint64(apiToken.GetID())
 	coreOpts := coreApiAdapter.EmployeeUpdateV1Args{
 		ID:     &employeeID,
 		UserFK: &userID,
@@ -102,6 +102,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, err
 	}
 	if updateData.User == nil || updateData.Agent == nil || updateData.Employee == nil {
+		return nil, v1Errors.EMPLOYEE_UPDATE_FAILED
+	}
+	if updateData.Employee.UserFK == nil || *updateData.Employee.UserFK != userID {
 		return nil, v1Errors.EMPLOYEE_UPDATE_FAILED
 	}
 
