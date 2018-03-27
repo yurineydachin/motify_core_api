@@ -52,6 +52,16 @@ func TestGetIntegrationByID(t *testing.T) {
 	}
 }
 
+func TestGetIntegrationByHash(t *testing.T) {
+	service := getService(t)
+	integration, err := service.GetIntegrationByHash(context.Background(), "test 1234")
+	if assert.Nil(t, err) &&
+		assert.NotNil(t, integration) {
+		assert.Equal(t, integration.ID, testIntegrationID)
+		assert.Equal(t, integration.Hash, "test 1234")
+	}
+}
+
 func TestSetIntegration_Update(t *testing.T) {
 	service := getService(t)
 	integration := &models.Integration{

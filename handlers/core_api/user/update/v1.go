@@ -10,14 +10,15 @@ import (
 )
 
 type V1Args struct {
-	ID          uint64  `key:"id_user" description:"User ID"`
-	Name        *string `key:"name" description:"Name"`
-	Short       *string `key:"p_description" description:"Short description"`
-	Description *string `key:"description" description:"Long Description"`
-	Awatar      *string `key:"awatar" description:"Awatar url"`
-	Phone       *string `key:"phone" description:"Phone number"`
-	Email       *string `key:"email" description:"Email"`
-	Password    *string `key:"password" description:"Password"`
+	ID            uint64  `key:"id_user" description:"User ID"`
+	IntegrationFK *uint64 `key:"fk_integration" description:"Integration ID"`
+	Name          *string `key:"name" description:"Name"`
+	Short         *string `key:"p_description" description:"Short description"`
+	Description   *string `key:"description" description:"Long Description"`
+	Awatar        *string `key:"awatar" description:"Awatar url"`
+	Phone         *string `key:"phone" description:"Phone number"`
+	Email         *string `key:"email" description:"Email"`
+	Password      *string `key:"password" description:"Password"`
 }
 
 type V1Res struct {
@@ -116,7 +117,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	needUpdate := false
-	if opts.IntegrationFK != nil && (user.IntegrationFK == nil || *opts.IntegrationFK != user.IntegrationFK) {
+	if opts.IntegrationFK != nil && (user.IntegrationFK == nil || *opts.IntegrationFK != *user.IntegrationFK) {
 		needUpdate = true
 		user.IntegrationFK = opts.IntegrationFK
 	}

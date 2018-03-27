@@ -10,7 +10,7 @@ import (
 )
 
 type V1Args struct {
-	IntegrationFK uint64  `key:"fk_integration"`
+	IntegrationFK uint64  `key:"fk_integration" description:"Integration ID"`
 	Name          *string `key:"name" description:"Name"`
 	CompanyID     string  `key:"company_id" description:"Company number"`
 	Description   *string `key:"description" description:"Long Description"`

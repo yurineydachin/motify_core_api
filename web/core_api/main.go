@@ -20,6 +20,7 @@ import (
 	"motify_core_api/resources/database"
 
 	"motify_core_api/srv/agent"
+	"motify_core_api/srv/integration"
 	"motify_core_api/srv/payslip"
 	"motify_core_api/srv/user"
 
@@ -30,6 +31,8 @@ import (
 	"motify_core_api/handlers/core_api/employee/details"
 	"motify_core_api/handlers/core_api/employee/invite"
 	"motify_core_api/handlers/core_api/employee/update"
+	"motify_core_api/handlers/core_api/integration/check"
+	"motify_core_api/handlers/core_api/integration/create"
 	"motify_core_api/handlers/core_api/payslip/create"
 	"motify_core_api/handlers/core_api/payslip/details"
 	"motify_core_api/handlers/core_api/payslip/list"
@@ -110,6 +113,7 @@ func main() {
 	agentService := agent_service.NewAgentService(db)
 	userService := user_service.NewUserService(db)
 	payslipService := payslip_service.NewPayslipService(db)
+	integrationService := integration_service.NewIntegrationService(db)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -146,6 +150,8 @@ func main() {
 		user_update.New(userService),
 		setting_create.New(agentService, userService),
 		setting_update.New(agentService, userService),
+		integration_create.New(integrationService),
+		integration_check.New(integrationService),
 	)
 
 	err = srvc.Run()

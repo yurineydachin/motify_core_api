@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `motify_agents` (
   `a_site` varchar(255) NOT NULL,
   `a_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `a_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_agents_a_updated_at` BEFORE UPDATE ON `motify_agents`
  FOR EACH ROW BEGIN SET NEW.A_UPDATED_AT = CURRENT_TIMESTAMP; END
@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `motify_agent_employees` (
   `e_gross_base_salary` float NOT NULL,
   `e_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `e_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_agent_employees_e_updated_at` BEFORE UPDATE ON `motify_agent_employees`
  FOR EACH ROW BEGIN
@@ -66,7 +66,7 @@ CREATE TABLE IF NOT EXISTS `motify_integrations` (
   `i_hash` varchar(32) NOT NULL,
   `i_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `i_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_integrations_i_updated_at` BEFORE UPDATE ON `motify_integrations`
  FOR EACH ROW BEGIN SET NEW.I_UPDATED_AT = CURRENT_TIMESTAMP; END
@@ -82,7 +82,7 @@ CREATE TABLE IF NOT EXISTS `motify_payslip` (
   `p_data` text NOT NULL,
   `p_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `p_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_payslip_p_updated_at` BEFORE UPDATE ON `motify_payslip`
  FOR EACH ROW BEGIN SET NEW.P_UPDATED_AT = CURRENT_TIMESTAMP; END
@@ -100,7 +100,7 @@ CREATE TABLE IF NOT EXISTS `motify_users` (
   `u_email` varchar(255) NOT NULL,
   `u_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `u_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_users_u_updated_at` BEFORE UPDATE ON `motify_users`
  FOR EACH ROW BEGIN SET NEW.U_UPDATED_AT = CURRENT_TIMESTAMP; END
@@ -116,7 +116,7 @@ CREATE TABLE IF NOT EXISTS `motify_user_access` (
   `ua_password` varchar(255) NOT NULL,
   `ua_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `ua_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 DELIMITER //
 CREATE TRIGGER `motify_user_access_ua_updated_at` BEFORE UPDATE ON `motify_user_access`
  FOR EACH ROW BEGIN SET NEW.UA_UPDATED_AT = CURRENT_TIMESTAMP; END
@@ -134,7 +134,7 @@ ALTER TABLE `motify_agent_settings`
  ADD PRIMARY KEY (`id_setting`), ADD UNIQUE KEY `s_uniq_fk_agent_fk_user` (`s_fk_agent`,`s_fk_user`), ADD KEY `s_fk_user` (`s_fk_user`), ADD KEY `s_fk_agent` (`s_fk_agent`), ADD KEY `s_fk_agent_processed` (`s_fk_agent_processed`);
 
 ALTER TABLE `motify_integrations`
- ADD PRIMARY KEY (`id_integration`);
+ ADD PRIMARY KEY (`id_integration`), ADD UNIQUE KEY `i_hash` (`i_hash`);
 
 ALTER TABLE `motify_payslip`
  ADD PRIMARY KEY (`id_payslip`), ADD KEY `p_fk_employee` (`p_fk_employee`);
@@ -147,19 +147,19 @@ ALTER TABLE `motify_user_access`
 
 
 ALTER TABLE `motify_agents`
-MODIFY `id_agent` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+MODIFY `id_agent` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_agent_employees`
-MODIFY `id_employee` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+MODIFY `id_employee` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_agent_settings`
 MODIFY `id_setting` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_integrations`
-MODIFY `id_integration` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `id_integration` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_payslip`
-MODIFY `id_payslip` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
+MODIFY `id_payslip` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_users`
-MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT;
 ALTER TABLE `motify_user_access`
-MODIFY `id_user_access` int(11) NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `id_user_access` int(11) NOT NULL AUTO_INCREMENT;
 
 ALTER TABLE `motify_agents`
 ADD CONSTRAINT `motify_agents_ibfk_1` FOREIGN KEY (`a_fk_integration`) REFERENCES `motify_integrations` (`id_integration`) ON UPDATE CASCADE;

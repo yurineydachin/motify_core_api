@@ -27,6 +27,15 @@ func (service *IntegrationService) GetIntegrationByID(ctx context.Context, model
 	return &res, err
 }
 
+func (service *IntegrationService) GetIntegrationByHash(ctx context.Context, hash string) (*models.Integration, error) {
+	res := models.Integration{}
+	err := service.db.Get(&res, `
+        SELECT id_integration, i_hash, i_updated_at, i_created_at
+        FROM motify_integrations WHERE i_hash = ?
+    `, hash)
+	return &res, err
+}
+
 func (service *IntegrationService) SetIntegration(ctx context.Context, model *models.Integration) (uint64, error) {
 	if model.ID > 0 {
 		return service.updateIntegration(ctx, model)
