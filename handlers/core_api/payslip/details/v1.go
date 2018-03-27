@@ -76,41 +76,25 @@ type Section struct {
 	Definition string       `json:"definition,omitempty"`
 	Amount     *float64     `json:"amount,omitempty"`
 	Operations *[]Operation `json:"rows,omitempty"`
-	Person     *Person      `json:"person,omitempty"`
-	Company    *Company     `json:"company,omitempty"`
 }
 
 type Operation struct {
-	Title      string       `json:"title,omitempty"`
-	Term       string       `json:"term,omitempty"`
-	Definition string       `json:"definition,omitempty"`
-	Type       string       `json:"type,omitempty"`
-	Footnote   string       `json:"footnote,omitempty"`
-	Amount     *float64     `json:"amount,omitempty"`
-	Float      *float64     `json:"float,omitempty"`
-	Int        *int64       `json:"int,omitempty"`
-	Text       string       `json:"text,omitempty"`
-	Children   *[]Operation `json:"rows,omitempty"`
-}
-
-type Person struct {
-	Name        string       `json:"name"`
-	Avatar      string       `json:"avatar_image"`
-	Role        string       `json:"job_title"`
-	Description string       `json:"description"`
-	Details     *[]Operation `json:"details,omitempty"`
-	Contacts    []Contact    `json:"contacts"`
+	Title       string       `json:"title,omitempty"`
+	Term        string       `json:"term,omitempty"`
+	Type        string       `json:"type,omitempty"`
+	Description string       `json:"description,omitempty"`
 	Footnote    string       `json:"footnote,omitempty"`
-}
+	Amount      *float64     `json:"amount,omitempty"`
+	Float       *float64     `json:"float,omitempty"`
+	Int         *int64       `json:"int,omitempty"`
+	Text        string       `json:"text,omitempty"`
+	Children    *[]Operation `json:"rows,omitempty"`
 
-type Company struct {
-	Title       string    `json:"title"`
-	Name        string    `json:"official_name"`
-	Logo        string    `json:"logo_image,omitempty"`
-	BGImage     string    `json:"bg_image,omitempty"`
-	Description string    `json:"description,omitempty"`
-	Contacts    []Contact `json:"contacts"`
-	Footnote    string    `json:"footnote,omitempty"`
+	Name     string     `json:"name,omitempty"`
+	Role     string     `json:"job_title,omitempty"`
+	Avatar   string     `json:"avatar_image,omitempty"`
+	BGImage  string     `json:"bg_image,omitempty"`
+	Contacts *[]Contact `json:"contacts,omitempty"`
 }
 
 type Contact struct {

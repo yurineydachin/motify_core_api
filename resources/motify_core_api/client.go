@@ -112,6 +112,16 @@ func (api *MotifyCoreAPIGoRPC) EmployeeDetailsV1(ctx context.Context, options Em
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) EmployeeInviteV1(ctx context.Context, options EmployeeInviteV1Args) (*EmployeeInviteV1Res, error) {
+	var result *EmployeeInviteV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/employee/invite/v1/", options, &entry, _EmployeeInviteV1ErrorsMapping)
+	if result, ok := entry.Body.(**EmployeeInviteV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) EmployeeUpdateV1(ctx context.Context, options EmployeeUpdateV1Args) (*EmployeeUpdateV1Res, error) {
 	var result *EmployeeUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -486,6 +496,48 @@ var _EmployeeDetailsV1ErrorsMapping = map[string]int{
 }
 
 // easyjson:json
+type EmployeeInviteV1Args struct {
+	ID    uint64  `json:"id_employee"`
+	Email *string `json:"email,omitempty"`
+}
+
+// easyjson:json
+type EmployeeInviteV1Res struct {
+	Result   string                  `json:"result"`
+	Code     string                  `json:"magic_code"`
+	Employee *EmployeeInviteEmployee `json:"employee"`
+}
+
+type EmployeeInviteEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
+}
+
+type EmployeeInviteV1Errors int
+
+const (
+	EmployeeInviteV1Errors_MISSED_REQUIRED_FIELDS = iota
+	EmployeeInviteV1Errors_AGENT_NOT_FOUND
+	EmployeeInviteV1Errors_EMPLOYEE_NOT_FOUND
+)
+
+var _EmployeeInviteV1ErrorsMapping = map[string]int{
+	"MISSED_REQUIRED_FIELDS": EmployeeInviteV1Errors_MISSED_REQUIRED_FIELDS,
+	"AGENT_NOT_FOUND":        EmployeeInviteV1Errors_AGENT_NOT_FOUND,
+	"EMPLOYEE_NOT_FOUND":     EmployeeInviteV1Errors_EMPLOYEE_NOT_FOUND,
+}
+
+// easyjson:json
 type EmployeeUpdateV1Args struct {
 	ID                 *uint64  `json:"id_employee,omitempty"`
 	AgentFK            *uint64  `json:"fk_agent,omitempty"`
@@ -697,47 +749,30 @@ type PayslipDetailsSection struct {
 	Definition string                     `json:"definition,omitempty"`
 	Amount     *float64                   `json:"amount,omitempty"`
 	Operations *[]PayslipDetailsOperation `json:"rows,omitempty"`
-	Person     *PayslipDetailsPerson      `json:"person,omitempty"`
-	Company    *PayslipDetailsCompany     `json:"company,omitempty"`
 }
 
 type PayslipDetailsOperation struct {
-	Title      string                     `json:"title,omitempty"`
-	Term       string                     `json:"term,omitempty"`
-	Definition string                     `json:"definition,omitempty"`
-	Type       string                     `json:"type,omitempty"`
-	Footnote   string                     `json:"footnote,omitempty"`
-	Amount     *float64                   `json:"amount,omitempty"`
-	Float      *float64                   `json:"float,omitempty"`
-	Int        *int64                     `json:"int,omitempty"`
-	Text       string                     `json:"text,omitempty"`
-	Children   *[]PayslipDetailsOperation `json:"rows,omitempty"`
-}
-
-type PayslipDetailsPerson struct {
-	Name        string                     `json:"name"`
-	Avatar      string                     `json:"avatar_image"`
-	Role        string                     `json:"job_title"`
-	Description string                     `json:"description"`
-	Details     *[]PayslipDetailsOperation `json:"details,omitempty"`
-	Contacts    []PayslipDetailsContact    `json:"contacts"`
+	Title       string                     `json:"title,omitempty"`
+	Term        string                     `json:"term,omitempty"`
+	Type        string                     `json:"type,omitempty"`
+	Description string                     `json:"description,omitempty"`
 	Footnote    string                     `json:"footnote,omitempty"`
+	Amount      *float64                   `json:"amount,omitempty"`
+	Float       *float64                   `json:"float,omitempty"`
+	Int         *int64                     `json:"int,omitempty"`
+	Text        string                     `json:"text,omitempty"`
+	Children    *[]PayslipDetailsOperation `json:"rows,omitempty"`
+	Name        string                     `json:"name,omitempty"`
+	Role        string                     `json:"job_title,omitempty"`
+	Avatar      string                     `json:"avatar_image,omitempty"`
+	BGImage     string                     `json:"bg_image,omitempty"`
+	Contacts    *[]PayslipDetailsContact   `json:"contacts,omitempty"`
 }
 
 type PayslipDetailsContact struct {
 	Title string `json:"title"`
 	Type  string `json:"type"`
 	Text  string `json:"text"`
-}
-
-type PayslipDetailsCompany struct {
-	Title       string                  `json:"title"`
-	Name        string                  `json:"official_name"`
-	Logo        string                  `json:"logo_image,omitempty"`
-	BGImage     string                  `json:"bg_image,omitempty"`
-	Description string                  `json:"description,omitempty"`
-	Contacts    []PayslipDetailsContact `json:"contacts"`
-	Footnote    string                  `json:"footnote,omitempty"`
 }
 
 type PayslipDetailsV1Errors int
@@ -979,8 +1014,7 @@ type UserCreateV1Args struct {
 
 // easyjson:json
 type UserCreateV1Res struct {
-	Token string          `json:"token"`
-	User  *UserCreateUser `json:"user"`
+	User *UserCreateUser `json:"user"`
 }
 
 type UserCreateUser struct {
@@ -1019,8 +1053,7 @@ type UserLoginV1Args struct {
 
 // easyjson:json
 type UserLoginV1Res struct {
-	Token string         `json:"token"`
-	User  *UserLoginUser `json:"user"`
+	User *UserLoginUser `json:"user"`
 }
 
 type UserLoginUser struct {
@@ -1061,8 +1094,7 @@ type UserUpdateV1Args struct {
 
 // easyjson:json
 type UserUpdateV1Res struct {
-	Token string          `json:"token"`
-	User  *UserUpdateUser `json:"user"`
+	User *UserUpdateUser `json:"user"`
 }
 
 type UserUpdateUser struct {
