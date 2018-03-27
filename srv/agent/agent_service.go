@@ -30,7 +30,7 @@ func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site, a.a_updated_at, a.a_created_at,
+            a.id_agent, a.a_fk_integration, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site, a.a_updated_at, a.a_created_at,
             s.s_role, s.s_notifications_enabled, s.s_is_main_agent
         FROM motify_agents a
         INNER JOIN motify_agent_settings s ON s.s_fk_agent = a.id_agent
@@ -50,7 +50,7 @@ func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site,
+            a.id_agent, a.a_fk_integration, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site,
             e.e_fk_user, e.e_code, e.e_hire_date, e.e_number_of_dependants, e.e_gross_base_salary, e.e_role
         FROM motify_agents a
         INNER JOIN motify_agent_employees e ON e.e_fk_agent = a.id_agent
@@ -65,7 +65,7 @@ func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID
 func (service *AgentService) GetAgentByID(ctx context.Context, modelID uint64) (*models.Agent, error) {
 	res := models.Agent{}
 	err := service.db.Get(&res, `
-        SELECT id_agent, a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at
+        SELECT id_agent, a_fk_integration, a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at
         FROM motify_agents WHERE id_agent = ?
     `, modelID)
 	return &res, err
@@ -80,8 +80,8 @@ func (service *AgentService) SetAgent(ctx context.Context, model *models.Agent) 
 
 func (service *AgentService) createAgent(ctx context.Context, model *models.Agent) (uint64, error) {
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_agents (a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site)
-            VALUES (:a_name, :a_company_id, :a_description, :a_logo, :a_bg_image, :a_address, :a_phone, :a_email, :a_site)
+            INSERT INTO motify_agents (a_name, a_fk_integration, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site)
+            VALUES (:a_name, :a_fk_integration, :a_company_id, :a_description, :a_logo, :a_bg_image, :a_address, :a_phone, :a_email, :a_site)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -94,6 +94,7 @@ func (service *AgentService) createAgent(ctx context.Context, model *models.Agen
 func (service *AgentService) updateAgent(ctx context.Context, model *models.Agent) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_agents SET
+                a_fk_integration = :a_fk_integration,
                 a_name = :a_name,
                 a_company_id = :a_company_id,
                 a_description = :a_description,

@@ -10,15 +10,16 @@ import (
 )
 
 type V1Args struct {
-	Name        *string `key:"name" description:"Name"`
-	CompanyID   string  `key:"company_id" description:"Company number"`
-	Description *string `key:"description" description:"Long Description"`
-	Logo        *string `key:"logo" description:"Logo url"`
-	Background  *string `key:"bg_image" description:"Background image url"`
-	Phone       *string `key:"phone" description:"Phone number"`
-	Email       *string `key:"email" description:"Email"`
-	Address     *string `key:"address" description:"Address"`
-	Site        *string `key:"site" description:"Site"`
+	IntegrationFK uint64  `key:"fk_integration"`
+	Name          *string `key:"name" description:"Name"`
+	CompanyID     string  `key:"company_id" description:"Company number"`
+	Description   *string `key:"description" description:"Long Description"`
+	Logo          *string `key:"logo" description:"Logo url"`
+	Background    *string `key:"bg_image" description:"Background image url"`
+	Phone         *string `key:"phone" description:"Phone number"`
+	Email         *string `key:"email" description:"Email"`
+	Address       *string `key:"address" description:"Address"`
+	Site          *string `key:"site" description:"Site"`
 }
 
 type V1Res struct {
@@ -26,17 +27,18 @@ type V1Res struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -55,7 +57,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	cache.DisableTransportCache(ctx)
 
 	newAgent := &models.Agent{
-		CompanyID: opts.CompanyID,
+		IntegrationFK: opts.IntegrationFK,
+		CompanyID:     opts.CompanyID,
 	}
 	if opts.Name != nil && *opts.Name != "" {
 		newAgent.Name = *opts.Name
@@ -101,17 +104,18 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 
 	return &V1Res{
 		Agent: &Agent{
-			ID:          agent.ID,
-			Name:        agent.Name,
-			CompanyID:   agent.CompanyID,
-			Description: agent.Description,
-			Logo:        agent.Logo,
-			Phone:       agent.Phone,
-			Email:       agent.Email,
-			Address:     agent.Address,
-			Site:        agent.Site,
-			UpdatedAt:   agent.UpdatedAt,
-			CreatedAt:   agent.CreatedAt,
+			ID:            agent.ID,
+			IntegrationFK: agent.IntegrationFK,
+			Name:          agent.Name,
+			CompanyID:     agent.CompanyID,
+			Description:   agent.Description,
+			Logo:          agent.Logo,
+			Phone:         agent.Phone,
+			Email:         agent.Email,
+			Address:       agent.Address,
+			Site:          agent.Site,
+			UpdatedAt:     agent.UpdatedAt,
+			CreatedAt:     agent.CreatedAt,
 		},
 	}, nil
 }

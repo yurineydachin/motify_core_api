@@ -22,7 +22,7 @@ func NewUserService(db *database.DbAdapter) *UserService {
 func (service *UserService) GetUserByID(ctx context.Context, modelID uint64) (*models.User, error) {
 	res := models.User{}
 	err := service.db.Get(&res, `
-        SELECT id_user, u_name, u_short, u_description, u_awatar, u_phone, u_email, u_updated_at, u_created_at
+        SELECT id_user, u_fk_integration, u_name, u_short, u_description, u_awatar, u_phone, u_email, u_updated_at, u_created_at
         FROM motify_users WHERE id_user = ?
     `, modelID)
 	return &res, err
@@ -36,10 +36,17 @@ func (service *UserService) SetUser(ctx context.Context, model *models.User) (ui
 }
 
 func (service *UserService) createUser(ctx context.Context, model *models.User) (uint64, error) {
-	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_users (u_name, u_short, u_description, u_awatar, u_phone, u_email)
-            VALUES (:u_name, :u_short, :u_description, :u_awatar, :u_phone, :u_email)
-        `, model.ToArgs())
+	args := model.ToArgs()
+	fkField := ""
+	fkValue := ""
+	if _, exists := args["u_fk_integration"]; exists {
+		fkField = "u_fk_integration, "
+		fkValue = ":u_fk_integration, "
+	}
+	insertRes, err := service.db.Exec(fmt.Sprintf(`
+            INSERT INTO motify_users (u_name, %s u_short, u_description, u_awatar, u_phone, u_email)
+            VALUES (:u_name, %s :u_short, :u_description, :u_awatar, :u_phone, :u_email)
+        `, fkField, fkValue), model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
 	}
@@ -49,16 +56,22 @@ func (service *UserService) createUser(ctx context.Context, model *models.User) 
 }
 
 func (service *UserService) updateUser(ctx context.Context, model *models.User) (uint64, error) {
-	updateRes, err := service.db.Exec(`
+	args := model.ToArgs()
+	fkField := ""
+	if _, exists := args["e_fk_user"]; exists {
+		fkField = "e_fk_user = :e_fk_user,"
+	}
+	updateRes, err := service.db.Exec(fmt.Sprintf(`
             UPDATE motify_users SET
                 u_name = :u_name,
+                %s
                 u_short = :u_short,
                 u_description = :u_description,
                 u_awatar = :u_awatar,
                 u_phone = :u_phone,
                 u_email = :u_email
             WHERE id_user = :id_user
-        `, model.ToArgs())
+        `, fkField), args)
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
 	}

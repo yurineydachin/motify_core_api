@@ -10,13 +10,14 @@ import (
 )
 
 type V1Args struct {
-	Name        *string `key:"name" description:"Name"`
-	Short       *string `key:"p_description" description:"Short description"`
-	Description *string `key:"description" description:"Long Description"`
-	Awatar      *string `key:"awatar" description:"Awatar url"`
-	Phone       *string `key:"phone" description:"Phone number"`
-	Email       *string `key:"email" description:"Email"`
-	Password    string  `key:"password" description:"Password"`
+	IntegrationFK *uint64 `key:"fk_integration" description:"Integration ID"`
+	Name          *string `key:"name" description:"Name"`
+	Short         *string `key:"p_description" description:"Short description"`
+	Description   *string `key:"description" description:"Long Description"`
+	Awatar        *string `key:"awatar" description:"Awatar url"`
+	Phone         *string `key:"phone" description:"Phone number"`
+	Email         *string `key:"email" description:"Email"`
+	Password      string  `key:"password" description:"Password"`
 }
 
 type V1Res struct {
@@ -24,15 +25,16 @@ type V1Res struct {
 }
 
 type User struct {
-	ID          uint64 `json:"id_user"`
-	Name        string `json:"name"`
-	Short       string `json:"p_description"`
-	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Awatar        string  `json:"awatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -52,7 +54,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	logger.Debug(ctx, "User/Create/V1")
 	cache.DisableTransportCache(ctx)
 
-	newUser := &models.User{}
+	newUser := &models.User{
+		IntegrationFK: opts.IntegrationFK,
+	}
 	if opts.Email != nil && *opts.Email != "" {
 		isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Email)
 		if err != nil || isBusy {
@@ -130,15 +134,16 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 
 	return &V1Res{
 		User: &User{
-			ID:          user.ID,
-			Name:        user.Name,
-			Short:       user.Short,
-			Description: user.Description,
-			Awatar:      user.Awatar,
-			Phone:       user.Phone,
-			Email:       user.Email,
-			UpdatedAt:   user.UpdatedAt,
-			CreatedAt:   user.CreatedAt,
+			ID:            user.ID,
+			IntegrationFK: user.IntegrationFK,
+			Name:          user.Name,
+			Short:         user.Short,
+			Description:   user.Description,
+			Awatar:        user.Awatar,
+			Phone:         user.Phone,
+			Email:         user.Email,
+			UpdatedAt:     user.UpdatedAt,
+			CreatedAt:     user.CreatedAt,
 		},
 	}, nil
 }

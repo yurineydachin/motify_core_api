@@ -17,15 +17,16 @@ type V1Res struct {
 }
 
 type User struct {
-	ID          uint64 `json:"id_user"`
-	Name        string `json:"name"`
-	Short       string `json:"p_description"`
-	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Awatar        string  `json:"awatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -63,15 +64,16 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 	return &V1Res{
 		User: &User{
-			ID:          user.ID,
-			Name:        user.Name,
-			Short:       user.Short,
-			Description: user.Description,
-			Awatar:      user.Awatar,
-			Phone:       user.Phone,
-			Email:       user.Email,
-			UpdatedAt:   user.UpdatedAt,
-			CreatedAt:   user.CreatedAt,
+			ID:            user.ID,
+			IntegrationFK: user.IntegrationFK,
+			Name:          user.Name,
+			Short:         user.Short,
+			Description:   user.Description,
+			Awatar:        user.Awatar,
+			Phone:         user.Phone,
+			Email:         user.Email,
+			UpdatedAt:     user.UpdatedAt,
+			CreatedAt:     user.CreatedAt,
 		},
 	}, nil
 }

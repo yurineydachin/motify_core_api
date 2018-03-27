@@ -34,15 +34,16 @@ func TestCreateDBAdapterAndService(t *testing.T) {
 func TestSetAgent_Create(t *testing.T) {
 	service := getService(t)
 	agent := &models.Agent{
-		Name:        "agent test",
-		CompanyID:   "company id",
-		Description: "desc test",
-		Logo:        "logo test",
-		Background:  "bg_image",
-		Phone:       "phone test",
-		Email:       "email_test@text.com",
-		Address:     "address test",
-		Site:        "site test",
+		IntegrationFK: 1,
+		Name:          "agent test",
+		CompanyID:     "company id",
+		Description:   "desc test",
+		Logo:          "logo test",
+		Background:    "bg_image",
+		Phone:         "phone test",
+		Email:         "email_test@text.com",
+		Address:       "address test",
+		Site:          "site test",
 	}
 	var err error
 	testAgentID, err = service.SetAgent(context.Background(), agent)
@@ -65,13 +66,14 @@ func TestGetAgentByID(t *testing.T) {
 func TestSetAgent_Update(t *testing.T) {
 	service := getService(t)
 	agent := &models.Agent{
-		ID:          testAgentID,
-		Name:        "agent " + testAgentIDStr,
-		CompanyID:   "company id " + testAgentIDStr,
-		Description: "desc " + testAgentIDStr,
-		Logo:        "logo " + testAgentIDStr,
-		Phone:       "phone " + testAgentIDStr,
-		Email:       "email_" + testAgentIDStr + "@text.com",
+		ID:            testAgentID,
+		IntegrationFK: 1,
+		Name:          "agent " + testAgentIDStr,
+		CompanyID:     "company id " + testAgentIDStr,
+		Description:   "desc " + testAgentIDStr,
+		Logo:          "logo " + testAgentIDStr,
+		Phone:         "phone " + testAgentIDStr,
+		Email:         "email_" + testAgentIDStr + "@text.com",
 	}
 	agentID, err := service.SetAgent(context.Background(), agent)
 	if assert.Nil(t, err) {
