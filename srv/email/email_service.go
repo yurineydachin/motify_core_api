@@ -25,8 +25,6 @@ func NewService(host string, port uint, userEmail, userPassword string) *Service
 }
 
 func (s *Service) SendEmployeeInvite(ctx context.Context, to string, from string, qrCode []byte) error {
-	imgBase64Str := base64.StdEncoding.EncodeToString(qrCode)
-
 	m := gomail.NewMessage()
 	m.SetHeader("From", from)
 	m.SetHeader("To", to)
@@ -36,7 +34,7 @@ func (s *Service) SendEmployeeInvite(ctx context.Context, to string, from string
     <h1>Hola!</h1>
     <p>Thank you for sugning up for Motify. We're really happy to have you!</p>
     <p>Click the link below to get your agent account set up.</p>
-    <img src="data:image/png;base64,`+imgBase64Str+`" /> 
+    <img src="data:image/png;base64,`+base64.StdEncoding.EncodeToString(qrCode)+`" /> 
     </body></html>
     `)
 
@@ -48,8 +46,7 @@ func (s *Service) SendEmployeeInvite(ctx context.Context, to string, from string
 		return nil
 	}
 
-	d := gomail.NewDialer(s.host, int(s.port), s.userEmail, s.userPassword)
-	send, err := d.Dial()
+	send, err := gomail.NewDialer(s.host, int(s.port), s.userEmail, s.userPassword).Dial()
 	if err != nil {
 		return fmt.Errorf("Dial: %s", err.Error())
 	}

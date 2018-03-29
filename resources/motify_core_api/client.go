@@ -132,6 +132,26 @@ func (api *MotifyCoreAPIGoRPC) EmployeeUpdateV1(ctx context.Context, options Emp
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) IntegrationCheckV1(ctx context.Context, options IntegrationCheckV1Args) (*IntegrationCheckV1Res, error) {
+	var result *IntegrationCheckV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/integration/check/v1/", options, &entry, _IntegrationCheckV1ErrorsMapping)
+	if result, ok := entry.Body.(**IntegrationCheckV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
+func (api *MotifyCoreAPIGoRPC) IntegrationCreateV1(ctx context.Context, options IntegrationCreateV1Args) (*IntegrationCreateV1Res, error) {
+	var result *IntegrationCreateV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/integration/create/v1/", options, &entry, _IntegrationCreateV1ErrorsMapping)
+	if result, ok := entry.Body.(**IntegrationCreateV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) PayslipCreateV1(ctx context.Context, options PayslipCreateV1Args) (*PayslipCreateV1Res, error) {
 	var result *PayslipCreateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -214,15 +234,16 @@ func (api *MotifyCoreAPIGoRPC) UserUpdateV1(ctx context.Context, options UserUpd
 
 // easyjson:json
 type AgentCreateV1Args struct {
-	Name        *string `json:"name,omitempty"`
-	CompanyID   string  `json:"company_id"`
-	Description *string `json:"description,omitempty"`
-	Logo        *string `json:"logo,omitempty"`
-	Background  *string `json:"bg_image,omitempty"`
-	Phone       *string `json:"phone,omitempty"`
-	Email       *string `json:"email,omitempty"`
-	Address     *string `json:"address,omitempty"`
-	Site        *string `json:"site,omitempty"`
+	IntegrationFK uint64  `json:"fk_integration"`
+	Name          *string `json:"name,omitempty"`
+	CompanyID     string  `json:"company_id"`
+	Description   *string `json:"description,omitempty"`
+	Logo          *string `json:"logo,omitempty"`
+	Background    *string `json:"bg_image,omitempty"`
+	Phone         *string `json:"phone,omitempty"`
+	Email         *string `json:"email,omitempty"`
+	Address       *string `json:"address,omitempty"`
+	Site          *string `json:"site,omitempty"`
 }
 
 // easyjson:json
@@ -231,17 +252,18 @@ type AgentCreateV1Res struct {
 }
 
 type AgentCreateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type AgentCreateV1Errors int
@@ -274,17 +296,18 @@ type AgentListListItem struct {
 }
 
 type AgentListAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type AgentListEmployee struct {
@@ -304,16 +327,17 @@ type AgentListEmployee struct {
 
 // easyjson:json
 type AgentUpdateV1Args struct {
-	ID          uint64  `json:"id_agent"`
-	Name        *string `json:"name,omitempty"`
-	CompanyID   *string `json:"company_id,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Logo        *string `json:"logo,omitempty"`
-	Background  *string `json:"bg_image,omitempty"`
-	Phone       *string `json:"phone,omitempty"`
-	Email       *string `json:"email,omitempty"`
-	Address     *string `json:"address,omitempty"`
-	Site        *string `json:"site,omitempty"`
+	ID            uint64  `json:"id_agent"`
+	IntegrationFK uint64  `json:"fk_integration"`
+	Name          *string `json:"name,omitempty"`
+	CompanyID     *string `json:"company_id,omitempty"`
+	Description   *string `json:"description,omitempty"`
+	Logo          *string `json:"logo,omitempty"`
+	Background    *string `json:"bg_image,omitempty"`
+	Phone         *string `json:"phone,omitempty"`
+	Email         *string `json:"email,omitempty"`
+	Address       *string `json:"address,omitempty"`
+	Site          *string `json:"site,omitempty"`
 }
 
 // easyjson:json
@@ -322,17 +346,18 @@ type AgentUpdateV1Res struct {
 }
 
 type AgentUpdateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type AgentUpdateV1Errors int
@@ -619,6 +644,64 @@ var _EmployeeUpdateV1ErrorsMapping = map[string]int{
 	"UPDATE_FAILED":           EmployeeUpdateV1Errors_UPDATE_FAILED,
 	"EMPLOYEE_NOT_UPDATED":    EmployeeUpdateV1Errors_EMPLOYEE_NOT_UPDATED,
 	"EMPLOYEE_ALREADY_EXISTS": EmployeeUpdateV1Errors_EMPLOYEE_ALREADY_EXISTS,
+}
+
+// easyjson:json
+type IntegrationCheckV1Args struct {
+	Hash string `json:"hash"`
+}
+
+// easyjson:json
+type IntegrationCheckV1Res struct {
+	Integration *IntegrationCheckIntegration `json:"integration"`
+}
+
+type IntegrationCheckIntegration struct {
+	ID        uint64 `json:"id_integration"`
+	Hash      string `json:"hash"`
+	UpdatedAt string `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+}
+
+type IntegrationCheckV1Errors int
+
+const (
+	IntegrationCheckV1Errors_INTEGRATION_NOT_FOUND = iota
+)
+
+var _IntegrationCheckV1ErrorsMapping = map[string]int{
+	"INTEGRATION_NOT_FOUND": IntegrationCheckV1Errors_INTEGRATION_NOT_FOUND,
+}
+
+// easyjson:json
+type IntegrationCreateV1Args struct {
+	Hash string `json:"hash"`
+}
+
+// easyjson:json
+type IntegrationCreateV1Res struct {
+	Integration *IntegrationCreateIntegration `json:"integration"`
+}
+
+type IntegrationCreateIntegration struct {
+	ID        uint64 `json:"id_integration"`
+	Hash      string `json:"hash"`
+	UpdatedAt string `json:"updated_at"`
+	CreatedAt string `json:"created_at"`
+}
+
+type IntegrationCreateV1Errors int
+
+const (
+	IntegrationCreateV1Errors_CREATE_FAILED = iota
+	IntegrationCreateV1Errors_DUBLICATE_HASH
+	IntegrationCreateV1Errors_INTEGRATION_NOT_CREATED
+)
+
+var _IntegrationCreateV1ErrorsMapping = map[string]int{
+	"CREATE_FAILED":           IntegrationCreateV1Errors_CREATE_FAILED,
+	"DUBLICATE_HASH":          IntegrationCreateV1Errors_DUBLICATE_HASH,
+	"INTEGRATION_NOT_CREATED": IntegrationCreateV1Errors_INTEGRATION_NOT_CREATED,
 }
 
 // easyjson:json
@@ -1003,13 +1086,14 @@ var _SettingUpdateV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type UserCreateV1Args struct {
-	Name        *string `json:"name,omitempty"`
-	Short       *string `json:"p_description,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Awatar      *string `json:"awatar,omitempty"`
-	Phone       *string `json:"phone,omitempty"`
-	Email       *string `json:"email,omitempty"`
-	Password    string  `json:"password"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          *string `json:"name,omitempty"`
+	Short         *string `json:"p_description,omitempty"`
+	Description   *string `json:"description,omitempty"`
+	Awatar        *string `json:"awatar,omitempty"`
+	Phone         *string `json:"phone,omitempty"`
+	Email         *string `json:"email,omitempty"`
+	Password      string  `json:"password"`
 }
 
 // easyjson:json
@@ -1018,15 +1102,16 @@ type UserCreateV1Res struct {
 }
 
 type UserCreateUser struct {
-	ID          uint64 `json:"id_user"`
-	Name        string `json:"name"`
-	Short       string `json:"p_description"`
-	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Awatar        string  `json:"awatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
 }
 
 type UserCreateV1Errors int
@@ -1057,15 +1142,16 @@ type UserLoginV1Res struct {
 }
 
 type UserLoginUser struct {
-	ID          uint64 `json:"id_user"`
-	Name        string `json:"name"`
-	Short       string `json:"p_description"`
-	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Awatar        string  `json:"awatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
 }
 
 type UserLoginV1Errors int
@@ -1082,14 +1168,15 @@ var _UserLoginV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type UserUpdateV1Args struct {
-	ID          uint64  `json:"id_user"`
-	Name        *string `json:"name,omitempty"`
-	Short       *string `json:"p_description,omitempty"`
-	Description *string `json:"description,omitempty"`
-	Awatar      *string `json:"awatar,omitempty"`
-	Phone       *string `json:"phone,omitempty"`
-	Email       *string `json:"email,omitempty"`
-	Password    *string `json:"password,omitempty"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          *string `json:"name,omitempty"`
+	Short         *string `json:"p_description,omitempty"`
+	Description   *string `json:"description,omitempty"`
+	Awatar        *string `json:"awatar,omitempty"`
+	Phone         *string `json:"phone,omitempty"`
+	Email         *string `json:"email,omitempty"`
+	Password      *string `json:"password,omitempty"`
 }
 
 // easyjson:json
@@ -1098,15 +1185,16 @@ type UserUpdateV1Res struct {
 }
 
 type UserUpdateUser struct {
-	ID          uint64 `json:"id_user"`
-	Name        string `json:"name"`
-	Short       string `json:"p_description"`
-	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Awatar        string  `json:"awatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
 }
 
 type UserUpdateV1Errors int
