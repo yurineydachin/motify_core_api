@@ -20,6 +20,7 @@ import (
 	"motify_core_api/resources/database"
 
 	"motify_core_api/srv/agent"
+	"motify_core_api/srv/email"
 	"motify_core_api/srv/integration"
 	"motify_core_api/srv/payslip"
 	"motify_core_api/srv/user"
@@ -66,6 +67,12 @@ func init() {
 	config.RegisterString("mysql-db-read-nodes", "DB read nodes", "")
 	config.RegisterString("mysql-db-write-nodes", "DB write nodes", "")
 
+	config.RegisterString("mail-host", "Email smtp host", "")
+	config.RegisterUint("mail-port", "Email smtp port", 587)
+	config.RegisterString("mail-user", "Email user", "")
+	config.RegisterString("mail-password", "Email password", "")
+	config.RegisterString("mail-employee-invite-from", "Email user who sends invite", "")
+
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 }
@@ -84,6 +91,12 @@ func main() {
 		logger.Critical(nil, "failed to init token encryption: %v", err)
 		os.Exit(1)
 	}
+
+	host, _ := config.GetString("mail-host")
+	port, _ := config.GetUint("mail-port")
+	userEmail, _ := config.GetString("mail-user")
+	userPassword, _ := config.GetString("mail-password")
+	userInvite, _ := config.GetString("mail-employee-invite-from")
 
 	dbReadNodes, _ := config.GetStringSlice("mysql-db-read-nodes")
 	dbWriteNodes, _ := config.GetStringSlice("mysql-db-write-nodes")
@@ -114,6 +127,7 @@ func main() {
 	userService := user_service.NewUserService(db)
 	payslipService := payslip_service.NewPayslipService(db)
 	integrationService := integration_service.NewIntegrationService(db)
+	emailService := email_service.NewService(host, port, userEmail, userPassword)
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -143,7 +157,7 @@ func main() {
 		agent_list.New(agentService),
 		employee_create.New(agentService, userService),
 		employee_details.New(agentService, payslipService),
-		employee_invite.New(agentService),
+		employee_invite.New(agentService, emailService, userInvite),
 		employee_update.New(agentService, userService),
 		user_login.New(userService),
 		user_create.New(userService),

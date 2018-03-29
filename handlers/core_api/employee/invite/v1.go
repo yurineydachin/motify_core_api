@@ -6,6 +6,8 @@ import (
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
+
+	"motify_core_api/utils/qrcode"
 )
 
 type V1Args struct {
@@ -47,7 +49,7 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 }
 
 func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
-	logger.Debug(ctx, "Employee/Update/V1")
+	logger.Debug(ctx, "Employee/Invite/V1")
 	cache.DisableTransportCache(ctx)
 
 	employee, err := handler.agentService.GetEmployeeByID(ctx, opts.ID)
@@ -60,9 +62,33 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
 
+	email := employee.Email
+	if opts.Email != nil && *opts.Email != "" {
+		email = *opts.Email
+	}
+
+	magicCode := token.NewTokenV1(employee.ID, 2).String()
+	code, err := qrcode.Generate(magicCode, 0)
+	status := "Email not sended"
+	if err != nil {
+		logger.Error(ctx, "Error generate QR code: %v", err)
+		status = "Error generate QR code"
+	} else if email != "" && handler.emailFrom != "" {
+		err = handler.emailService.SendEmployeeInvite(ctx, email, handler.emailFrom, code)
+		if err != nil {
+			logger.Error(ctx, "Error sending email: %v", err)
+			status = "Error sending email"
+		} else {
+			status = "OK"
+		}
+	} else {
+		status = "Email is empty"
+		logger.Error(ctx, "Email not sended: some email is empty: email '%s', handler.emailFrom '%s'", email, handler.emailFrom)
+	}
+
 	return &V1Res{
-		Result: "OK",
-		Code:   token.NewTokenV1(employee.ID, 2).String(),
+		Result: status,
+		Code:   magicCode,
 		Employee: &Employee{
 			ID:                 employee.ID,
 			AgentFK:            employee.AgentFK,
