@@ -826,36 +826,28 @@ type PayslipDetailsTransaction struct {
 }
 
 type PayslipDetailsSection struct {
-	Type       string                     `json:"section_type,omitempty"`
-	Title      string                     `json:"title,omitempty"`
-	Term       string                     `json:"term,omitempty"`
-	Definition string                     `json:"definition,omitempty"`
-	Amount     *float64                   `json:"amount,omitempty"`
-	Operations *[]PayslipDetailsOperation `json:"rows,omitempty"`
+	Type       string               `json:"section_type,omitempty"`
+	Title      string               `json:"title,omitempty"`
+	Term       string               `json:"term,omitempty"`
+	Definition string               `json:"definition,omitempty"`
+	Amount     *float64             `json:"amount,omitempty"`
+	Rows       *[]PayslipDetailsRow `json:"rows,omitempty"`
 }
 
-type PayslipDetailsOperation struct {
-	Title       string                     `json:"title,omitempty"`
-	Term        string                     `json:"term,omitempty"`
-	Type        string                     `json:"type,omitempty"`
-	Description string                     `json:"description,omitempty"`
-	Footnote    string                     `json:"footnote,omitempty"`
-	Amount      *float64                   `json:"amount,omitempty"`
-	Float       *float64                   `json:"float,omitempty"`
-	Int         *int64                     `json:"int,omitempty"`
-	Text        string                     `json:"text,omitempty"`
-	Children    *[]PayslipDetailsOperation `json:"rows,omitempty"`
-	Name        string                     `json:"name,omitempty"`
-	Role        string                     `json:"job_title,omitempty"`
-	Avatar      string                     `json:"avatar_image,omitempty"`
-	BGImage     string                     `json:"bg_image,omitempty"`
-	Contacts    *[]PayslipDetailsContact   `json:"contacts,omitempty"`
-}
-
-type PayslipDetailsContact struct {
-	Title string `json:"title"`
-	Type  string `json:"type"`
-	Text  string `json:"text"`
+type PayslipDetailsRow struct {
+	Type        string               `json:"row_type"`
+	Title       string               `json:"title"`
+	Term        string               `json:"term,omitempty"`
+	Description string               `json:"description,omitempty"`
+	Footnote    string               `json:"footnote,omitempty"`
+	Role        string               `json:"role,omitempty"`
+	Avatar      string               `json:"avatar_image,omitempty"`
+	BGImage     string               `json:"bg_image,omitempty"`
+	Amount      *float64             `json:"amount,omitempty"`
+	Float       *float64             `json:"float,omitempty"`
+	Int         *int64               `json:"int,omitempty"`
+	Text        string               `json:"text,omitempty"`
+	Children    *[]PayslipDetailsRow `json:"rows,omitempty"`
 }
 
 type PayslipDetailsV1Errors int

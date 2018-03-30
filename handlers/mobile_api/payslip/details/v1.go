@@ -36,30 +36,28 @@ type Transaction struct {
 }
 
 type Section struct {
-	Type       string       `json:"section_type,omitempty"`
-	Title      string       `json:"title,omitempty"`
-	Term       string       `json:"term,omitempty"`
-	Definition string       `json:"definition,omitempty"`
-	Amount     *float64     `json:"amount,omitempty"`
-	Operations *[]Operation `json:"rows,omitempty"`
+	Type       string   `json:"section_type,omitempty"`
+	Title      string   `json:"title,omitempty"`
+	Term       string   `json:"term,omitempty"`
+	Definition string   `json:"definition,omitempty"`
+	Amount     *float64 `json:"amount,omitempty"`
+	Rows       *[]Row   `json:"rows,omitempty"`
 }
 
-type Operation struct {
-	Title       string       `json:"title,omitempty"`
-	Term        string       `json:"term,omitempty"`
-	Type        string       `json:"type,omitempty"`
-	Description string       `json:"description,omitempty"`
-	Footnote    string       `json:"footnote,omitempty"`
-	Amount      *float64     `json:"amount,omitempty"`
-	Float       *float64     `json:"float,omitempty"`
-	Int         *int64       `json:"int,omitempty"`
-	Text        string       `json:"text,omitempty"`
-	Children    *[]Operation `json:"rows,omitempty"`
-
-	Name    string `json:"name,omitempty"`
-	Role    string `json:"job_title,omitempty"`
-	Avatar  string `json:"avatar_image,omitempty"`
-	BGImage string `json:"bg_image,omitempty"`
+type Row struct {
+	Type        string   `json:"row_type"`
+	Title       string   `json:"title"`
+	Term        string   `json:"term,omitempty"`
+	Description string   `json:"description,omitempty"`
+	Footnote    string   `json:"footnote,omitempty"`
+	Role        string   `json:"role,omitempty"`
+	Avatar      string   `json:"avatar_image,omitempty"`
+	BGImage     string   `json:"bg_image,omitempty"`
+	Amount      *float64 `json:"amount,omitempty"`
+	Float       *float64 `json:"float,omitempty"`
+	Int         *int64   `json:"int,omitempty"`
+	Text        string   `json:"text,omitempty"`
+	Children    *[]Row   `json:"rows,omitempty"`
 }
 
 type V1ErrorTypes struct {
@@ -137,35 +135,34 @@ func convertSections(list []coreApiAdapter.PayslipDetailsSection) []Section {
 			Term:       s.Term,
 			Definition: s.Definition,
 			Amount:     s.Amount,
-			Operations: convertOperations(s.Operations),
+			Rows:       convertRows(s.Rows),
 		})
 	}
 	return res
 }
 
-func convertOperations(list *[]coreApiAdapter.PayslipDetailsOperation) *[]Operation {
+func convertRows(list *[]coreApiAdapter.PayslipDetailsRow) *[]Row {
 	if list == nil || len(*list) == 0 {
 		return nil
 	}
-	res := make([]Operation, 0, len(*list))
+	res := make([]Row, 0, len(*list))
 	for i := range *list {
-		o := (*list)[i]
-		res = append(res, Operation{
-			Title:       o.Title,
-			Term:        o.Term,
-			Description: o.Description,
-			Type:        o.Type,
-			Footnote:    o.Footnote,
-			Amount:      o.Amount,
-			Float:       o.Float,
-			Int:         o.Int,
-			Text:        o.Text,
-			Children:    convertOperations(o.Children),
+		r := (*list)[i]
+		res = append(res, Row{
+			Title:       r.Title,
+			Term:        r.Term,
+			Description: r.Description,
+			Type:        r.Type,
+			Footnote:    r.Footnote,
+			Amount:      r.Amount,
+			Float:       r.Float,
+			Int:         r.Int,
+			Text:        r.Text,
+			Children:    convertRows(r.Children),
 
-			Name:    o.Name,
-			Avatar:  o.Avatar,
-			Role:    o.Role,
-			BGImage: o.BGImage,
+			Avatar:  r.Avatar,
+			Role:    r.Role,
+			BGImage: r.BGImage,
 		})
 	}
 	return &res
