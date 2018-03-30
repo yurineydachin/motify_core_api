@@ -91,6 +91,8 @@ type Row struct {
 	Float       *float64 `json:"float,omitempty"`
 	Int         *int64   `json:"int,omitempty"`
 	Text        string   `json:"text,omitempty"`
+	DateFrom    string   `json:"date_from,omitempty"`
+	DateTo      string   `json:"date_to,omitempty"`
 	Children    *[]Row   `json:"rows,omitempty"`
 }
 

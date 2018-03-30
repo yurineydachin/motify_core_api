@@ -57,6 +57,8 @@ type Row struct {
 	Float       *float64 `json:"float,omitempty"`
 	Int         *int64   `json:"int,omitempty"`
 	Text        string   `json:"text,omitempty"`
+	DateFrom    string   `json:"date_from,omitempty"`
+	DateTo      string   `json:"date_to,omitempty"`
 	Children    *[]Row   `json:"rows,omitempty"`
 }
 
@@ -158,6 +160,8 @@ func convertRows(list *[]coreApiAdapter.PayslipDetailsRow) *[]Row {
 			Float:       r.Float,
 			Int:         r.Int,
 			Text:        r.Text,
+			DateFrom:    r.DateFrom,
+			DateTo:      r.DateTo,
 			Children:    convertRows(r.Children),
 
 			Avatar:  r.Avatar,
