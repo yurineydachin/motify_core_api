@@ -46,7 +46,7 @@ func getTokenType(method reflect.Method) TokenType {
 	return tokenType
 }
 
-func prepareToken(tokenHeaderHash string, extraData interface{}) (apiToken token.IToken, shouldAppendToInputs bool, err error) {
+func prepareToken(tokenHeaderHash string, extraData interface{}, tokenModel uint64) (apiToken token.IToken, shouldAppendToInputs bool, err error) {
 	shouldAppendToInputs = false
 
 	// fetch expected token type for handler from provided extra data interface
@@ -99,6 +99,15 @@ func prepareToken(tokenHeaderHash string, extraData interface{}) (apiToken token
 		return nil, shouldAppendToInputs, &gorpc.HandlerError{
 			UserMessage: errMsgGuestTokenProvidedButShouldBeAuthorizedToken,
 			Err:         errors.New("Guest token used in request instead of full customer token"),
+			Code:        errorCodeInvalidToken,
+		}
+	}
+
+	// check is token model is valid for handler
+	if tokenModel != apiToken.GetModel() {
+		return nil, shouldAppendToInputs, &gorpc.HandlerError{
+			UserMessage: errMsgGuestTokenProvidedButShouldBeAuthorizedToken,
+			Err:         errors.New("Wrong token used in request instead of full token with needed model"),
 			Code:        errorCodeInvalidToken,
 		}
 	}

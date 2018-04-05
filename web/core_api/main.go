@@ -137,7 +137,7 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers/core_api"),
+			HM:                  handlersmanager.New("motify_core_api/handlers/core_api", 0),
 			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
 		},
 	)

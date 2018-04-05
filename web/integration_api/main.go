@@ -17,6 +17,8 @@ import (
 	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
+	wrapToken "motify_core_api/utils/token"
+
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
 	"motify_core_api/handlers/integration_api/user/login"
@@ -74,7 +76,7 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers/integration_api"),
+			HM:                  handlersmanager.New("motify_core_api/handlers/integration_api", wrapToken.ModelAgentUser),
 			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
 		},
 	)

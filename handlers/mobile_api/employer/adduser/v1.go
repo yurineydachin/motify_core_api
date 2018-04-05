@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -70,12 +71,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	logger.Debug(ctx, "User/Update/V1")
 	cache.DisableTransportCache(ctx)
 
-	employeeToken, err := token.ParseToken(opts.Code)
+	employeeToken, err := wrapToken.ParseEmployeeQR(opts.Code)
 	if err != nil {
 		logger.Error(ctx, "Error parse magic code: ", err)
-		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
-	}
-	if employeeToken.GetID() == 0 || employeeToken.GetModel() != 2 {
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
 	}
 

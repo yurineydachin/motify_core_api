@@ -19,6 +19,8 @@ import (
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
+	wrapToken "motify_core_api/utils/token"
+
 	"motify_core_api/handlers/mobile_api/employer/adduser"
 	"motify_core_api/handlers/mobile_api/employer/details"
 	"motify_core_api/handlers/mobile_api/employer/list"
@@ -80,7 +82,7 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers/mobile_api"),
+			HM:                  handlersmanager.New("motify_core_api/handlers/mobile_api", wrapToken.ModelMobileUser),
 			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
 		},
 	)

@@ -16,9 +16,9 @@ type HandlersManager struct {
 	*gorpc.HandlersManager
 }
 
-func New(handlersPath string) *HandlersManager {
+func New(handlersPath string, tokenModel uint64) *HandlersManager {
 	return &HandlersManager{
-		HandlersManager: gorpc.NewHandlersManager(handlersPath, getHmCallbacks()),
+		HandlersManager: gorpc.NewHandlersManager(handlersPath, getHmCallbacks(tokenModel)),
 	}
 }
 
@@ -38,7 +38,7 @@ var (
 	TokenCounters = registry.NewCounterVec("token_counters", "Some token counters.", "type")
 )
 
-func getHmCallbacks() gorpc.HandlersManagerCallbacks {
+func getHmCallbacks(tokenModel uint64) gorpc.HandlersManagerCallbacks {
 	return gorpc.HandlersManagerCallbacks{
 		// OnHandlerRegistration will be called only one time for each handler version while handler registration is in progress
 		OnHandlerRegistration: func(path string, method reflect.Method) interface{} {
@@ -61,7 +61,7 @@ func getHmCallbacks() gorpc.HandlersManagerCallbacks {
 			preparedParams[1] = reflect.ValueOf(ctx)
 
 			// prepare token by input data and extraData (expected token type)
-			apiToken, shouldAppendToInputs, err := prepareToken(ctxData.ReqTokenHeader, extraData)
+			apiToken, shouldAppendToInputs, err := prepareToken(ctxData.ReqTokenHeader, extraData, tokenModel)
 			if err != nil {
 				if tokenErr, ok := err.(*gorpc.HandlerError); ok {
 					switch tokenErr.UserMessage {

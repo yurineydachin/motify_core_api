@@ -4,10 +4,10 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/mobapi_lib/token"
 	"godep.lzd.co/service/logger"
 
 	"motify_core_api/utils/qrcode"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -67,7 +67,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		email = *opts.Email
 	}
 
-	magicCode := token.NewTokenV1(employee.ID, 2).String()
+	magicCode := wrapToken.NewEmployeeQR(employee.ID).String()
 	code, err := qrcode.Generate(magicCode, 0)
 	status := "Email not sended"
 	if err != nil {

@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -21,7 +22,8 @@ type V1Args struct {
 }
 
 type V1Res struct {
-	User *User `json:"user" description:"User if success"`
+	Token string `json:"token" description:"Authorized token"`
+	User  *User  `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -83,6 +85,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 
 	user := createData.User
 	return &V1Res{
+		Token: wrapToken.NewAgentUser(user.ID).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,

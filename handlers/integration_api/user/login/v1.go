@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -64,7 +65,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	user := loginData.User
 
 	return &V1Res{
-		Token: token.NewTokenV1(user.ID, 1).String(),
+		Token: wrapToken.NewAgentUser(user.ID).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,
