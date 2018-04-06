@@ -10,6 +10,7 @@ import (
 	"godep.lzd.co/go-dconfig"
 	//"godep.lzd.co/service/handlersmanager"
 	mobConfig "godep.lzd.co/go-config"
+	"godep.lzd.co/mobapi_lib/admin"
 	"godep.lzd.co/mobapi_lib/handler"
 	"godep.lzd.co/mobapi_lib/handlersmanager"
 	mobLogger "godep.lzd.co/mobapi_lib/logger"
@@ -71,6 +72,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	venture, _ := config.GetString("venture")
+
 	coreApiTimeout, _ := config.GetUint("motify_core_api-timeout")
 	coreApi := coreApiAdapter.NewMotifyCoreAPIClient(srvc, time.Duration(coreApiTimeout)*time.Second)
 
@@ -82,8 +85,9 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers/mobile_api", wrapToken.ModelMobileUser),
-			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+			HM:                   handlersmanager.New("motify_core_api/handlers/mobile_api", wrapToken.ModelMobileUser),
+			APIHandlerCallbacks:  handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+			SwaggerJSONCallbacks: admin.NewSwaggerJSONCallbacks(serviceName, venture),
 		},
 	)
 

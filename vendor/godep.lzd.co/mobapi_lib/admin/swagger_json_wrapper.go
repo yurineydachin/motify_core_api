@@ -7,10 +7,10 @@ import (
 	"godep.lzd.co/mobapi_lib/handlersmanager"
 )
 
-func NewSwaggerJSONCallbacks(venture string) http_json.SwaggerJSONCallbacks {
+func NewSwaggerJSONCallbacks(serviceID, venture string) http_json.SwaggerJSONCallbacks {
 	return http_json.SwaggerJSONCallbacks{
 		Process: func(swagger *http_json.Swagger) {
-			swagger.Info.Title = "Lazada MobAPI"
+			swagger.Info.Title = serviceID
 			swagger.Info.Description += `<h3>Access Token</h3><p>Some handlers require access token. It must be provided in <code>X-API-TOKEN</code> header. There are guest and auth tokens which can be acquired in dedicated \"customer\" handlers.</p><p></p>`
 			swagger.SecurityDefinitions = http_json.SecurityDefinitions{
 				"api_token": &http_json.SecurityScheme{

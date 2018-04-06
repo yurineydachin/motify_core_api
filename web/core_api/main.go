@@ -10,6 +10,7 @@ import (
 	"godep.lzd.co/go-dconfig"
 	//"godep.lzd.co/service/handlersmanager"
 	mobConfig "godep.lzd.co/go-config"
+	"godep.lzd.co/mobapi_lib/admin"
 	"godep.lzd.co/mobapi_lib/handler"
 	"godep.lzd.co/mobapi_lib/handlersmanager"
 	mobLogger "godep.lzd.co/mobapi_lib/logger"
@@ -92,6 +93,8 @@ func main() {
 		os.Exit(1)
 	}
 
+	venture, _ := config.GetString("venture")
+
 	host, _ := config.GetString("mail-host")
 	port, _ := config.GetUint("mail-port")
 	userEmail, _ := config.GetString("mail-user")
@@ -137,8 +140,9 @@ func main() {
 	}
 	srvc.SetOptions(
 		service.Options{
-			HM:                  handlersmanager.New("motify_core_api/handlers/core_api", 0),
-			APIHandlerCallbacks: handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+			HM:                   handlersmanager.New("motify_core_api/handlers/core_api", 0),
+			APIHandlerCallbacks:  handler.NewHTTPHandlerCallbacks(serviceName, service.AppVersion, "localhost", sessionLogger),
+			SwaggerJSONCallbacks: admin.NewSwaggerJSONCallbacks(serviceName, venture),
 		},
 	)
 	srvc.MustRegisterHandlers(
