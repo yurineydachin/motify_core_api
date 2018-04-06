@@ -8,10 +8,11 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
-	ID uint64 `key:"payslip_id" description:"Payslip id"`
+	PayslipHash string `key:"payslip_hash" description:"Payslip hash"`
 }
 
 type V1Res struct {
@@ -19,7 +20,7 @@ type V1Res struct {
 }
 
 type Payslip struct {
-	ID          uint64      `json:"id_payslip"`
+	Hash        string      `json:"hash"`
 	Title       string      `json:"title"`
 	Currency    string      `json:"currency"`
 	Amount      float64     `json:"amount"`
@@ -67,6 +68,7 @@ type V1ErrorTypes struct {
 	EMPLOYEE_NOT_FOUND    error `text:"employee not found"`
 	PAYSLIP_NOT_FOUND     error `text:"payslip not found"`
 	ERROR_PARSING_PAYSLIP error `text:"error parsing payslip"`
+	ERROR_PARSING_HASH    error `text:"Error parsing hash"`
 }
 
 var v1Errors V1ErrorTypes
@@ -79,8 +81,14 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	logger.Debug(ctx, "Payslip/List/V1")
 	cache.DisableTransportCache(ctx)
 
+	t, err := wrapToken.ParsePayslip(opts.PayslipHash)
+	if err != nil {
+		logger.Error(ctx, "Error parse employee hash: ", err)
+		return nil, v1Errors.ERROR_PARSING_HASH
+	}
+
 	coreOpts := coreApiAdapter.PayslipDetailsV1Args{
-		ID: opts.ID,
+		ID: t.GetID(),
 	}
 	data, err := handler.coreApi.PayslipDetailsV1(ctx, coreOpts)
 	if err != nil {
@@ -111,7 +119,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	p := data.Payslip
 	return &V1Res{
 		Payslip: Payslip{
-			ID:        p.ID,
+			Hash:      wrapToken.NewPayslip(p.ID, data.Agent.IntegrationFK).Fixed().String(),
 			Title:     p.Title,
 			Currency:  p.Currency,
 			Amount:    p.Amount,

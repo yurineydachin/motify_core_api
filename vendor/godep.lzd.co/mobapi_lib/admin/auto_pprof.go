@@ -1,12 +1,12 @@
 package admin
 
 import (
-	"net/http"
-	"time"
 	"fmt"
 	"godep.lzd.co/go-dconfig"
-	"strings"
 	"godep.lzd.co/mobapi_lib/utils/middleware"
+	"net/http"
+	"strings"
+	"time"
 )
 
 const autoProfilingRPSCheckerInterval = 10 // seconds
@@ -91,4 +91,3 @@ func autoProfiling(h http.Handler) {
 		}
 	}()
 }
-

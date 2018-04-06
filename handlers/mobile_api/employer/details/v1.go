@@ -8,11 +8,12 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
-	ID      *uint64 `key:"id_employee" description:"Employee ID"`
-	AgentFK *uint64 `key:"id_agent" description:"Agent ID"`
+	EmployeeHash *string `key:"employee_hash" description:"Employee hash"`
+	AgentHash    *string `key:"agent_hash" description:"Agent hash"`
 }
 
 type V1Res struct {
@@ -22,7 +23,7 @@ type V1Res struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
@@ -34,9 +35,7 @@ type Agent struct {
 }
 
 type Employee struct {
-	ID                 uint64  `json:"id_employee"`
-	AgentFK            uint64  `json:"fk_agent"`
-	UserFK             *uint64 `json:"fk_user"`
+	Hash               string  `json:"hash"`
 	Code               string  `json:"employee_code"`
 	Name               string  `json:"name"`
 	Role               string  `json:"role"`
@@ -47,17 +46,17 @@ type Employee struct {
 }
 
 type Payslip struct {
-	ID         uint64  `json:"id_payslip"`
-	EmployeeFK uint64  `json:"fk_employee"`
-	Title      string  `json:"title"`
-	Currency   string  `json:"currency"`
-	Amount     float64 `json:"amount"`
+	Hash     string  `json:"hash"`
+	Title    string  `json:"title"`
+	Currency string  `json:"currency"`
+	Amount   float64 `json:"amount"`
 }
 
 type V1ErrorTypes struct {
 	MISSED_REQUIRED_FIELDS error `text:"Missed required fields. You should set id_employee or fk_agent and fk_user to find employee"`
 	AGENT_NOT_FOUND        error `text:"agent not found"`
 	EMPLOYEE_NOT_FOUND     error `text:"employee not found"`
+	ERROR_PARSING_HASH     error `text:"Error parsing hash"`
 }
 
 var v1Errors V1ErrorTypes
@@ -70,10 +69,29 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	logger.Debug(ctx, "Employeer/List/V1")
 	cache.DisableTransportCache(ctx)
 
+	var eID uint64
+	if opts.EmployeeHash != nil && *opts.EmployeeHash != "" {
+		t, err := wrapToken.ParseEmployee(*opts.EmployeeHash)
+		if err != nil {
+			logger.Error(ctx, "Error parse employee hash: ", err)
+			return nil, v1Errors.ERROR_PARSING_HASH
+		}
+		eID = t.GetID()
+	}
+	var aID uint64
+	if opts.AgentHash != nil && *opts.AgentHash != "" {
+		t, err := wrapToken.ParseAgent(*opts.AgentHash)
+		if err != nil {
+			logger.Error(ctx, "Error parse agent hash: ", err)
+			return nil, v1Errors.ERROR_PARSING_HASH
+		}
+		aID = t.GetID()
+	}
+
 	userID := uint64(apiToken.GetID())
 	coreOpts := coreApiAdapter.EmployeeDetailsV1Args{
-		ID:      opts.ID,
-		AgentFK: opts.AgentFK,
+		ID:      &eID,
+		AgentFK: &aID,
 		UserFK:  &userID,
 	}
 
@@ -94,23 +112,22 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
 
+	agent := data.Agent
+	employee := data.Employee
 	payslipsRes := make([]Payslip, 0, len(data.Payslips))
 	for i := range data.Payslips {
 		p := data.Payslips[i]
 		payslipsRes = append(payslipsRes, Payslip{
-			ID:         p.ID,
-			EmployeeFK: p.EmployeeFK,
-			Title:      p.Title,
-			Currency:   p.Currency,
-			Amount:     p.Amount,
+			Hash:     wrapToken.NewPayslip(p.ID, agent.IntegrationFK).Fixed().String(),
+			Title:    p.Title,
+			Currency: p.Currency,
+			Amount:   p.Amount,
 		})
 	}
 
-	agent := data.Agent
-	employee := data.Employee
 	return &V1Res{
 		Agent: &Agent{
-			ID:          agent.ID,
+			Hash:        wrapToken.NewAgent(agent.ID, agent.IntegrationFK).Fixed().String(),
 			Name:        agent.Name,
 			CompanyID:   agent.CompanyID,
 			Description: agent.Description,
@@ -121,9 +138,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			Site:        agent.Site,
 		},
 		Employee: &Employee{
-			ID:                 employee.ID,
-			AgentFK:            employee.AgentFK,
-			UserFK:             employee.UserFK,
+			Hash:               wrapToken.NewEmployee(employee.ID, agent.IntegrationFK).Fixed().String(),
 			Code:               employee.Code,
 			Name:               employee.Name,
 			Role:               employee.Role,

@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"os"
 	"godep.lzd.co/go-config"
+	"os"
 )
 
 func GetHostname() (string, error) {

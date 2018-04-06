@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -25,7 +26,7 @@ type ListItem struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
@@ -37,9 +38,7 @@ type Agent struct {
 }
 
 type Employee struct {
-	ID                 uint64  `json:"id_employee"`
-	AgentFK            uint64  `json:"fk_agent"`
-	UserFK             *uint64 `json:"fk_user"`
+	Hash               string  `json:"hash"`
 	Code               string  `json:"employee_code"`
 	Name               string  `json:"name"`
 	Role               string  `json:"role"`
@@ -79,7 +78,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	for i := range data.List {
 		agent := data.List[i].Agent
 		res.List[i].Agent = Agent{
-			ID:          agent.ID,
+			Hash:        wrapToken.NewAgent(agent.ID, agent.IntegrationFK).Fixed().String(),
 			Name:        agent.Name,
 			CompanyID:   agent.CompanyID,
 			Description: agent.Description,
@@ -91,9 +90,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		}
 		employee := data.List[i].Employee
 		res.List[i].Employee = Employee{
-			ID:                 employee.ID,
-			AgentFK:            employee.AgentFK,
-			UserFK:             employee.UserFK,
+			Hash:               wrapToken.NewEmployee(employee.ID, agent.IntegrationFK).Fixed().String(),
 			Code:               employee.Code,
 			Name:               employee.Name,
 			Role:               employee.Role,

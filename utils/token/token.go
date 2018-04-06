@@ -7,38 +7,57 @@ import (
 )
 
 const (
-    ModelMobileUser = uint64(1);
-    ModelAgentUser = uint64(2);
-    ModelEmployeeQR = uint64(3);
+	ModelMobileUser    = uint64(1)
+	ModelAgentUser     = uint64(2)
+	ModelEmployee      = uint64(3)
+	ModelAgent         = uint64(4)
+	ModelAgentSettings = uint64(5)
+	ModelPayslip       = uint64(6)
 )
 
 type Token struct {
-    t mtoken.IToken
+	t mtoken.IToken
 }
 
 func newToken(id uint64, modelID uint64, extraID uint64) *Token {
-    return &Token{
-        t: mtoken.NewTokenV1(id, modelID, extraID),
-    }
+	return &Token{
+		t: mtoken.NewTokenV1(id, modelID, extraID),
+	}
 }
 
 func NewMobileUser(id uint64) *Token {
-    return newToken(id, ModelMobileUser, 0)
+	return newToken(id, ModelMobileUser, 0)
 }
 
 func NewAgentUser(id uint64, integrationID uint64) *Token {
-    return newToken(id, ModelAgentUser, integrationID)
+	return newToken(id, ModelAgentUser, integrationID)
 }
 
-func NewEmployeeQR(id uint64, integrationID uint64) *Token {
-    return newToken(id, ModelEmployeeQR, integrationID)
+func NewEmployee(id uint64, integrationID uint64) *Token {
+	return newToken(id, ModelEmployee, integrationID)
+}
+
+func NewAgent(id uint64, integrationID uint64) *Token {
+	return newToken(id, ModelAgent, integrationID)
+}
+
+func NewPayslip(id uint64, integrationID uint64) *Token {
+	return newToken(id, ModelPayslip, integrationID)
+}
+
+func (token *Token) Fixed() *Token {
+	if token != nil && token.t != nil {
+		token.t.Fixed()
+		return token
+	}
+	return nil
 }
 
 func (token *Token) String() string {
-    if token != nil && token.t != nil {
-        return token.t.String()
-    }
-    return ""
+	if token != nil && token.t != nil {
+		return token.t.String()
+	}
+	return ""
 }
 
 func parseToken(value string, modelID uint64) (mtoken.IToken, error) {
@@ -49,9 +68,17 @@ func parseToken(value string, modelID uint64) (mtoken.IToken, error) {
 	if t.GetID() == 0 || t.GetModel() != modelID {
 		return nil, fmt.Errorf("Invalid token")
 	}
-    return t, nil
+	return t, nil
 }
 
-func ParseEmployeeQR(value string) (mtoken.IToken, error) {
-    return parseToken(value, ModelEmployeeQR)
+func ParseEmployee(value string) (mtoken.IToken, error) {
+	return parseToken(value, ModelEmployee)
+}
+
+func ParseAgent(value string) (mtoken.IToken, error) {
+	return parseToken(value, ModelAgent)
+}
+
+func ParsePayslip(value string) (mtoken.IToken, error) {
+	return parseToken(value, ModelPayslip)
 }

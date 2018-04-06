@@ -22,7 +22,7 @@ type V1Res struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
@@ -34,9 +34,7 @@ type Agent struct {
 }
 
 type Employee struct {
-	ID                 uint64  `json:"id_employee"`
-	AgentFK            uint64  `json:"fk_agent"`
-	UserFK             *uint64 `json:"fk_user"`
+	Hash               string  `json:"hash"`
 	Code               string  `json:"employee_code"`
 	Name               string  `json:"name"`
 	Role               string  `json:"role"`
@@ -47,7 +45,7 @@ type Employee struct {
 }
 
 type User struct {
-	ID          uint64 `json:"id_user"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
@@ -71,7 +69,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	logger.Debug(ctx, "User/Update/V1")
 	cache.DisableTransportCache(ctx)
 
-	employeeToken, err := wrapToken.ParseEmployeeQR(opts.Code)
+	employeeToken, err := wrapToken.ParseEmployee(opts.Code)
 	if err != nil {
 		logger.Error(ctx, "Error parse magic code: ", err)
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
@@ -111,7 +109,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	employee := updateData.Employee
 	return &V1Res{
 		Agent: &Agent{
-			ID:          agent.ID,
+			Hash:        wrapToken.NewAgent(agent.ID, agent.IntegrationFK).Fixed().String(),
 			Name:        agent.Name,
 			CompanyID:   agent.CompanyID,
 			Description: agent.Description,
@@ -122,9 +120,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			Site:        agent.Site,
 		},
 		Employee: &Employee{
-			ID:                 employee.ID,
-			AgentFK:            employee.AgentFK,
-			UserFK:             employee.UserFK,
+			Hash:               wrapToken.NewEmployee(employee.ID, agent.IntegrationFK).Fixed().String(),
 			Code:               employee.Code,
 			Name:               employee.Name,
 			Role:               employee.Role,
@@ -134,7 +130,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			GrossBaseSalary:    employee.GrossBaseSalary,
 		},
 		User: &User{
-			ID:          user.ID,
+			Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
 			Name:        user.Name,
 			Short:       user.Short,
 			Description: user.Description,

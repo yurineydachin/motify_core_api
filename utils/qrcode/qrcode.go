@@ -8,7 +8,7 @@ import (
 )
 
 const (
-    defaultSize = 250
+	defaultSize = 250
 )
 
 func Generate(magicCode string, size int) ([]byte, error) {

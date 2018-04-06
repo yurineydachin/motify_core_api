@@ -103,6 +103,15 @@ func prepareToken(tokenHeaderHash string, extraData interface{}, tokenModel uint
 		}
 	}
 
+	// check is dynamic token is valid for handler
+	if apiToken.IsFixed() {
+		return nil, shouldAppendToInputs, &gorpc.HandlerError{
+			UserMessage: errMsgGuestTokenProvidedButShouldBeAuthorizedToken,
+			Err:         errors.New("Wrong token used in request instead of dynamic token with time"),
+			Code:        errorCodeInvalidToken,
+		}
+	}
+
 	// check is token model is valid for handler
 	if tokenModel != apiToken.GetModel() {
 		return nil, shouldAppendToInputs, &gorpc.HandlerError{

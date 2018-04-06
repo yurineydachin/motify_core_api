@@ -77,7 +77,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		email = *opts.Email
 	}
 
-	magicCode := wrapToken.NewEmployeeQR(employee.ID, agent.IntegrationFK).String()
+	magicCode := wrapToken.NewEmployee(employee.ID, agent.IntegrationFK).String()
 	code, err := qrcode.Generate(magicCode, 0)
 	status := "Email not sended"
 	if err != nil {

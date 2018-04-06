@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -26,7 +27,7 @@ type ListItem struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
@@ -38,9 +39,7 @@ type Agent struct {
 }
 
 type Employee struct {
-	ID                 uint64  `json:"id_employee"`
-	AgentFK            uint64  `json:"fk_agent"`
-	UserFK             *uint64 `json:"fk_user"`
+	Hash               string  `json:"hash"`
 	Code               string  `json:"employee_code"`
 	Name               string  `json:"name"`
 	Role               string  `json:"role"`
@@ -51,13 +50,12 @@ type Employee struct {
 }
 
 type Payslip struct {
-	ID         uint64  `json:"id_payslip"`
-	EmployeeFK uint64  `json:"fk_employee"`
-	Title      string  `json:"title"`
-	Currency   string  `json:"currency"`
-	Amount     float64 `json:"amount"`
-	UpdatedAt  string  `json:"updated_at"`
-	CreatedAt  string  `json:"created_at"`
+	Hash      string  `json:"hash"`
+	Title     string  `json:"title"`
+	Currency  string  `json:"currency"`
+	Amount    float64 `json:"amount"`
+	UpdatedAt string  `json:"updated_at"`
+	CreatedAt string  `json:"created_at"`
 }
 
 type V1ErrorTypes struct {
@@ -92,7 +90,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		p := data.List[i].Payslip
 		res.List = append(res.List, ListItem{
 			Agent: Agent{
-				ID:          agent.ID,
+				Hash:        wrapToken.NewAgent(agent.ID, agent.IntegrationFK).Fixed().String(),
 				Name:        agent.Name,
 				CompanyID:   agent.CompanyID,
 				Description: agent.Description,
@@ -103,9 +101,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 				Site:        agent.Site,
 			},
 			Employee: Employee{
-				ID:                 employee.ID,
-				AgentFK:            employee.AgentFK,
-				UserFK:             employee.UserFK,
+				Hash:               wrapToken.NewEmployee(employee.ID, agent.IntegrationFK).Fixed().String(),
 				Code:               employee.Code,
 				Name:               employee.Name,
 				Role:               employee.Role,
@@ -115,13 +111,12 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 				GrossBaseSalary:    employee.GrossBaseSalary,
 			},
 			Payslip: Payslip{
-				ID:         p.ID,
-				EmployeeFK: p.EmployeeFK,
-				Title:      p.Title,
-				Currency:   p.Currency,
-				Amount:     p.Amount,
-				UpdatedAt:  p.UpdatedAt,
-				CreatedAt:  p.CreatedAt,
+				Hash:      wrapToken.NewPayslip(p.ID, agent.IntegrationFK).Fixed().String(),
+				Title:     p.Title,
+				Currency:  p.Currency,
+				Amount:    p.Amount,
+				UpdatedAt: p.UpdatedAt,
+				CreatedAt: p.CreatedAt,
 			},
 		})
 	}

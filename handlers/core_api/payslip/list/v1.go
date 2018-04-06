@@ -24,17 +24,18 @@ type ListItem struct {
 }
 
 type Agent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type Employee struct {
@@ -98,17 +99,18 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		p := list[i].Payslip
 		res.List = append(res.List, ListItem{
 			Agent: Agent{
-				ID:          agent.ID,
-				Name:        agent.Name,
-				CompanyID:   agent.CompanyID,
-				Description: agent.Description,
-				Logo:        agent.Logo,
-				Phone:       agent.Phone,
-				Email:       agent.Email,
-				Address:     agent.Address,
-				Site:        agent.Site,
-				UpdatedAt:   agent.UpdatedAt,
-				CreatedAt:   agent.CreatedAt,
+				ID:            agent.ID,
+				IntegrationFK: agent.IntegrationFK,
+				Name:          agent.Name,
+				CompanyID:     agent.CompanyID,
+				Description:   agent.Description,
+				Logo:          agent.Logo,
+				Phone:         agent.Phone,
+				Email:         agent.Email,
+				Address:       agent.Address,
+				Site:          agent.Site,
+				UpdatedAt:     agent.UpdatedAt,
+				CreatedAt:     agent.CreatedAt,
 			},
 			Employee: Employee{
 				ID:                 employee.ID,

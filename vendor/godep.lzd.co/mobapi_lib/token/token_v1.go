@@ -77,13 +77,15 @@ func newTokenV1(ID int, model int, extraID int) *V1 {
 		ExtraID:  int64(extraID),
 		IssuedAt: time.Now().UnixNano(),
 	}
-	var err error
-	token.Checksum, err = token.calcCheckSum()
-	if err != nil {
-		// very unlikely
-		panic(err)
-	}
 	return token
+}
+
+func (token *V1) IsFixed() bool {
+	return token.IssuedAt == 0
+}
+
+func (token *V1) Fixed() {
+	token.IssuedAt = 0
 }
 
 // NewTokenV1 creates new valid token struct by provided client ID
@@ -174,6 +176,12 @@ func (token *V1) GetDate() time.Time {
 
 // String performs token encoding and returns hash in string
 func (token *V1) String() string {
+	var err error
+	token.Checksum, err = token.calcCheckSum()
+	if err != nil {
+		// very unlikely
+		panic(err)
+	}
 	var buf bytes.Buffer
 	if err := binary.Write(&buf, binary.LittleEndian, token); err != nil {
 		return ""

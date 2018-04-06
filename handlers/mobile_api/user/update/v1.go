@@ -8,6 +8,7 @@ import (
 	"godep.lzd.co/service/logger"
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -25,7 +26,7 @@ type V1Res struct {
 }
 
 type User struct {
-	ID          uint64 `json:"id_user"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
@@ -81,7 +82,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	user := createData.User
 	return &V1Res{
 		User: &User{
-			ID:          user.ID,
+			Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
 			Name:        user.Name,
 			Short:       user.Short,
 			Description: user.Description,

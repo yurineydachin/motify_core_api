@@ -395,17 +395,18 @@ type EmployeeCreateV1Res struct {
 }
 
 type EmployeeCreateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type EmployeeCreateEmployee struct {
@@ -468,17 +469,18 @@ type EmployeeDetailsV1Res struct {
 }
 
 type EmployeeDetailsAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type EmployeeDetailsEmployee struct {
@@ -584,17 +586,18 @@ type EmployeeUpdateV1Res struct {
 }
 
 type EmployeeUpdateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type EmployeeUpdateEmployee struct {
@@ -775,17 +778,18 @@ type PayslipDetailsV1Res struct {
 }
 
 type PayslipDetailsAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type PayslipDetailsEmployee struct {
@@ -887,17 +891,18 @@ type PayslipListListItem struct {
 }
 
 type PayslipListAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type PayslipListEmployee struct {

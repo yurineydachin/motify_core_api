@@ -22,7 +22,7 @@ type V1Res struct {
 }
 
 type User struct {
-	ID          uint64 `json:"id_user"`
+	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
@@ -67,7 +67,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	return &V1Res{
 		Token: wrapToken.NewMobileUser(user.ID).String(),
 		User: &User{
-			ID:          user.ID,
+			Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
 			Name:        user.Name,
 			Short:       user.Short,
 			Description: user.Description,

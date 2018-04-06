@@ -9,9 +9,9 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/mobapi_lib/closer"
 	"godep.lzd.co/go-config"
 	"godep.lzd.co/go-dconfig"
+	"godep.lzd.co/mobapi_lib/closer"
 	"godep.lzd.co/mobapi_lib/logger"
 	"godep.lzd.co/mobapi_lib/watcher"
 )
@@ -35,7 +35,7 @@ type Logger struct {
 }
 
 type object struct {
-	mutex sync.RWMutex
+	mutex            sync.RWMutex
 	logsPath         string
 	storeDays        uint16
 	curFileLogWriter *FileLogWriter
@@ -75,9 +75,9 @@ func NewLogger(logsPath string, storeDays uint16, dconfManager *dconfig.Manager)
 	}
 
 	o := &object{
-		logsPath:    logsPath,
-		storeDays:   storeDays,
-		stop:        make(chan struct{}),
+		logsPath:  logsPath,
+		storeDays: storeDays,
+		stop:      make(chan struct{}),
 	}
 
 	watcher.Watch(func() { o.cleanLogs() }, o.stop, CleanPeriod)
@@ -125,9 +125,9 @@ func (o *object) newSession(traceID string, caption string, request interface{})
 	}
 
 	root := &rootSession{
-		logWriter:   logWriter,
-		traceID:     traceID,
-		idGen:       0,
+		logWriter: logWriter,
+		traceID:   traceID,
+		idGen:     0,
 	}
 
 	return startSession(root, 0, caption, request), nil

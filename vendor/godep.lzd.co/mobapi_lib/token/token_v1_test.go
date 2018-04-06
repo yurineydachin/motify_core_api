@@ -56,6 +56,12 @@ func TestTokenV1EncodingAndDecoding(t *testing.T) {
 	if originToken.GetDate() != decodedToken.GetDate() {
 		t.Errorf("Token datetime does not match. Encoded: %s, decoded: %s", originToken.GetDate(), decodedToken.GetDate())
 	}
+	if originToken.IsFixed() {
+		t.Errorf("Token datetime should not be fixed: %t", originToken.IsFixed())
+	}
+	if originToken.IsFixed() != decodedToken.IsFixed() {
+		t.Errorf("Token datetime does not match. Encoded: %t, decoded: %t", originToken.IsFixed(), decodedToken.IsFixed())
+	}
 
 	// and test decoding same hash again to escape wrong second decryption
 	decodedToken, err = ParseToken(hash)

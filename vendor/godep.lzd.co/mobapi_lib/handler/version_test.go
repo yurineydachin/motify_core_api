@@ -1,9 +1,9 @@
 package handler_test
 
 import (
+	"godep.lzd.co/mobapi_lib/handler"
 	"net/http"
 	"testing"
-	"godep.lzd.co/mobapi_lib/handler"
 )
 
 func TestGetVersionFromRequest(t *testing.T) {
@@ -163,28 +163,28 @@ func TestGetVersionFromRequest(t *testing.T) {
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
+				"User-Agent":             "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
 				handler.HeaderAppVersion: "5.0.0.5",
 			}),
 			out: "Android_5_0_0_5",
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
+				"User-Agent":             "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
 				handler.HeaderAppVersion: "5.0.5",
 			}),
 			out: "Android_5_0_5",
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
+				"User-Agent":             "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
 				handler.HeaderAppVersion: "5.0.0.5.1",
 			}),
 			out: "Android_5_0_0_5",
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
+				"User-Agent":             "Dalvik/1.6a (Linux; U; Android 4.0.3; Next7P12 Build/IML74K)",
 				handler.HeaderAppVersion: "5.0.0.5.1.1",
 			}),
 			out: "Android",
@@ -201,20 +201,20 @@ func TestGetVersionFromRequest(t *testing.T) {
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "test",
+				"User-Agent":             "test",
 				handler.HeaderAppVersion: "5.1",
 			}),
 			out: "5_1",
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "",
+				"User-Agent":             "",
 				handler.HeaderAppVersion: "",
 			}),
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "test",
+				"User-Agent":             "test",
 				handler.HeaderAppVersion: "5",
 			}),
 			out: "5",
@@ -236,14 +236,14 @@ func TestGetVersionFromRequest(t *testing.T) {
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "okhttp/2.5.0",
+				"User-Agent":             "okhttp/2.5.0",
 				handler.HeaderAppVersion: "5.0.0.4",
 			}),
 			out: "Android_5_0_0_4",
 		},
 		{
 			in: genRequestWithHeaders(map[string]string{
-				"User-Agent":   "test okhttp/2.5.0",
+				"User-Agent":             "test okhttp/2.5.0",
 				handler.HeaderAppVersion: "5.0.0.4",
 			}),
 			out: "5_0_0_4",

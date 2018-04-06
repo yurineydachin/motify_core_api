@@ -6,9 +6,9 @@ import (
 
 	"container/list"
 
+	"errors"
 	"godep.lzd.co/metrics"
 	"godep.lzd.co/metrics/structcachemon"
-	"errors"
 )
 
 type StructCache struct {

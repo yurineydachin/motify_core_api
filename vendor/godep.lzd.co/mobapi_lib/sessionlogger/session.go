@@ -6,9 +6,9 @@ import (
 )
 
 type rootSession struct {
-	traceID     string
-	idGen       uint32
-	logWriter   *FileLogWriter
+	traceID   string
+	idGen     uint32
+	logWriter *FileLogWriter
 }
 
 const (

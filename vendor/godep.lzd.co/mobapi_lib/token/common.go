@@ -14,6 +14,8 @@ type IToken interface {
 	GetModel() uint64
 	GetExtraID() uint64
 	GetDate() time.Time
+	IsFixed() bool
+	Fixed()
 	String() string // return base64 string (1st byte - version, all other bytes - encoded data)
 	GetCartHash() string
 
