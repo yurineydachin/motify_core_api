@@ -12,6 +12,7 @@ import (
 )
 
 type V1Args struct {
+	Hash     string `key:"integration_hash" description:"Hash for checking integration"`
 	Login    string `key:"login" description:"Email or phone"`
 	Password string `key:"password" description:"Password"`
 }
@@ -32,6 +33,7 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
+	INTEGRATION_NOT_FOUND  error `text:"Integraion not found by hash"`
 	LOGIN_FAILED           error `text:"Login is failed"`
 	USER_NOT_FOUND         error `text:"User not found"`
 	USER_ALREADY_LOGGED_IN error `text:"Request with already authorized apiToken"`
@@ -50,6 +52,19 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.USER_ALREADY_LOGGED_IN
 	}
 
+	intData, err := handler.coreApi.IntegrationCheckV1(ctx, coreApiAdapter.IntegrationCheckV1Args{
+		Hash: opts.Hash,
+	})
+	if err != nil {
+		if err.Error() == "MotifyCoreAPI: INTEGRATION_NOT_FOUND" {
+			return nil, v1Errors.INTEGRATION_NOT_FOUND
+		}
+		return nil, err
+	}
+	if intData == nil || intData.Integration == nil {
+		return nil, v1Errors.INTEGRATION_NOT_FOUND
+	}
+
 	loginData, err := handler.coreApi.UserLoginV1(ctx, coreApiAdapter.UserLoginV1Args{
 		Login:    opts.Login,
 		Password: opts.Password,
@@ -63,9 +78,12 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.USER_NOT_FOUND
 	}
 	user := loginData.User
+	if user.IntegrationFK == nil || intData.Integration.ID != *user.IntegrationFK {
+		return nil, v1Errors.USER_NOT_FOUND
+	}
 
 	return &V1Res{
-		Token: wrapToken.NewAgentUser(user.ID).String(),
+		Token: wrapToken.NewAgentUser(user.ID, *user.IntegrationFK).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,

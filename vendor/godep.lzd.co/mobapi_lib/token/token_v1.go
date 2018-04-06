@@ -13,8 +13,8 @@ import (
 	"strings"
 	"time"
 
-	"godep.lzd.co/go-config"
 	cryptoRand "crypto/rand"
+	"godep.lzd.co/go-config"
 	mathRand "math/rand"
 )
 
@@ -38,10 +38,11 @@ var (
 
 // V1 is base struct for token data storing
 type V1 struct {
-	ID int64
-	Model      int64
-	IssuedAt   int64
-	Checksum   [32]byte
+	ID       int64
+	Model    int64
+	ExtraID  int64
+	IssuedAt int64
+	Checksum [32]byte
 }
 
 // InitTokenV1 performs encryption initialization for tokens
@@ -69,11 +70,12 @@ func InitTokenV1(tripleKey, salt []byte) error {
 	return err
 }
 
-func newTokenV1(ID int, model int) *V1 {
+func newTokenV1(ID int, model int, extraID int) *V1 {
 	token := &V1{
-		ID: int64(ID),
-		Model: int64(model),
-		IssuedAt:   time.Now().UnixNano(),
+		ID:       int64(ID),
+		Model:    int64(model),
+		ExtraID:  int64(extraID),
+		IssuedAt: time.Now().UnixNano(),
 	}
 	var err error
 	token.Checksum, err = token.calcCheckSum()
@@ -85,8 +87,8 @@ func newTokenV1(ID int, model int) *V1 {
 }
 
 // NewTokenV1 creates new valid token struct by provided client ID
-func NewTokenV1(ID uint64, model uint64) *V1 {
-	return newTokenV1(int(ID), int(model))
+func NewTokenV1(ID uint64, model uint64, extraID uint64) *V1 {
+	return newTokenV1(int(ID), int(model), int(extraID))
 }
 
 // NewGuestTokenV1 creates new token for guest user
@@ -96,7 +98,7 @@ func NewGuestTokenV1() *V1 {
 	// convert []byte ti uint64
 	number := binary.BigEndian.Uint64(rnd)
 	// make it negative and create new token
-	return newTokenV1(int(number) * -1, 0)
+	return newTokenV1(int(number)*-1, 0, 0)
 }
 
 // GetTokenV1ByHash returns new V1 decoded from hash
@@ -157,6 +159,14 @@ func (token *V1) GetModel() uint64 {
 	return uint64(0)
 }
 
+// GetExtraID
+func (token *V1) GetExtraID() uint64 {
+	if token != nil {
+		return uint64(token.ExtraID)
+	}
+	return uint64(0)
+}
+
 // GetDate getdate
 func (token *V1) GetDate() time.Time {
 	return time.Unix(token.IssuedAt, 0)
@@ -202,6 +212,10 @@ func (token *V1) calcCheckSumValue(hashSalt []byte) ([32]byte, error) {
 		return empty, err
 	}
 	if err := binary.Write(&buf, binary.LittleEndian, token.Model); err != nil {
+		var empty [32]byte
+		return empty, err
+	}
+	if err := binary.Write(&buf, binary.LittleEndian, token.ExtraID); err != nil {
 		var empty [32]byte
 		return empty, err
 	}

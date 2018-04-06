@@ -62,12 +62,22 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
 
+	agent, err := handler.agentService.GetAgentByID(ctx, employee.AgentFK)
+	if err != nil {
+		logger.Error(ctx, "Failed loading agent %d: %v", employee.AgentFK, err)
+		return nil, v1Errors.AGENT_NOT_FOUND
+	}
+	if agent == nil {
+		logger.Error(ctx, "Failed loading agent (%d) is nil", employee.AgentFK)
+		return nil, v1Errors.AGENT_NOT_FOUND
+	}
+
 	email := employee.Email
 	if opts.Email != nil && *opts.Email != "" {
 		email = *opts.Email
 	}
 
-	magicCode := wrapToken.NewEmployeeQR(employee.ID).String()
+	magicCode := wrapToken.NewEmployeeQR(employee.ID, agent.IntegrationFK).String()
 	code, err := qrcode.Generate(magicCode, 0)
 	status := "Email not sended"
 	if err != nil {

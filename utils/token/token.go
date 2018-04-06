@@ -16,22 +16,22 @@ type Token struct {
     t mtoken.IToken
 }
 
-func newToken(id uint64, modelID uint64) *Token {
+func newToken(id uint64, modelID uint64, extraID uint64) *Token {
     return &Token{
-        t: mtoken.NewTokenV1(id, modelID),
+        t: mtoken.NewTokenV1(id, modelID, extraID),
     }
 }
 
 func NewMobileUser(id uint64) *Token {
-    return newToken(id, ModelMobileUser)
+    return newToken(id, ModelMobileUser, 0)
 }
 
-func NewAgentUser(id uint64) *Token {
-    return newToken(id, ModelAgentUser)
+func NewAgentUser(id uint64, integrationID uint64) *Token {
+    return newToken(id, ModelAgentUser, integrationID)
 }
 
-func NewEmployeeQR(id uint64) *Token {
-    return newToken(id, ModelEmployeeQR)
+func NewEmployeeQR(id uint64, integrationID uint64) *Token {
+    return newToken(id, ModelEmployeeQR, integrationID)
 }
 
 func (token *Token) String() string {

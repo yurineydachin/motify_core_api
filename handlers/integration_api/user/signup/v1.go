@@ -12,6 +12,7 @@ import (
 )
 
 type V1Args struct {
+	Hash        string  `key:"integration_hash" description:"Hash for integration"`
 	Name        *string `key:"name" description:"Name"`
 	Short       *string `key:"p_description" description:"Short description"`
 	Description *string `key:"description" description:"Long Description"`
@@ -37,6 +38,7 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
+	INTEGRATION_NOT_FOUND     error `text:"Integraion not found by hash"`
 	MISSED_REQUIRED_FIELDS    error `text:"Missed required fields. You should set 'phone' or 'email'"`
 	USER_CREATE_FAILED        error `text:"User creating failed"`
 	USER_EMAIL_ALLREADY_EXIST error `text:"User with this email allready exist"`
@@ -56,14 +58,28 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.USER_ALREADY_LOGGED_IN
 	}
 
+	intData, err := handler.coreApi.IntegrationCheckV1(ctx, coreApiAdapter.IntegrationCheckV1Args{
+		Hash: opts.Hash,
+	})
+	if err != nil {
+		if err.Error() == "MotifyCoreAPI: INTEGRATION_NOT_FOUND" {
+			return nil, v1Errors.INTEGRATION_NOT_FOUND
+		}
+		return nil, err
+	}
+	if intData == nil || intData.Integration == nil {
+		return nil, v1Errors.INTEGRATION_NOT_FOUND
+	}
+
 	coreOpts := coreApiAdapter.UserCreateV1Args{
-		Name:        opts.Name,
-		Short:       opts.Short,
-		Description: opts.Description,
-		Awatar:      opts.Awatar,
-		Phone:       opts.Phone,
-		Email:       opts.Email,
-		Password:    opts.Password,
+		IntegrationFK: &intData.Integration.ID,
+		Name:          opts.Name,
+		Short:         opts.Short,
+		Description:   opts.Description,
+		Awatar:        opts.Awatar,
+		Phone:         opts.Phone,
+		Email:         opts.Email,
+		Password:      opts.Password,
 	}
 
 	createData, err := handler.coreApi.UserCreateV1(ctx, coreOpts)
@@ -79,13 +95,13 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		}
 		return nil, err
 	}
-	if createData.User == nil {
+	if createData.User == nil || createData.User.IntegrationFK == nil || *createData.User.IntegrationFK != intData.Integration.ID {
 		return nil, v1Errors.USER_CREATE_FAILED
 	}
 
 	user := createData.User
 	return &V1Res{
-		Token: wrapToken.NewAgentUser(user.ID).String(),
+		Token: wrapToken.NewAgentUser(user.ID, *user.IntegrationFK).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,

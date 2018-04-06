@@ -21,8 +21,9 @@ func init() {
 // TestTokenV1EncodingAndDecoding tries to encode API Token and decode new one from hash same as source one
 func TestTokenV1EncodingAndDecoding(t *testing.T) {
 	ID := uint64(3004272)
-    model := uint64(2)
-	originToken := NewTokenV1(ID, model)
+	model := uint64(2)
+	extraID := uint64(2345)
+	originToken := NewTokenV1(ID, model, extraID)
 
 	// encode new hash by token struct
 	hash := originToken.String()
@@ -45,6 +46,12 @@ func TestTokenV1EncodingAndDecoding(t *testing.T) {
 	}
 	if originToken.GetModel() != decodedToken.GetModel() {
 		t.Errorf("Token model does not match. Encoded: %d, decoded: %d", originToken.GetModel(), decodedToken.GetModel())
+	}
+	if originToken.GetExtraID() != extraID {
+		t.Errorf("Token extraID does not match. Original: %d, encoded: %d", extraID, originToken.GetExtraID())
+	}
+	if originToken.GetExtraID() != decodedToken.GetExtraID() {
+		t.Errorf("Token extraID does not match. Encoded: %d, decoded: %d", originToken.GetExtraID(), decodedToken.GetExtraID())
 	}
 	if originToken.GetDate() != decodedToken.GetDate() {
 		t.Errorf("Token datetime does not match. Encoded: %s, decoded: %s", originToken.GetDate(), decodedToken.GetDate())
@@ -117,5 +124,8 @@ func TestGuestToken(t *testing.T) {
 	}
 	if token.GetModel() != 0 {
 		t.Error("Token should have zero model")
+	}
+	if token.GetExtraID() != 0 {
+		t.Error("Token should have zero extraID")
 	}
 }

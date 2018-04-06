@@ -85,7 +85,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 
 	user := createData.User
 	return &V1Res{
-		Token: wrapToken.NewAgentUser(user.ID).String(),
+		Token: wrapToken.NewMobileUser(user.ID).String(),
 		User: &User{
 			ID:          user.ID,
 			Name:        user.Name,
