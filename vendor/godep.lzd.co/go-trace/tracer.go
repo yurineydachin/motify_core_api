@@ -10,35 +10,35 @@ import (
 
 const (
 	// TraceIDHeader header name containing TraceID
-	TraceIDHeader = "x-lzd-traceid"
+	TraceIDHeader = "x-mtf-traceid"
 
 	// SpanIDHeader header name containing SpanID
-	SpanIDHeader = "x-lzd-spanid"
+	SpanIDHeader = "x-mtf-spanid"
 
 	// ParentSpanIDHeader parentSpanIDHeader
-	ParentSpanIDHeader = "x-lzd-parentspanid"
+	ParentSpanIDHeader = "x-mtf-parentspanid"
 
 	// ForwardedAppsHeader list
-	ForwardedAppsHeader = "x-lzd-forwarded-apps"
+	ForwardedAppsHeader = "x-mtf-forwarded-apps"
 
 	// AppNameH§eader appNameHeader
-	AppNameHeader = "x-lzd-app-name"
+	AppNameHeader = "x-mtf-app-name"
 
 	// AppVersionHeader appVersionHeader
-	AppVersionHeader = "x-lzd-app-version"
+	AppVersionHeader = "x-mtf-app-version"
 
 	// NodeHeader nodeHeader
-	NodeHeader = "x-lzd-node"
+	NodeHeader = "x-mtf-node"
 
 	// SegregationIDHeader keeps value ["1":"1000"] from segregation cookie for progressive service rollout
-	SegregationIDHeader = "x-lzd-segregationid"
+	SegregationIDHeader = "x-mtf-segregationid"
 
 	// ForceDebugLogHeader [0,1] for enabling the most verbose level of logs for the request
-	ForceDebugLogHeader = "x-lzd-force-debug-log"
+	ForceDebugLogHeader = "x-mtf-force-debug-log"
 )
 
 const (
-	baggagePrefixHeader    = "x-lzd-baggage-"
+	baggagePrefixHeader    = "x-mtf-baggage-"
 	forwardedAppsSeparator = ","
 )
 
