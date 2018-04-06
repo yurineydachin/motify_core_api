@@ -91,7 +91,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, err
 	}
 	res := V1Res{
-		List: make([]ListItem, len(list)),
+		List: make([]ListItem, 0, len(list)),
 	}
 	for i := range list {
 		agent := list[i].Agent

@@ -83,7 +83,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 
 	t, err := wrapToken.ParsePayslip(opts.PayslipHash)
 	if err != nil {
-		logger.Error(ctx, "Error parse employee hash: ", err)
+		logger.Error(ctx, "Error parse payslip hash: ", err)
 		return nil, v1Errors.ERROR_PARSING_HASH
 	}
 
