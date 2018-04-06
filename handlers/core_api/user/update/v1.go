@@ -76,12 +76,13 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		}
 		if access == nil {
 			access = &models.UserAccess{
-				UserFK:   user.ID,
-				Type:     models.UserAccessEmail,
-				Email:    &user.Email,
-				Phone:    &user.Phone,
-				Password: *opts.Password,
+				IntegrationFK: opts.IntegrationFK,
+				UserFK:        user.ID,
+				Type:          models.UserAccessEmail,
+				Password:      *opts.Password,
 			}
+			access.SetEmail(user.Email)
+			access.SetPhone(user.Phone)
 		} else {
 			if opts.Email != nil && *opts.Email != user.Email {
 				isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Email)

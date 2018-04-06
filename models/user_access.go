@@ -1,6 +1,8 @@
 package models
 
 import (
+	"fmt"
+
 	"motify_core_api/utils"
 )
 
@@ -13,6 +15,7 @@ const (
 type UserAccess struct {
 	ID               uint64  `db:"id_user_access"`
 	UserFK           uint64  `db:"ua_fk_user"`
+	IntegrationFK    *uint64 `db:"-"`
 	Type             string  `db:"ua_type"`
 	IsHashedEmail    bool    `db:"-"`
 	Email            *string `db:"ua_email"`
@@ -24,12 +27,21 @@ type UserAccess struct {
 	CreatedAt        string  `db:"ua_created_at"`
 }
 
+func LoginSufix(integrationID *uint64) string {
+	if integrationID != nil && *integrationID > 0 {
+		return fmt.Sprintf("_int_%d", *integrationID)
+	}
+	return ""
+}
+
 func (access *UserAccess) SetEmail(value string) {
+	value += LoginSufix(access.IntegrationFK)
 	access.Email = &value
 	access.IsHashedEmail = false
 }
 
 func (access *UserAccess) SetPhone(value string) {
+	value += LoginSufix(access.IntegrationFK)
 	access.Phone = &value
 	access.IsHashedPhone = false
 }

@@ -1131,8 +1131,9 @@ var _UserCreateV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type UserLoginV1Args struct {
-	Login    string `json:"login"`
-	Password string `json:"password"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Login         string  `json:"login"`
+	Password      string  `json:"password"`
 }
 
 // easyjson:json

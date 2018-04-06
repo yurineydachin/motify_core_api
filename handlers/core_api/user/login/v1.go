@@ -5,11 +5,14 @@ import (
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/service/logger"
+
+	"motify_core_api/models"
 )
 
 type V1Args struct {
-	Login    string `key:"login" description:"Email or phone"`
-	Password string `key:"password" description:"Password"`
+	IntegrationFK *uint64 `key:"fk_integration" description:"Integration ID"`
+	Login         string  `key:"login" description:"Email or phone"`
+	Password      string  `key:"password" description:"Password"`
 }
 
 type V1Res struct {
@@ -44,7 +47,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	logger.Debug(ctx, "User/Login/V1")
 	cache.DisableTransportCache(ctx)
 
-	userID, err := handler.userService.Authentificate(ctx, opts.Login, opts.Password)
+	login := opts.Login + models.LoginSufix(opts.IntegrationFK)
+	userID, err := handler.userService.Authentificate(ctx, login, opts.Password)
 	if err != nil {
 		logger.Error(ctx, "Failed login: %v", err)
 		return nil, v1Errors.LOGIN_FAILED

@@ -110,12 +110,13 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	newUserAccess := &models.UserAccess{
-		UserFK:   user.ID,
-		Type:     models.UserAccessEmail,
-		Email:    &user.Email,
-		Phone:    &user.Phone,
-		Password: opts.Password,
+		IntegrationFK: opts.IntegrationFK,
+		UserFK:        user.ID,
+		Type:          models.UserAccessEmail,
+		Password:      opts.Password,
 	}
+	newUserAccess.SetEmail(user.Email)
+	newUserAccess.SetPhone(user.Phone)
 	userAccessID, err := handler.userService.SetUserAccess(ctx, newUserAccess)
 	if err != nil {
 		logger.Error(ctx, "Failed creating user access: %v", err)
