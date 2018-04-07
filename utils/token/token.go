@@ -13,6 +13,7 @@ const (
 	ModelAgent         = uint64(4)
 	ModelAgentSettings = uint64(5)
 	ModelPayslip       = uint64(6)
+	ModelSetting       = uint64(7)
 )
 
 type Token struct {
@@ -43,6 +44,10 @@ func NewAgent(id uint64, integrationID uint64) *Token {
 
 func NewPayslip(id uint64, integrationID uint64) *Token {
 	return newToken(id, ModelPayslip, integrationID)
+}
+
+func NewSetting(id uint64, integrationID uint64) *Token {
+	return newToken(id, ModelSetting, integrationID)
 }
 
 func (token *Token) Fixed() *Token {

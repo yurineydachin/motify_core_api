@@ -192,6 +192,16 @@ func (api *MotifyCoreAPIGoRPC) SettingCreateV1(ctx context.Context, options Sett
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) SettingListV1(ctx context.Context, options SettingListV1Args) (*SettingListV1Res, error) {
+	var result *SettingListV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/setting/list/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**SettingListV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) SettingUpdateV1(ctx context.Context, options SettingUpdateV1Args) (*SettingUpdateV1Res, error) {
 	var result *SettingUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -949,17 +959,18 @@ type SettingCreateV1Res struct {
 }
 
 type SettingCreateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type SettingCreateAgentSetting struct {
@@ -1005,6 +1016,49 @@ var _SettingCreateV1ErrorsMapping = map[string]int{
 }
 
 // easyjson:json
+type SettingListV1Args struct {
+	IntegrationID uint64 `json:"integration_id"`
+	UserID        uint64 `json:"user_id"`
+}
+
+// easyjson:json
+type SettingListV1Res struct {
+	List []SettingListListItem `json:"list"`
+}
+
+type SettingListListItem struct {
+	Agent   *SettingListAgent        `json:"agent"`
+	Setting *SettingListAgentSetting `json:"setting"`
+}
+
+type SettingListAgent struct {
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
+}
+
+type SettingListAgentSetting struct {
+	ID                    uint64  `json:"id_setting"`
+	AgentFK               uint64  `json:"fk_agent"`
+	AgentProcessedFK      *uint64 `json:"fk_agent_processed"`
+	UserFK                *uint64 `json:"fk_user"`
+	Role                  string  `json:"role"`
+	IsNotificationEnabled bool    `json:"notifications_enabled"`
+	IsMainAgent           bool    `json:"is_main_agent"`
+	UpdatedAt             string  `json:"updated_at"`
+	CreatedAt             string  `json:"created_at"`
+}
+
+// easyjson:json
 type SettingUpdateV1Args struct {
 	ID                    *uint64 `json:"id_setting,omitempty"`
 	AgentFK               *uint64 `json:"fk_agent,omitempty"`
@@ -1024,17 +1078,18 @@ type SettingUpdateV1Res struct {
 }
 
 type SettingUpdateAgent struct {
-	ID          uint64 `json:"id_agent"`
-	Name        string `json:"name"`
-	CompanyID   string `json:"company_id"`
-	Description string `json:"description"`
-	Logo        string `json:"Logo"`
-	Phone       string `json:"phone"`
-	Email       string `json:"email"`
-	Address     string `json:"address"`
-	Site        string `json:"site"`
-	UpdatedAt   string `json:"updated_at"`
-	CreatedAt   string `json:"created_at"`
+	ID            uint64 `json:"id_agent"`
+	IntegrationFK uint64 `json:"fk_integration"`
+	Name          string `json:"name"`
+	CompanyID     string `json:"company_id"`
+	Description   string `json:"description"`
+	Logo          string `json:"Logo"`
+	Phone         string `json:"phone"`
+	Email         string `json:"email"`
+	Address       string `json:"address"`
+	Site          string `json:"site"`
+	UpdatedAt     string `json:"updated_at"`
+	CreatedAt     string `json:"created_at"`
 }
 
 type SettingUpdateAgentSetting struct {

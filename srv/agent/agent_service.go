@@ -16,17 +16,42 @@ type AgentService struct {
 	db *database.DbAdapter
 }
 
+type AgentWithSetting struct {
+	*models.Agent
+	*models.AgentSetting
+}
+
+type AgentWithEmployee struct {
+	*models.Agent
+	*models.Employee
+}
+
 func NewAgentService(db *database.DbAdapter) *AgentService {
 	return &AgentService{
 		db: db,
 	}
 }
 
-func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID, limit, offset uint64) ([]*models.AgentWithSetting, error) {
+func (service *AgentService) GetAgentWithSettingsListByIntegrationIDAndUserID(ctx context.Context, integrationID, userID uint64) ([]AgentWithSetting, error) {
+	res := []AgentWithSetting{}
+
+	err := service.db.Select(&res, `
+        SELECT
+            id_agent, a_fk_integration, a_name, a_company_id, a_description, a_logo, a.a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
+            id_setting, s_fk_agent, s_fk_agent_processed, s_fk_user, s_role, s_notifications_enabled, s_is_main_agent, s_updated_at, s_created_at
+        FROM motify_agents a
+        LEFT JOIN motify_agent_settings s ON s.s_fk_agent = a.id_agent AND s.s_fk_user = ?
+        WHERE a_fk_integration = ?
+        ORDER BY s_created_at DESC
+    `, userID, integrationID)
+	return res, err
+}
+
+func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID, limit, offset uint64) ([]AgentWithSetting, error) {
 	if limit == 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
-	res := []*models.AgentWithSetting{}
+	res := []AgentWithSetting{}
 
 	err := service.db.Select(&res, `
         SELECT
@@ -42,11 +67,11 @@ func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID
 	return res, err
 }
 
-func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID, limit, offset uint64) ([]*models.AgentWithEmployee, error) {
+func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID, limit, offset uint64) ([]AgentWithEmployee, error) {
 	if limit == 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
-	res := []*models.AgentWithEmployee{}
+	res := []AgentWithEmployee{}
 
 	err := service.db.Select(&res, `
         SELECT
