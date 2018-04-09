@@ -27,7 +27,7 @@ type Agent struct {
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
 	Logo        string `json:"logo"`
-	Background        string `json:"bg_image"`
+	Background  string `json:"bg_image"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	Address     string `json:"address"`
