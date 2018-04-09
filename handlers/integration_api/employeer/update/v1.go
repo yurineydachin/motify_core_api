@@ -17,7 +17,7 @@ type V1Args struct {
 	Description *string `key:"description" description:"Description"`
 	Logo        *string `key:"logo" description:"Logo"`
 	Background  *string `key:"bg_image" description:"Background image"`
-	Phone       *string `keyjson:"phone" description:"Phone"`
+	Phone       *string `key:"phone" description:"Phone"`
 	Email       *string `key:"email" description:"Email"`
 	Address     *string `key:"address" description:"Address"`
 	Site        *string `key:"site" description:"Site"`
@@ -49,7 +49,7 @@ type AgentSetting struct {
 }
 
 type V1ErrorTypes struct {
-	MISSED_REQUIRED_FIELDS error `text:"Need company_id"`
+	MISSED_REQUIRED_FIELDS error `text:"Need company_id for create employeer"`
 	AGENT_NOT_UPDATED      error `text:"Error updating agent"`
 	AGENT_NOT_CREATED      error `text:"Error creating agent"`
 	SETTING_ADD_FAILED     error `text:"Setting create failed"`
