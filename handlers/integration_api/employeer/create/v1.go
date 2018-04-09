@@ -1,4 +1,4 @@
-package agent_create
+package employeer_create
 
 import (
 	"context"
@@ -34,9 +34,7 @@ type Agent struct {
 }
 
 type AgentSetting struct {
-	Hash                  string  `json:"hash"`
 	AgentProcessedHash    *string `json:"agent_processed_hash"`
-	Role                  string  `json:"role"`
 	IsNotificationEnabled bool    `json:"notifications_enabled"`
 	IsMainAgent           bool    `json:"is_employeer"`
 }
@@ -90,11 +88,10 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 
 	if setting == nil {
 		coreOpts := coreApiAdapter.SettingCreateV1Args{
-			AgentFK: agent.id,
-			UserFK:  &userID,
-			Role:    "",
+			AgentFK:               agent.id,
+			UserFK:                &userID,
 			IsNotificationEnabled: false,
-			IsMainAgent:           false,
+			IsMainAgent:           true,
 		}
 
 		settingData, err := handler.coreApi.SettingCreateV1(ctx, coreOpts)
@@ -171,9 +168,7 @@ func convertSettingFromList(s *coreApiAdapter.SettingListAgentSetting, integrati
 		return nil
 	}
 	return &AgentSetting{
-		Hash:               wrapToken.NewSetting(s.ID, integrationID).Fixed().String(),
-		AgentProcessedHash: getAgentHashPointer(s.AgentProcessedFK, integrationID),
-		Role:               s.Role,
+		AgentProcessedHash:    getAgentHashPointer(s.AgentProcessedFK, integrationID),
 		IsNotificationEnabled: s.IsNotificationEnabled,
 		IsMainAgent:           s.IsMainAgent,
 	}
@@ -181,9 +176,7 @@ func convertSettingFromList(s *coreApiAdapter.SettingListAgentSetting, integrati
 
 func convertSettingFromCreate(s *coreApiAdapter.SettingCreateAgentSetting, integrationID uint64) *AgentSetting {
 	return &AgentSetting{
-		Hash:               wrapToken.NewSetting(s.ID, integrationID).Fixed().String(),
-		AgentProcessedHash: getAgentHashPointer(s.AgentProcessedFK, integrationID),
-		Role:               s.Role,
+		AgentProcessedHash:    getAgentHashPointer(s.AgentProcessedFK, integrationID),
 		IsNotificationEnabled: s.IsNotificationEnabled,
 		IsMainAgent:           s.IsMainAgent,
 	}

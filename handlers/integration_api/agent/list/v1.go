@@ -36,9 +36,7 @@ type Agent struct {
 }
 
 type AgentSetting struct {
-	Hash                  string  `json:"hash"`
 	AgentProcessedHash    *string `json:"agent_processed_hash"`
-	Role                  string  `json:"role"`
 	IsNotificationEnabled bool    `json:"notifications_enabled"`
 	IsMainAgent           bool    `json:"is_employeer"`
 }
@@ -100,9 +98,7 @@ func convertSettingFromList(s *coreApiAdapter.SettingListAgentSetting, integrati
 		return nil
 	}
 	return &AgentSetting{
-		Hash:               wrapToken.NewSetting(s.ID, integrationID).Fixed().String(),
-		AgentProcessedHash: getAgentHashPointer(s.AgentProcessedFK, integrationID),
-		Role:               s.Role,
+		AgentProcessedHash:    getAgentHashPointer(s.AgentProcessedFK, integrationID),
 		IsNotificationEnabled: s.IsNotificationEnabled,
 		IsMainAgent:           s.IsMainAgent,
 	}
