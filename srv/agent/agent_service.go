@@ -21,6 +21,11 @@ type AgentWithSetting struct {
 	*models.AgentSetting
 }
 
+type AgentWithLeftSetting struct {
+	*models.Agent
+	*models.AgentSettingLeft
+}
+
 type AgentWithEmployee struct {
 	*models.Agent
 	*models.Employee
@@ -33,9 +38,9 @@ func NewAgentService(db *database.DbAdapter) *AgentService {
 }
 
 func (service *AgentService) GetAgentWithSettingsListByIntegrationIDAndUserID(ctx context.Context, integrationID, userID uint64) ([]AgentWithSetting, error) {
-	res := []AgentWithSetting{}
+	list := []AgentWithLeftSetting{}
 
-	err := service.db.Select(&res, `
+	err := service.db.Select(&list, `
         SELECT
             id_agent, a_fk_integration, a_name, a_company_id, a_description, a_logo, a.a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
             id_setting, s_fk_agent, s_fk_agent_processed, s_fk_user, s_role, s_notifications_enabled, s_is_main_agent, s_updated_at, s_created_at
@@ -44,6 +49,15 @@ func (service *AgentService) GetAgentWithSettingsListByIntegrationIDAndUserID(ct
         WHERE a_fk_integration = ?
         ORDER BY s_created_at DESC
     `, userID, integrationID)
+	if err != nil {
+		return nil, err
+	}
+
+	res := make([]AgentWithSetting, len(list))
+	for i := range list {
+		res[i].Agent = list[i].Agent
+		res[i].AgentSetting = list[i].AgentSettingLeft.ToAgentSetting()
+	}
 	return res, err
 }
 
@@ -295,7 +309,7 @@ func (service *AgentService) createSetting(ctx context.Context, model *models.Ag
 	args := model.ToArgs()
 	fkField := ""
 	fkValue := ""
-	if _, exists := args["fk_user"]; exists {
+	if _, exists := args["s_fk_user"]; exists {
 		fkField += "s_fk_user, "
 		fkValue += ":s_fk_user, "
 	}
