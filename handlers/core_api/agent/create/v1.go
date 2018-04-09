@@ -32,7 +32,8 @@ type Agent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -68,6 +69,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 	if opts.Logo != nil && *opts.Logo != "" {
 		newAgent.Logo = *opts.Logo
+	}
+	if opts.Background != nil && *opts.Background != "" {
+		newAgent.Background = *opts.Background
 	}
 	if opts.Phone != nil && *opts.Phone != "" {
 		newAgent.Phone = *opts.Phone
@@ -110,6 +114,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			CompanyID:     agent.CompanyID,
 			Description:   agent.Description,
 			Logo:          agent.Logo,
+			Background:    agent.Background,
 			Phone:         agent.Phone,
 			Email:         agent.Email,
 			Address:       agent.Address,

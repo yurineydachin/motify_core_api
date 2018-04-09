@@ -26,7 +26,8 @@ type Agent struct {
 	Name        string `json:"name"`
 	CompanyID   string `json:"company_id"`
 	Description string `json:"description"`
-	Logo        string `json:"Logo"`
+	Logo        string `json:"logo"`
+	Background  string `json:"bg_image"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	Address     string `json:"address"`
@@ -114,6 +115,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			CompanyID:   agent.CompanyID,
 			Description: agent.Description,
 			Logo:        agent.Logo,
+			Background:  agent.Background,
 			Phone:       agent.Phone,
 			Email:       agent.Email,
 			Address:     agent.Address,

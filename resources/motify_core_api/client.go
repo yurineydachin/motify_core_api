@@ -267,7 +267,8 @@ type AgentCreateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -311,7 +312,8 @@ type AgentListAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -361,7 +363,8 @@ type AgentUpdateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -410,7 +413,8 @@ type EmployeeCreateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -484,7 +488,8 @@ type EmployeeDetailsAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -601,7 +606,8 @@ type EmployeeUpdateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -906,7 +912,8 @@ type PayslipListAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -964,7 +971,8 @@ type SettingCreateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -1037,7 +1045,8 @@ type SettingListAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`
@@ -1083,7 +1092,8 @@ type SettingUpdateAgent struct {
 	Name          string `json:"name"`
 	CompanyID     string `json:"company_id"`
 	Description   string `json:"description"`
-	Logo          string `json:"Logo"`
+	Logo          string `json:"logo"`
+	Background    string `json:"bg_image"`
 	Phone         string `json:"phone"`
 	Email         string `json:"email"`
 	Address       string `json:"address"`

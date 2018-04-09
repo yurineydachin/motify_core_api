@@ -24,6 +24,7 @@ import (
 
 	"motify_core_api/handlers/integration_api/agent/list"
 	"motify_core_api/handlers/integration_api/employeer/create"
+	"motify_core_api/handlers/integration_api/employeer/update"
 	"motify_core_api/handlers/integration_api/user/login"
 	"motify_core_api/handlers/integration_api/user/signup"
 	"motify_core_api/handlers/integration_api/user/update"
@@ -93,6 +94,7 @@ func main() {
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
 		employeer_create.New(coreApi),
+		employeer_update.New(coreApi),
 		agent_list.New(coreApi),
 	)
 
