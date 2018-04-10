@@ -122,6 +122,16 @@ func (api *MotifyCoreAPIGoRPC) EmployeeInviteV1(ctx context.Context, options Emp
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) EmployeeListV1(ctx context.Context, options EmployeeListV1Args) (*EmployeeListV1Res, error) {
+	var result *EmployeeListV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/employee/list/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**EmployeeListV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) EmployeeUpdateV1(ctx context.Context, options EmployeeUpdateV1Args) (*EmployeeUpdateV1Res, error) {
 	var result *EmployeeUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -577,6 +587,37 @@ var _EmployeeInviteV1ErrorsMapping = map[string]int{
 	"MISSED_REQUIRED_FIELDS": EmployeeInviteV1Errors_MISSED_REQUIRED_FIELDS,
 	"AGENT_NOT_FOUND":        EmployeeInviteV1Errors_AGENT_NOT_FOUND,
 	"EMPLOYEE_NOT_FOUND":     EmployeeInviteV1Errors_EMPLOYEE_NOT_FOUND,
+}
+
+// easyjson:json
+type EmployeeListV1Args struct {
+	AgentID uint64  `json:"agent_id"`
+	Limit   *uint64 `json:"limit,omitempty"`
+	Offset  *uint64 `json:"offset,omitempty"`
+}
+
+// easyjson:json
+type EmployeeListV1Res struct {
+	List []EmployeeListListItem `json:"list"`
+}
+
+type EmployeeListListItem struct {
+	Employee EmployeeListEmployee `json:"employee"`
+}
+
+type EmployeeListEmployee struct {
+	ID                 uint64  `json:"id_employee"`
+	AgentFK            uint64  `json:"fk_agent"`
+	UserFK             *uint64 `json:"fk_user"`
+	Code               string  `json:"employee_code"`
+	Name               string  `json:"name"`
+	Role               string  `json:"role"`
+	Email              string  `json:"email"`
+	HireDate           string  `json:"hire_date"`
+	NumberOfDepandants uint    `json:"number_of_dependants"`
+	GrossBaseSalary    float64 `json:"gross_base_salary"`
+	UpdatedAt          string  `json:"updated_at"`
+	CreatedAt          string  `json:"created_at"`
 }
 
 // easyjson:json

@@ -174,17 +174,17 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 	return nil
 }
 
-func (service *AgentService) GetEmployeeListByAgentID(ctx context.Context, agentID, limit, offset uint64) ([]*Employee, error) {
+func (service *AgentService) GetEmployeeListByAgentID(ctx context.Context, agentID, limit, offset uint64) ([]*models.Employee, error) {
 	if limit == 0 || limit > defaultLimit {
 		limit = defaultLimit
 	}
-	res := []*Employee{}
+	res := []*models.Employee{}
 
 	err := service.db.Select(&res, `
         SELECT
             id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
         FROM motify_agent_employees
-        WHERE e_fk_agent = id_agent
+        WHERE e_fk_agent = ?
         ORDER BY e_name DESC
         LIMIT ?
         OFFSET ?
