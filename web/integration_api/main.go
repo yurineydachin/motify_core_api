@@ -29,6 +29,7 @@ import (
 	"motify_core_api/handlers/integration_api/employee/details"
 	"motify_core_api/handlers/integration_api/employee/invite"
 	"motify_core_api/handlers/integration_api/employee/list"
+	"motify_core_api/handlers/integration_api/employee/sync"
 	"motify_core_api/handlers/integration_api/employee/update"
 	"motify_core_api/handlers/integration_api/employer/create"
 	"motify_core_api/handlers/integration_api/employer/details"
@@ -104,6 +105,7 @@ func main() {
 		employee_details.New(coreApi),
 		employee_list.New(coreApi),
 		employee_invite.New(coreApi),
+		employee_sync.New(coreApi),
 		employee_update.New(coreApi),
 		employer_create.New(coreApi),
 		employer_details.New(coreApi),
