@@ -1,4 +1,4 @@
-package employeer_update
+package employer_update
 
 import (
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
@@ -15,9 +15,9 @@ func New(coreApi *coreApiAdapter.MotifyCoreAPI) *Handler {
 }
 
 func (*Handler) Caption() string {
-	return "Update employeer agent"
+	return "Update employer agent"
 }
 
 func (*Handler) Description() string {
-	return "Update employeer agent if not exists"
+	return "Update employer agent if not exists"
 }

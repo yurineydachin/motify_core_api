@@ -39,7 +39,7 @@ type Agent struct {
 type AgentSetting struct {
 	AgentProcessedHash    *string `json:"agent_processed_hash"`
 	IsNotificationEnabled bool    `json:"notifications_enabled"`
-	IsMainAgent           bool    `json:"is_employeer"`
+	IsMainAgent           bool    `json:"is_employer"`
 }
 
 type V1ErrorTypes struct {

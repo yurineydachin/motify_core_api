@@ -1,4 +1,4 @@
-package employeer_create
+package employer_create
 
 import (
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
@@ -15,9 +15,9 @@ func New(coreApi *coreApiAdapter.MotifyCoreAPI) *Handler {
 }
 
 func (*Handler) Caption() string {
-	return "Create employeer agent"
+	return "Create employer agent"
 }
 
 func (*Handler) Description() string {
-	return "Create employeer agent if not exists"
+	return "Create employer agent if not exists"
 }

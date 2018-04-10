@@ -69,8 +69,8 @@ func (service *AgentService) GetSettingsListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.a_fk_integration, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site, a.a_updated_at, a.a_created_at,
-            s.s_role, s.s_notifications_enabled, s.s_is_main_agent
+            id_agent, a_fk_integration, a_name, a_company_id, a_description, a_logo, a.a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
+            id_setting, s_fk_agent, s_fk_agent_processed, s_fk_user, s_role, s_notifications_enabled, s_is_main_agent, s_updated_at, s_created_at
         FROM motify_agents a
         INNER JOIN motify_agent_settings s ON s.s_fk_agent = a.id_agent
         WHERE s.s_fk_user = ?
@@ -89,8 +89,8 @@ func (service *AgentService) GetEmployeeListByUserID(ctx context.Context, userID
 
 	err := service.db.Select(&res, `
         SELECT
-            a.id_agent, a.a_fk_integration, a.a_name, a.a_company_id, a.a_description, a.a_logo, a.a_bg_image, a.a_address, a.a_phone, a.a_email, a.a_site,
-            e.e_fk_user, e.e_code, e.e_hire_date, e.e_number_of_dependants, e.e_gross_base_salary, e.e_role
+            id_agent, a_fk_integration, a_name, a_company_id, a_description, a_logo, a.a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
+            id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
         FROM motify_agents a
         INNER JOIN motify_agent_employees e ON e.e_fk_agent = a.id_agent
         WHERE e.e_fk_user = ?
@@ -172,6 +172,24 @@ func (service *AgentService) DeleteAgent(ctx context.Context, modelID uint64) er
 		return fmt.Errorf("Delete DB exec error: nothing changed")
 	}
 	return nil
+}
+
+func (service *AgentService) GetEmployeeListByAgentID(ctx context.Context, agentID, limit, offset uint64) ([]*Employee, error) {
+	if limit == 0 || limit > defaultLimit {
+		limit = defaultLimit
+	}
+	res := []*Employee{}
+
+	err := service.db.Select(&res, `
+        SELECT
+            id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_agent_employees
+        WHERE e_fk_agent = id_agent
+        ORDER BY e_name DESC
+        LIMIT ?
+        OFFSET ?
+    `, agentID, limit, offset)
+	return res, err
 }
 
 func (service *AgentService) GetEmployeeByAgentAndUser(ctx context.Context, agentFK, userFK uint64) (*models.Employee, error) {

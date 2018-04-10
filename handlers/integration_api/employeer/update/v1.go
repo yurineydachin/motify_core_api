@@ -1,4 +1,4 @@
-package employeer_update
+package employer_update
 
 import (
 	"context"
@@ -45,11 +45,11 @@ type Agent struct {
 type AgentSetting struct {
 	AgentProcessedHash    *string `json:"agent_processed_hash"`
 	IsNotificationEnabled bool    `json:"notifications_enabled"`
-	IsMainAgent           bool    `json:"is_employeer"`
+	IsMainAgent           bool    `json:"is_employer"`
 }
 
 type V1ErrorTypes struct {
-	MISSED_REQUIRED_FIELDS error `text:"Need company_id for create employeer"`
+	MISSED_REQUIRED_FIELDS error `text:"Need company_id for create employer"`
 	AGENT_NOT_UPDATED      error `text:"Error updating agent"`
 	AGENT_NOT_CREATED      error `text:"Error creating agent"`
 	SETTING_ADD_FAILED     error `text:"Setting create failed"`

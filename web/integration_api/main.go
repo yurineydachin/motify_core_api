@@ -26,9 +26,9 @@ import (
 	"motify_core_api/handlers/integration_api/agent/list"
 	"motify_core_api/handlers/integration_api/agent/sync"
 	"motify_core_api/handlers/integration_api/agent/update"
-	"motify_core_api/handlers/integration_api/employeer/create"
-	"motify_core_api/handlers/integration_api/employeer/details"
-	"motify_core_api/handlers/integration_api/employeer/update"
+	"motify_core_api/handlers/integration_api/employer/create"
+	"motify_core_api/handlers/integration_api/employer/details"
+	"motify_core_api/handlers/integration_api/employer/update"
 	"motify_core_api/handlers/integration_api/user/login"
 	"motify_core_api/handlers/integration_api/user/signup"
 	"motify_core_api/handlers/integration_api/user/update"
@@ -97,9 +97,9 @@ func main() {
 		user_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
-		employeer_create.New(coreApi),
-		employeer_details.New(coreApi),
-		employeer_update.New(coreApi),
+		employer_create.New(coreApi),
+		employer_details.New(coreApi),
+		employer_update.New(coreApi),
 		agent_list.New(coreApi),
 		agent_sync.New(coreApi),
 		agent_details.New(coreApi),

@@ -15,9 +15,9 @@ func New(coreApi *coreApiAdapter.MotifyCoreAPI) *Handler {
 }
 
 func (*Handler) Caption() string {
-	return "List of employeers"
+	return "List of employers"
 }
 
 func (*Handler) Description() string {
-	return "List of employeers"
+	return "List of employers"
 }
