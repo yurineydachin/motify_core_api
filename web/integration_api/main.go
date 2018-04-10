@@ -22,7 +22,9 @@ import (
 
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
+	"motify_core_api/handlers/integration_api/agent/details"
 	"motify_core_api/handlers/integration_api/agent/list"
+	"motify_core_api/handlers/integration_api/agent/sync"
 	"motify_core_api/handlers/integration_api/agent/update"
 	"motify_core_api/handlers/integration_api/employeer/create"
 	"motify_core_api/handlers/integration_api/employeer/details"
@@ -99,6 +101,8 @@ func main() {
 		employeer_details.New(coreApi),
 		employeer_update.New(coreApi),
 		agent_list.New(coreApi),
+		agent_sync.New(coreApi),
+		agent_details.New(coreApi),
 		agent_update.New(coreApi),
 	)
 
