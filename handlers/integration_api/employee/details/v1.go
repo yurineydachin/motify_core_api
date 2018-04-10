@@ -1,4 +1,4 @@
-package employee_list
+package employee_details
 
 import (
 	"context"
@@ -12,16 +12,10 @@ import (
 )
 
 type V1Args struct {
-	AgentHash string  `key:"agent_hash" description:"Agent hash"`
-	Limit     *uint64 `key:"limit" description:"Limit"`
-	Offset    *uint64 `key:"offset" description:"Offset"`
+	EmployeeHash string `key:"employee_hash" description:"Employee hash"`
 }
 
 type V1Res struct {
-	List []ListItem `json:"list" description:"List of agents and employees"`
-}
-
-type ListItem struct {
 	Employee *Employee `json:"employee" description:"Employee"`
 }
 
@@ -52,7 +46,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 
 	integrationID := apiToken.GetExtraID()
 
-	t, err := wrapToken.ParseAgent(opts.AgentHash)
+	t, err := wrapToken.ParseEmployee(opts.EmployeeHash)
 	if err != nil {
 		logger.Error(ctx, "Error parse agent hash: ", err)
 		return nil, v1Errors.ERROR_PARSING_HASH
@@ -60,24 +54,23 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		logger.Error(ctx, "Wrong agent hash (integration_id not equal): %d != %d", t.GetExtraID(), integrationID)
 		return nil, v1Errors.ERROR_PARSING_HASH
 	}
+	employeeID := t.GetID()
 
-	coreOpts := coreApiAdapter.EmployeeListV1Args{
-		AgentID: t.GetID(),
-		Limit:   opts.Limit,
-		Offset:  opts.Offset,
+	coreOpts := coreApiAdapter.EmployeeDetailsV1Args{
+		ID: &employeeID,
 	}
 
-	data, err := handler.coreApi.EmployeeListV1(ctx, coreOpts)
+	data, err := handler.coreApi.EmployeeDetailsV1(ctx, coreOpts)
 	if err != nil {
 		return nil, err
 	}
-
-	res := V1Res{
-		List: make([]ListItem, len(data.List)),
+	if data == nil || data.Employee == nil {
+		return nil, nil
 	}
-	for i := range data.List {
-		employee := data.List[i].Employee
-		res.List[i].Employee = &Employee{
+
+	employee := data.Employee
+	res := V1Res{
+		Employee: &Employee{
 			Hash:               wrapToken.NewEmployee(employee.ID, integrationID).Fixed().String(),
 			Code:               employee.Code,
 			Name:               employee.Name,
@@ -86,7 +79,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			HireDate:           employee.HireDate,
 			NumberOfDepandants: employee.NumberOfDepandants,
 			GrossBaseSalary:    employee.GrossBaseSalary,
-		}
+		},
 	}
 	return &res, nil
 }
