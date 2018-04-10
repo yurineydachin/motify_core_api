@@ -67,7 +67,7 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 }
 
 func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.IToken) (*V1Res, error) {
-	logger.Debug(ctx, "Employeer/List/V1")
+	logger.Debug(ctx, "Employer/List/V1")
 	cache.DisableTransportCache(ctx)
 
 	var eID uint64
