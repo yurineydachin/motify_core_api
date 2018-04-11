@@ -21,12 +21,6 @@ type PayslipArgs struct {
 	Data       string  `key:"data" description:"Data"`
 }
 
-type PayslipData struct {
-	Title    string  `key:"title" description:"Title"`
-	Currency string  `key:"currency" description:"Currency"`
-	Amount   float64 `key:"amount" description:"Amount"`
-}
-
 type V1Res struct {
 	Employee *Employee `json:"agent" description:"Agent"`
 	Payslip  *Payslip  `json:"payslip" description:"Payslip"`

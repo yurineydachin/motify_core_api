@@ -192,12 +192,36 @@ func (service *AgentService) GetEmployeeListByAgentID(ctx context.Context, agent
 	return res, err
 }
 
-func (service *AgentService) GetEmployeeByAgentAndUser(ctx context.Context, agentFK, userFK uint64) (*models.Employee, error) {
+func (service *AgentService) GetEmployeeByAgentAndMobileUser(ctx context.Context, agentFK, userFK uint64) (*models.Employee, error) {
 	res := models.Employee{}
 	err := service.db.Get(&res, `
         SELECT id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
         FROM motify_agent_employees WHERE e_fk_agent = ? AND e_fk_user = ?
     `, agentFK, userFK)
+	return &res, err
+}
+
+func (service *AgentService) GetEmployeeByAgentAndEmploeeCode(ctx context.Context, agentFK uint64, code string) (*models.Employee, error) {
+	res := models.Employee{}
+	err := service.db.Get(&res, `
+        SELECT id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_agent_employees WHERE e_fk_agent = ? AND e_code = ?
+    `, agentFK, code)
+	return &res, err
+}
+
+func (service *AgentService) GetEmployeeByCompanyIDAndEmploeeCode(ctx context.Context, integrationFK uint64, companyID, code string) (*models.Employee, error) {
+	res := models.Employee{}
+	err := service.db.Get(&res, `
+        SELECT
+            id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_agent_employees e
+        INNER JOIN motify_agent a ON e.e_fk_agent = a.id_agent
+        WHERE
+            a_fk_integration = ? AND
+            a_company_id = ? AND
+            e_code = ?
+    `, integrationFK, companyID, code)
 	return &res, err
 }
 

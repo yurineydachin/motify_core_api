@@ -490,9 +490,12 @@ var _EmployeeCreateV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type EmployeeDetailsV1Args struct {
-	ID      *uint64 `json:"id_employee,omitempty"`
-	AgentFK *uint64 `json:"fk_agent,omitempty"`
-	UserFK  *uint64 `json:"fk_user,omitempty"`
+	ID            *uint64 `json:"id_employee,omitempty"`
+	AgentFK       *uint64 `json:"fk_agent,omitempty"`
+	UserFK        *uint64 `json:"fk_user,omitempty"`
+	IntegrationFK *uint64 `json:"fk_integraion,omitempty"`
+	CompanyID     *string `json:"company_id,omitempty"`
+	Code          *string `json:"employee_code,omitempty"`
 }
 
 // easyjson:json

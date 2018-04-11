@@ -34,6 +34,7 @@ import (
 	"motify_core_api/handlers/integration_api/employer/create"
 	"motify_core_api/handlers/integration_api/employer/details"
 	"motify_core_api/handlers/integration_api/employer/update"
+	"motify_core_api/handlers/integration_api/payslip/create"
 	"motify_core_api/handlers/integration_api/payslip/list"
 	"motify_core_api/handlers/integration_api/user/login"
 	"motify_core_api/handlers/integration_api/user/signup"
@@ -115,6 +116,7 @@ func main() {
 		agent_sync.New(coreApi),
 		agent_details.New(coreApi),
 		agent_update.New(coreApi),
+		payslip_create.New(coreApi),
 		payslip_list.New(coreApi),
 	)
 

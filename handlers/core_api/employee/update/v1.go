@@ -97,7 +97,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if opts.ID != nil && *opts.ID > 0 {
 		employee, err = handler.agentService.GetEmployeeByID(ctx, *opts.ID)
 	} else if opts.AgentFK != nil && *opts.AgentFK > 0 && opts.UserFK != nil && *opts.UserFK > 0 {
-		employee, err = handler.agentService.GetEmployeeByAgentAndUser(ctx, *opts.AgentFK, *opts.UserFK)
+		employee, err = handler.agentService.GetEmployeeByAgentAndMobileUser(ctx, *opts.AgentFK, *opts.UserFK)
 	} else {
 		return nil, v1Errors.NOT_ENOUGH_PARAMS
 	}

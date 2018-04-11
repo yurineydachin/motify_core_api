@@ -39,17 +39,22 @@ type PayslipData struct {
 }
 
 type Transaction struct {
-	Description string    `json:"description"`
-	Sections    []Section `json:"sections"`
+	Description string               `json:"description"`
+	Sections    []TransactionSection `json:"sections"`
+}
+
+type TransactionSection struct {
+	Title string `json:"title"`
+	Rows  []Row  `json:"rows"`
 }
 
 type Section struct {
-	Type       string   `json:"section_type,omitempty"`
-	Title      string   `json:"title,omitempty"`
+	Type       string   `json:"section_type"`
+	Title      string   `json:"title"`
 	Term       string   `json:"term,omitempty"`
 	Definition string   `json:"definition,omitempty"`
 	Amount     *float64 `json:"amount,omitempty"`
-	Rows       *[]Row   `json:"rows,omitempty"`
+	Rows       []Row    `json:"rows"`
 }
 
 type Row struct {
@@ -67,7 +72,7 @@ type Row struct {
 	Text        string   `json:"text,omitempty"`
 	DateFrom    string   `json:"date_from,omitempty"`
 	DateTo      string   `json:"date_to,omitempty"`
-	Children    *[]Row   `json:"rows,omitempty"`
+	Children    []Row    `json:"rows,omitempty"`
 }
 
 type V1ErrorTypes struct {

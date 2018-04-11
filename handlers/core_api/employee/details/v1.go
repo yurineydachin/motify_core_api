@@ -14,9 +14,12 @@ const (
 )
 
 type V1Args struct {
-	ID      *uint64 `key:"id_employee" description:"Employee ID"`
-	AgentFK *uint64 `key:"fk_agent" description:"Agent ID"`
-	UserFK  *uint64 `key:"fk_user" description:"User ID"`
+	ID            *uint64 `key:"id_employee" description:"Employee ID"`
+	AgentFK       *uint64 `key:"fk_agent" description:"Agent ID"`
+	UserFK        *uint64 `key:"fk_user" description:"Mobile user ID"`
+	IntegrationFK *uint64 `key:"fk_integraion" description:"Integration ID"`
+	CompanyID     *string `key:"company_id" description:"Company id"`
+	Code          *string `key:"employee_code" description:"employee code"`
 }
 
 type V1Res struct {
@@ -67,7 +70,7 @@ type Payslip struct {
 }
 
 type V1ErrorTypes struct {
-	MISSED_REQUIRED_FIELDS error `text:"Missed required fields. You should set id_employee or fk_agent and fk_user to find employee"`
+	MISSED_REQUIRED_FIELDS error `text:"Missed required fields. You should set id_employee or fk_agent, fk_user or fk_agent, emploee_code or fk_integration, company_id, emploee_code to find employee"`
 	AGENT_NOT_FOUND        error `text:"agent not found"`
 	EMPLOYEE_NOT_FOUND     error `text:"employee not found"`
 }
@@ -87,10 +90,15 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if opts.ID != nil && *opts.ID > 0 {
 		employee, err = handler.agentService.GetEmployeeByID(ctx, *opts.ID)
 	} else if opts.AgentFK != nil && *opts.AgentFK > 0 && opts.UserFK != nil && *opts.UserFK > 0 {
-		employee, err = handler.agentService.GetEmployeeByAgentAndUser(ctx, *opts.AgentFK, *opts.UserFK)
+		employee, err = handler.agentService.GetEmployeeByAgentAndMobileUser(ctx, *opts.AgentFK, *opts.UserFK)
+	} else if opts.AgentFK != nil && *opts.AgentFK > 0 && opts.Code != nil && *opts.Code != "" {
+		employee, err = handler.agentService.GetEmployeeByAgentAndEmploeeCode(ctx, *opts.AgentFK, *opts.Code)
+	} else if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 && opts.CompanyID != nil && *opts.CompanyID != "" && opts.Code != nil && *opts.Code != "" {
+		employee, err = handler.agentService.GetEmployeeByCompanyIDAndEmploeeCode(ctx, *opts.IntegrationFK, *opts.CompanyID, *opts.Code)
 	} else {
 		return nil, v1Errors.MISSED_REQUIRED_FIELDS
 	}
+
 	if err != nil {
 		logger.Error(ctx, "Failed loading from DB: %v", err)
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
