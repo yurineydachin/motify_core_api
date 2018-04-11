@@ -2,6 +2,7 @@ package payslip_details
 
 import (
 	"context"
+	"encoding/json"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/mobapi_lib/token"
@@ -26,6 +27,12 @@ type Payslip struct {
 	Amount      float64     `json:"amount"`
 	UpdatedAt   string      `json:"updated_at"`
 	CreatedAt   string      `json:"created_at"`
+	Transaction Transaction `json:"transaction"`
+	Sections    []Section   `json:"sections"`
+	Footnote    string      `json:"footnote,omitempty"`
+}
+
+type PayslipData struct {
 	Transaction Transaction `json:"transaction"`
 	Sections    []Section   `json:"sections"`
 	Footnote    string      `json:"footnote,omitempty"`
@@ -98,8 +105,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			return nil, v1Errors.EMPLOYEE_NOT_FOUND
 		} else if err.Error() == "MotifyCoreAPI: PAYSLIP_NOT_FOUND" {
 			return nil, v1Errors.PAYSLIP_NOT_FOUND
-		} else if err.Error() == "MotifyCoreAPI: ERROR_PARSING_PAYSLIP" {
-			return nil, v1Errors.ERROR_PARSING_PAYSLIP
 		}
 		return nil, err
 	}
@@ -116,66 +121,27 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, v1Errors.AGENT_NOT_FOUND
 	}
 
+	payslipData := PayslipData{}
+	if len(data.Payslip.Data) > 0 {
+		err := json.Unmarshal([]byte(data.Payslip.Data), &payslipData)
+		if err != nil {
+			logger.Error(ctx, "Error parsing payslip data: %v", err)
+			return nil, v1Errors.ERROR_PARSING_PAYSLIP
+		}
+	}
+
 	p := data.Payslip
 	return &V1Res{
 		Payslip: Payslip{
-			Hash:      wrapToken.NewPayslip(p.ID, data.Agent.IntegrationFK).Fixed().String(),
-			Title:     p.Title,
-			Currency:  p.Currency,
-			Amount:    p.Amount,
-			UpdatedAt: p.UpdatedAt,
-			CreatedAt: p.CreatedAt,
-			Transaction: Transaction{
-				Description: p.Data.Transaction.Description,
-				Sections:    convertSections(p.Data.Transaction.Sections),
-			},
-			Sections: convertSections(p.Data.Sections),
-			Footnote: p.Data.Footnote,
+			Hash:        wrapToken.NewPayslip(p.ID, data.Agent.IntegrationFK).Fixed().String(),
+			Title:       p.Title,
+			Currency:    p.Currency,
+			Amount:      p.Amount,
+			UpdatedAt:   p.UpdatedAt,
+			CreatedAt:   p.CreatedAt,
+			Transaction: payslipData.Transaction,
+			Sections:    payslipData.Sections,
+			Footnote:    payslipData.Footnote,
 		},
 	}, nil
-}
-
-func convertSections(list []coreApiAdapter.PayslipDetailsSection) []Section {
-	res := make([]Section, 0, len(list))
-	for i := range list {
-		s := list[i]
-		res = append(res, Section{
-			Type:       s.Type,
-			Title:      s.Title,
-			Term:       s.Term,
-			Definition: s.Definition,
-			Amount:     s.Amount,
-			Rows:       convertRows(s.Rows),
-		})
-	}
-	return res
-}
-
-func convertRows(list *[]coreApiAdapter.PayslipDetailsRow) *[]Row {
-	if list == nil || len(*list) == 0 {
-		return nil
-	}
-	res := make([]Row, 0, len(*list))
-	for i := range *list {
-		r := (*list)[i]
-		res = append(res, Row{
-			Title:       r.Title,
-			Term:        r.Term,
-			Description: r.Description,
-			Type:        r.Type,
-			Footnote:    r.Footnote,
-			Amount:      r.Amount,
-			Float:       r.Float,
-			Int:         r.Int,
-			Text:        r.Text,
-			DateFrom:    r.DateFrom,
-			DateTo:      r.DateTo,
-			Children:    convertRows(r.Children),
-
-			Avatar:  r.Avatar,
-			Role:    r.Role,
-			BGImage: r.BGImage,
-		})
-	}
-	return &res
 }

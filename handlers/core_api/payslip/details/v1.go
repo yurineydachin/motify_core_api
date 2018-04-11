@@ -2,7 +2,6 @@ package payslip_details
 
 import (
 	"context"
-	"encoding/json"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"godep.lzd.co/service/logger"
@@ -49,59 +48,20 @@ type Employee struct {
 }
 
 type Payslip struct {
-	ID         uint64      `json:"id_payslip"`
-	EmployeeFK uint64      `json:"fk_employee"`
-	Title      string      `json:"title"`
-	Currency   string      `json:"currency"`
-	Amount     float64     `json:"amount"`
-	UpdatedAt  string      `json:"updated_at"`
-	CreatedAt  string      `json:"created_at"`
-	Data       PayslipData `json:"data"`
-}
-
-type PayslipData struct {
-	Transaction Transaction `json:"transaction"`
-	Sections    []Section   `json:"sections"`
-	Footnote    string      `json:"footnote,omitempty"`
-}
-
-type Transaction struct {
-	Description string    `json:"description"`
-	Sections    []Section `json:"sections"`
-}
-
-type Section struct {
-	Type       string   `json:"section_type,omitempty"`
-	Title      string   `json:"title,omitempty"`
-	Term       string   `json:"term,omitempty"`
-	Definition string   `json:"definition,omitempty"`
-	Amount     *float64 `json:"amount,omitempty"`
-	Rows       *[]Row   `json:"rows,omitempty"`
-}
-
-type Row struct {
-	Type        string   `json:"row_type"`
-	Title       string   `json:"title"`
-	Term        string   `json:"term,omitempty"`
-	Description string   `json:"description,omitempty"`
-	Footnote    string   `json:"footnote,omitempty"`
-	Role        string   `json:"role,omitempty"`
-	Avatar      string   `json:"avatar_image,omitempty"`
-	BGImage     string   `json:"bg_image,omitempty"`
-	Amount      *float64 `json:"amount,omitempty"`
-	Float       *float64 `json:"float,omitempty"`
-	Int         *int64   `json:"int,omitempty"`
-	Text        string   `json:"text,omitempty"`
-	DateFrom    string   `json:"date_from,omitempty"`
-	DateTo      string   `json:"date_to,omitempty"`
-	Children    *[]Row   `json:"rows,omitempty"`
+	ID         uint64  `json:"id_payslip"`
+	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
+	Currency   string  `json:"currency"`
+	Amount     float64 `json:"amount"`
+	UpdatedAt  string  `json:"updated_at"`
+	CreatedAt  string  `json:"created_at"`
+	Data       string  `json:"data"`
 }
 
 type V1ErrorTypes struct {
-	AGENT_NOT_FOUND       error `text:"agent not found"`
-	EMPLOYEE_NOT_FOUND    error `text:"employee not found"`
-	PAYSLIP_NOT_FOUND     error `text:"payslip not found"`
-	ERROR_PARSING_PAYSLIP error `text:"error parsing payslip"`
+	AGENT_NOT_FOUND    error `text:"agent not found"`
+	EMPLOYEE_NOT_FOUND error `text:"employee not found"`
+	PAYSLIP_NOT_FOUND  error `text:"payslip not found"`
 }
 
 var v1Errors V1ErrorTypes
@@ -122,26 +82,6 @@ func (handler *Handler) V1(ctx context.Context, opts *v1Args) (*V1Res, error) {
 	if payslip == nil {
 		logger.Error(ctx, "Failed loading payslip is nil")
 		return nil, v1Errors.PAYSLIP_NOT_FOUND
-	}
-
-	payslipRes := Payslip{
-		ID:         payslip.ID,
-		EmployeeFK: payslip.EmployeeFK,
-		Title:      payslip.Title,
-		Currency:   payslip.Currency,
-		Amount:     payslip.Amount,
-		UpdatedAt:  payslip.UpdatedAt,
-		CreatedAt:  payslip.CreatedAt,
-	}
-
-	if len(payslip.Data) > 0 {
-		data := PayslipData{}
-		err := json.Unmarshal(payslip.Data, &data)
-		if err != nil {
-			logger.Error(ctx, "Error parsing payslip data: %v", err)
-			return nil, v1Errors.ERROR_PARSING_PAYSLIP
-		}
-		payslipRes.Data = data
 	}
 
 	employee, err := handler.agentService.GetEmployeeByID(ctx, payslip.EmployeeFK)
@@ -193,6 +133,15 @@ func (handler *Handler) V1(ctx context.Context, opts *v1Args) (*V1Res, error) {
 			UpdatedAt:          employee.UpdatedAt,
 			CreatedAt:          employee.CreatedAt,
 		},
-		Payslip: payslipRes,
+		Payslip: Payslip{
+			ID:         payslip.ID,
+			EmployeeFK: payslip.EmployeeFK,
+			Title:      payslip.Title,
+			Currency:   payslip.Currency,
+			Amount:     payslip.Amount,
+			UpdatedAt:  payslip.UpdatedAt,
+			CreatedAt:  payslip.CreatedAt,
+			Data:       string(payslip.Data),
+		},
 	}, nil
 }
