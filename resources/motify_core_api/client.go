@@ -192,6 +192,16 @@ func (api *MotifyCoreAPIGoRPC) PayslipListV1(ctx context.Context, options Paysli
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) PayslipListByEmployeeV1(ctx context.Context, options PayslipListByEmployeeV1Args) (*PayslipListByEmployeeV1Res, error) {
+	var result *PayslipListByEmployeeV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/payslip/listByEmployee/v1/", options, &entry, nil)
+	if result, ok := entry.Body.(**PayslipListByEmployeeV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) SettingCreateV1(ctx context.Context, options SettingCreateV1Args) (*SettingCreateV1Res, error) {
 	var result *SettingCreateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -979,6 +989,32 @@ type PayslipListEmployee struct {
 }
 
 type PayslipListPayslip struct {
+	ID         uint64  `json:"id_payslip"`
+	EmployeeFK uint64  `json:"fk_employee"`
+	Title      string  `json:"title"`
+	Currency   string  `json:"currency"`
+	Amount     float64 `json:"amount"`
+	UpdatedAt  string  `json:"updated_at"`
+	CreatedAt  string  `json:"created_at"`
+}
+
+// easyjson:json
+type PayslipListByEmployeeV1Args struct {
+	EmployeeID uint64  `json:"employee_id"`
+	Limit      *uint64 `json:"limit,omitempty"`
+	Offset     *uint64 `json:"offset,omitempty"`
+}
+
+// easyjson:json
+type PayslipListByEmployeeV1Res struct {
+	List []PayslipListByEmployeeListItem `json:"list"`
+}
+
+type PayslipListByEmployeeListItem struct {
+	Payslip PayslipListByEmployeePayslip `json:"payslip"`
+}
+
+type PayslipListByEmployeePayslip struct {
 	ID         uint64  `json:"id_payslip"`
 	EmployeeFK uint64  `json:"fk_employee"`
 	Title      string  `json:"title"`

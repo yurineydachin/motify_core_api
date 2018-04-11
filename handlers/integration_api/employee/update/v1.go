@@ -64,7 +64,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		logger.Error(ctx, "Wrong employee hash (integration_id not equal): %d != %d", t.GetExtraID(), integrationID)
 		return nil, v1Errors.ERROR_PARSING_HASH
 	} else if employeeID == 0 {
-		logger.Error(ctx, "Wrong employee hash (integration_id not equal): %d != %d", t.GetExtraID(), integrationID)
+		logger.Error(ctx, "Wrong employee hash (employeeID = 0)")
 		return nil, v1Errors.ERROR_PARSING_HASH
 	}
 
