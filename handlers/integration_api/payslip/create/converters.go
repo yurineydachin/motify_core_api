@@ -5,7 +5,7 @@ import (
 	"strings"
 )
 
-func (p PayslipArgs) toPayslipData() (PayslipData, uint64) {
+func (p *PayslipArgs) toPayslipData() (PayslipData, uint64) {
 	t, errTotalCount := p.Transaction.toTransaction()
 	sections := make([]Section, 0, len(p.Sections))
 	for i := range p.Sections {

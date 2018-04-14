@@ -12,33 +12,52 @@ import (
 	wrapToken "motify_core_api/utils/token"
 )
 
+const (
+	SectionPersonReceiver   = "person_receiver"
+	SectionPersonProcesser  = "person_processer"
+	SectionCompanySender    = "company_sender"
+	SectionCompanyProcesser = "company_processer"
+
+	RowEmail     = "email"
+	RowPhone     = "phone"
+	RowUrl       = "url"
+	RowText      = "text"
+	RowCurrency  = "currency"
+	RowInt       = "int"
+	RowFloat     = "float"
+	RowDate      = "date"
+	RowDateRange = "daterange"
+	RowPerson    = "person"
+	RowCompany   = "company"
+)
+
 var rowTypes = map[string]func(RowArgs) (Row, uint64){
-	"email":     validateEmail,
-	"phone":     validatePhone,
-	"url":       validateUrl,
-	"text":      validateText,
-	"currency":  validateCurrency,
-	"int":       validateInt,
-	"float":     validateFloat,
-	"date":      validateDate,
-	"daterange": validateDateRange,
-	"person":    validatePerson,
-	"company":   validateCompany,
+	RowEmail:     validateEmail,
+	RowPhone:     validatePhone,
+	RowUrl:       validateUrl,
+	RowText:      validateText,
+	RowCurrency:  validateCurrency,
+	RowInt:       validateInt,
+	RowFloat:     validateFloat,
+	RowDate:      validateDate,
+	RowDateRange: validateDateRange,
+	RowPerson:    validatePerson,
+	RowCompany:   validateCompany,
 }
 
 var sectionTypes = map[string]bool{
-	"person_receiver":   true,
-	"company_processer": true,
-	"person_processer":  true,
-	"company_sender":    true,
-	"details":           true,
-	"payslip":           true,
+	SectionPersonReceiver:   true,
+	SectionPersonProcesser:  true,
+	SectionCompanySender:    true,
+	SectionCompanyProcesser: true,
+	"details":               true,
+	"payslip":               true,
 }
 
 type V1Args struct {
-	CompanyID string      `key:"company_id" description:"Company id"`
-	Code      string      `key:"employee_code" description:"employee code"`
-	Payslip   PayslipArgs `key:"payslip" description:"payslip"`
+	CompanyID string       `key:"company_id" description:"Company id"`
+	Code      string       `key:"employee_code" description:"employee code"`
+	Payslip   *PayslipArgs `key:"payslip" description:"payslip"`
 }
 
 type PayslipArgs struct {
@@ -154,6 +173,7 @@ type Row struct {
 
 type V1ErrorTypes struct {
 	CREATE_FAILED         error `text:"creating payslip is failed"`
+	USER_AGENT_NOT_FOUND  error `text:"user agent not found"`
 	AGENT_NOT_FOUND       error `text:"agent not found"`
 	EMPLOYEE_NOT_FOUND    error `text:"employee not found"`
 	PAYSLIP_NOT_FOUND     error `text:"payslip not found"`
@@ -181,7 +201,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, err
 	}
 
-	agent, _ := findByCompanyID(listData.List, opts.CompanyID)
+	agent, setting := findByCompanyID(listData.List, opts.CompanyID)
 	if agent == nil {
 		return nil, v1Errors.AGENT_NOT_FOUND
 	}
@@ -199,6 +219,24 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, v1Errors.EMPLOYEE_NOT_FOUND
 	}
 
+	var agentProcessed *coreApiAdapter.SettingListAgent
+	if setting.AgentProcessedFK != nil && *setting.AgentProcessedFK > 0 {
+		agentProcessed, _ = findAgentByID(listData.List, *setting.AgentProcessedFK)
+	}
+
+	userCoreOpts := coreApiAdapter.UserUpdateV1Args{
+		ID: uint64(apiToken.GetID()),
+	}
+	userData, err := handler.coreApi.UserUpdateV1(ctx, userCoreOpts)
+	if err != nil || userData.User == nil {
+		return nil, v1Errors.USER_AGENT_NOT_FOUND
+	}
+
+	opts.Payslip.addEmployer(agent)
+	opts.Payslip.addEmployee(dataEmp.Employee)
+	opts.Payslip.addPersonPreparedBy(userData.User)
+	opts.Payslip.addCompanyProceccedBy(agentProcessed)
+
 	payslipData, errCount := opts.Payslip.toPayslipData()
 
 	if errCount > 0 {
@@ -206,7 +244,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			Status: payslipData.Status,
 			Payslip: Payslip{
 				Title:       opts.Payslip.Title,
-				Currency:    opts.Payslip.Title,
+				Currency:    opts.Payslip.Currency,
 				Amount:      opts.Payslip.Amount,
 				Transaction: payslipData.Transaction,
 				Sections:    payslipData.Sections,
@@ -224,7 +262,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		Payslip: coreApiAdapter.PayslipCreatePayslipArgs{
 			EmployeeFK: dataEmp.Employee.ID,
 			Title:      opts.Payslip.Title,
-			Currency:   opts.Payslip.Title,
+			Currency:   opts.Payslip.Currency,
 			Amount:     opts.Payslip.Amount,
 			Data:       string(payslipDataText),
 		},
@@ -267,6 +305,15 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 func findByCompanyID(list []coreApiAdapter.SettingListListItem, companyID string) (*coreApiAdapter.SettingListAgent, *coreApiAdapter.SettingListAgentSetting) {
 	for i := range list {
 		if list[i].Agent != nil && list[i].Agent.CompanyID == companyID {
+			return list[i].Agent, list[i].Setting
+		}
+	}
+	return nil, nil
+}
+
+func findAgentByID(list []coreApiAdapter.SettingListListItem, agentFK uint64) (*coreApiAdapter.SettingListAgent, *coreApiAdapter.SettingListAgentSetting) {
+	for i := range list {
+		if list[i].Agent != nil && list[i].Agent.ID == agentFK {
 			return list[i].Agent, list[i].Setting
 		}
 	}
