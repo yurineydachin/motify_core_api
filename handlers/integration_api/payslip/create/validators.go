@@ -1,30 +1,46 @@
 package payslip_create
 
+import (
+	"motify_core_api/utils/validators"
+)
+
 func validateEmail(r RowArgs) (Row, uint64) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
+	errCount := uint64(0)
+	if !validators.IsValidEmail(*r.Text) {
+		errCount++
+	}
 	return Row{
 		Text: *r.Text,
-	}, 0
+	}, errCount
 }
 
 func validatePhone(r RowArgs) (Row, uint64) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
+	errCount := uint64(0)
+	if !validators.IsValidPhone(*r.Text) {
+		errCount++
+	}
 	return Row{
 		Text: *r.Text,
-	}, 0
+	}, errCount
 }
 
 func validateUrl(r RowArgs) (Row, uint64) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
+	errCount := uint64(0)
+	if !validators.IsValidUrl(*r.Text) {
+		errCount++
+	}
 	return Row{
 		Text: *r.Text,
-	}, 0
+	}, errCount
 }
 
 func validateText(r RowArgs) (Row, uint64) {
@@ -67,19 +83,30 @@ func validateDate(r RowArgs) (Row, uint64) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
+	errCount := uint64(0)
+	if !validators.IsValidDatetime(*r.Text) {
+		errCount++
+	}
 	return Row{
 		Text: *r.Text,
-	}, 0
+	}, errCount
 }
 
 func validateDateRange(r RowArgs) (Row, uint64) {
 	if r.DateFrom == nil || r.DateTo == nil {
 		return Row{}, 1
 	}
+	errCount := uint64(0)
+	if !validators.IsValidDatetime(*r.DateFrom) {
+		errCount++
+	}
+	if !validators.IsValidDatetime(*r.DateTo) {
+		errCount++
+	}
 	return Row{
 		DateFrom: *r.DateFrom,
 		DateTo:   *r.DateTo,
-	}, 0
+	}, errCount
 }
 
 func validatePerson(r RowArgs) (Row, uint64) {
