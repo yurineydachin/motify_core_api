@@ -232,11 +232,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, v1Errors.USER_AGENT_NOT_FOUND
 	}
 
-	opts.Payslip.addEmployer(agent)
-	opts.Payslip.addEmployee(dataEmp.Employee)
-	opts.Payslip.addPersonPreparedBy(userData.User)
-	opts.Payslip.addCompanyProceccedBy(agentProcessed)
-
 	payslipData, errCount := opts.Payslip.toPayslipData()
 
 	if errCount > 0 {
@@ -252,6 +247,11 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			},
 		}, nil
 	}
+
+	payslipData.addEmployer(agent)
+	payslipData.addEmployee(dataEmp.Employee)
+	payslipData.addPersonPreparedBy(userData.User)
+	payslipData.addCompanyProceccedBy(agentProcessed)
 
 	payslipDataText, err := json.Marshal(payslipData)
 	if err != nil {

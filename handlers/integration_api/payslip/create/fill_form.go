@@ -6,7 +6,7 @@ import (
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 )
 
-func (p *PayslipArgs) getSectionTypes() map[string]bool {
+func (p *PayslipData) getSectionTypes() map[string]bool {
 	res := make(map[string]bool, len(p.Sections))
 	for i := range p.Sections {
 		res[strings.ToLower(p.Sections[i].Type)] = true
@@ -14,7 +14,7 @@ func (p *PayslipArgs) getSectionTypes() map[string]bool {
 	return res
 }
 
-func (p *PayslipArgs) addEmployer(agent *coreApiAdapter.SettingListAgent) {
+func (p *PayslipData) addEmployer(agent *coreApiAdapter.SettingListAgent) {
 	if agent == nil {
 		return
 	}
@@ -22,52 +22,52 @@ func (p *PayslipArgs) addEmployer(agent *coreApiAdapter.SettingListAgent) {
 	if _, exists := sections[SectionCompanySender]; exists {
 		return
 	}
-	agentContactsRows := make([]RowArgs, 0, 4)
+	agentContactsRows := make([]Row, 0, 4)
 	if agent.Phone != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowPhone,
-			Text:  &agent.Phone,
+			Text:  agent.Phone,
 			Title: "Phone",
 		})
 	}
 	if agent.Email != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowEmail,
-			Text:  &agent.Email,
+			Text:  agent.Email,
 			Title: "Email",
 		})
 	}
 	if agent.Address != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowText,
-			Text:  &agent.Address,
+			Text:  agent.Address,
 			Title: "Address",
 		})
 	}
 	if agent.Site != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowUrl,
-			Text:  &agent.Site,
+			Text:  agent.Site,
 			Title: "Site",
 		})
 	}
-	p.Sections = append(p.Sections, SectionArgs{
+	p.Sections = append(p.Sections, Section{
 		Type:  SectionCompanySender,
 		Title: "EMPLOYER",
-		Rows: []RowArgs{
+		Rows: []Row{
 			{
 				Type:        RowCompany,
 				Title:       agent.Name,
-				Avatar:      &agent.Logo,
-				BGImage:     &agent.Background,
-				Description: &agent.Description,
-				Children:    &agentContactsRows,
+				Avatar:      agent.Logo,
+				BGImage:     agent.Background,
+				Description: agent.Description,
+				Children:    agentContactsRows,
 			},
 		},
 	})
 }
 
-func (p *PayslipArgs) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
+func (p *PayslipData) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
 	if emp == nil {
 		return
 	}
@@ -76,10 +76,10 @@ func (p *PayslipArgs) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
 		return
 	}
 	numberOfDep := int64(emp.NumberOfDepandants)
-	empDetailsRows := []RowArgs{
+	empDetailsRows := []Row{
 		{
 			Type:  RowText,
-			Text:  &emp.Code,
+			Text:  emp.Code,
 			Title: "Employee code",
 		},
 		{
@@ -94,28 +94,28 @@ func (p *PayslipArgs) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
 		},
 	}
 	if emp.HireDate != "" {
-		empDetailsRows = append(empDetailsRows, RowArgs{
+		empDetailsRows = append(empDetailsRows, Row{
 			Type:  RowText,
-			Text:  &emp.HireDate,
+			Text:  emp.HireDate,
 			Title: "HireDate",
 		})
 	}
-	p.Sections = append(p.Sections, SectionArgs{
+	p.Sections = append(p.Sections, Section{
 		Type:  SectionPersonReceiver,
 		Title: "EMPLOYEE",
-		Rows: []RowArgs{
+		Rows: []Row{
 			{
 				Type:  RowPerson,
 				Title: emp.Name,
 				//Avatar: user.Awatar,
 				//Footnote: "* Employee details are relevant to this payslip only",
-				Children: &empDetailsRows,
+				Children: empDetailsRows,
 			},
 		},
 	})
 }
 
-func (p *PayslipArgs) addPersonPreparedBy(user *coreApiAdapter.UserUpdateUser) {
+func (p *PayslipData) addPersonPreparedBy(user *coreApiAdapter.UserUpdateUser) {
 	if user == nil {
 		return
 	}
@@ -123,39 +123,39 @@ func (p *PayslipArgs) addPersonPreparedBy(user *coreApiAdapter.UserUpdateUser) {
 	if _, exists := sections[SectionPersonProcesser]; exists {
 		return
 	}
-	userDetailsRows := make([]RowArgs, 0, 2)
+	userDetailsRows := make([]Row, 0, 2)
 	if user.Phone != "" {
-		userDetailsRows = append(userDetailsRows, RowArgs{
+		userDetailsRows = append(userDetailsRows, Row{
 			Type:  RowPhone,
-			Text:  &user.Phone,
+			Text:  user.Phone,
 			Title: "Phone",
 		})
 	}
 	if user.Email != "" {
-		userDetailsRows = append(userDetailsRows, RowArgs{
+		userDetailsRows = append(userDetailsRows, Row{
 			Type:  RowEmail,
-			Text:  &user.Email,
+			Text:  user.Email,
 			Title: "Email",
 		})
 	}
-	p.Sections = append(p.Sections, SectionArgs{
+	p.Sections = append(p.Sections, Section{
 		Type:  SectionPersonProcesser,
 		Title: "PREPARED BY",
-		Rows: []RowArgs{
+		Rows: []Row{
 			{
 				Type:        RowPerson,
 				Title:       user.Name,
-				Avatar:      &user.Awatar,
-				Role:        &user.Short,
-				Description: &user.Description,
+				Avatar:      user.Awatar,
+				Role:        user.Short,
+				Description: user.Description,
 				//Footnote: "* Employee details are relevant to this payslip only",
-				Children: &userDetailsRows,
+				Children: userDetailsRows,
 			},
 		},
 	})
 }
 
-func (p *PayslipArgs) addCompanyProceccedBy(agent *coreApiAdapter.SettingListAgent) {
+func (p *PayslipData) addCompanyProceccedBy(agent *coreApiAdapter.SettingListAgent) {
 	if agent == nil {
 		return
 	}
@@ -163,46 +163,46 @@ func (p *PayslipArgs) addCompanyProceccedBy(agent *coreApiAdapter.SettingListAge
 	if _, exists := sections[SectionCompanyProcesser]; exists {
 		return
 	}
-	agentContactsRows := make([]RowArgs, 0, 4)
+	agentContactsRows := make([]Row, 0, 4)
 	if agent.Phone != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowPhone,
-			Text:  &agent.Phone,
+			Text:  agent.Phone,
 			Title: "Phone",
 		})
 	}
 	if agent.Email != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowEmail,
-			Text:  &agent.Email,
+			Text:  agent.Email,
 			Title: "Email",
 		})
 	}
 	if agent.Address != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowText,
-			Text:  &agent.Address,
+			Text:  agent.Address,
 			Title: "Address",
 		})
 	}
 	if agent.Site != "" {
-		agentContactsRows = append(agentContactsRows, RowArgs{
+		agentContactsRows = append(agentContactsRows, Row{
 			Type:  RowUrl,
-			Text:  &agent.Site,
+			Text:  agent.Site,
 			Title: "Site",
 		})
 	}
-	p.Sections = append(p.Sections, SectionArgs{
+	p.Sections = append(p.Sections, Section{
 		Type:  SectionCompanyProcesser,
 		Title: "PROCESSED BY",
-		Rows: []RowArgs{
+		Rows: []Row{
 			{
 				Type:        RowCompany,
 				Title:       agent.Name,
-				Avatar:      &agent.Logo,
-				BGImage:     &agent.Background,
-				Description: &agent.Description,
-				Children:    &agentContactsRows,
+				Avatar:      agent.Logo,
+				BGImage:     agent.Background,
+				Description: agent.Description,
+				Children:    agentContactsRows,
 			},
 		},
 	})
