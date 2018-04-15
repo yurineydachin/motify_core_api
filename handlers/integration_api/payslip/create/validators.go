@@ -111,22 +111,33 @@ func validateDateRange(r RowArgs) (Row, int) {
 
 func validatePerson(r RowArgs) (Row, int) {
 	res := Row{}
+	errCount := 0
 	if r.Avatar != nil {
+		if !validators.IsValidUrl(*r.Avatar) {
+			errCount++
+		}
 		res.Avatar = *r.Avatar
 	}
 	if r.Role != nil {
 		res.Role = *r.Role
 	}
-	return res, 0
+	return res, errCount
 }
 
 func validateCompany(r RowArgs) (Row, int) {
 	res := Row{}
+	errCount := 0
 	if r.Avatar != nil {
+		if !validators.IsValidUrl(*r.Avatar) {
+			errCount++
+		}
 		res.Avatar = *r.Avatar
 	}
 	if r.BGImage != nil {
+		if !validators.IsValidUrl(*r.BGImage) {
+			errCount++
+		}
 		res.BGImage = *r.BGImage
 	}
-	return res, 0
+	return res, errCount
 }
