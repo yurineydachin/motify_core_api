@@ -67,7 +67,7 @@ func (p *PayslipData) addEmployer(agent *coreApiAdapter.SettingListAgent) {
 	})
 }
 
-func (p *PayslipData) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
+func (p *PayslipData) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee, user *coreApiAdapter.UserUpdateUser) {
 	if emp == nil {
 		return
 	}
@@ -105,9 +105,9 @@ func (p *PayslipData) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee) {
 		Title: "EMPLOYEE",
 		Rows: []Row{
 			{
-				Type:  RowPerson,
-				Title: emp.Name,
-				//Avatar: user.Awatar,
+				Type:   RowPerson,
+				Title:  emp.Name,
+				Avatar: user.Awatar,
 				//Footnote: "* Employee details are relevant to this payslip only",
 				Children: empDetailsRows,
 			},

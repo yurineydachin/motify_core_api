@@ -4,11 +4,11 @@ import (
 	"motify_core_api/utils/validators"
 )
 
-func validateEmail(r RowArgs) (Row, uint64) {
+func validateEmail(r RowArgs) (Row, int) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
-	errCount := uint64(0)
+	errCount := 0
 	if !validators.IsValidEmail(*r.Text) {
 		errCount++
 	}
@@ -17,11 +17,11 @@ func validateEmail(r RowArgs) (Row, uint64) {
 	}, errCount
 }
 
-func validatePhone(r RowArgs) (Row, uint64) {
+func validatePhone(r RowArgs) (Row, int) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
-	errCount := uint64(0)
+	errCount := 0
 	if !validators.IsValidPhone(*r.Text) {
 		errCount++
 	}
@@ -30,11 +30,11 @@ func validatePhone(r RowArgs) (Row, uint64) {
 	}, errCount
 }
 
-func validateUrl(r RowArgs) (Row, uint64) {
+func validateUrl(r RowArgs) (Row, int) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
-	errCount := uint64(0)
+	errCount := 0
 	if !validators.IsValidUrl(*r.Text) {
 		errCount++
 	}
@@ -43,7 +43,7 @@ func validateUrl(r RowArgs) (Row, uint64) {
 	}, errCount
 }
 
-func validateText(r RowArgs) (Row, uint64) {
+func validateText(r RowArgs) (Row, int) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
@@ -52,7 +52,7 @@ func validateText(r RowArgs) (Row, uint64) {
 	}, 0
 }
 
-func validateCurrency(r RowArgs) (Row, uint64) {
+func validateCurrency(r RowArgs) (Row, int) {
 	if r.Amount == nil {
 		return Row{}, 1
 	}
@@ -61,7 +61,7 @@ func validateCurrency(r RowArgs) (Row, uint64) {
 	}, 0
 }
 
-func validateInt(r RowArgs) (Row, uint64) {
+func validateInt(r RowArgs) (Row, int) {
 	if r.Int == nil {
 		return Row{}, 1
 	}
@@ -70,7 +70,7 @@ func validateInt(r RowArgs) (Row, uint64) {
 	}, 0
 }
 
-func validateFloat(r RowArgs) (Row, uint64) {
+func validateFloat(r RowArgs) (Row, int) {
 	if r.Float == nil {
 		return Row{}, 1
 	}
@@ -79,11 +79,11 @@ func validateFloat(r RowArgs) (Row, uint64) {
 	}, 0
 }
 
-func validateDate(r RowArgs) (Row, uint64) {
+func validateDate(r RowArgs) (Row, int) {
 	if r.Text == nil {
 		return Row{}, 1
 	}
-	errCount := uint64(0)
+	errCount := 0
 	if !validators.IsValidDatetime(*r.Text) {
 		errCount++
 	}
@@ -92,11 +92,11 @@ func validateDate(r RowArgs) (Row, uint64) {
 	}, errCount
 }
 
-func validateDateRange(r RowArgs) (Row, uint64) {
+func validateDateRange(r RowArgs) (Row, int) {
 	if r.DateFrom == nil || r.DateTo == nil {
 		return Row{}, 1
 	}
-	errCount := uint64(0)
+	errCount := 0
 	if !validators.IsValidDatetime(*r.DateFrom) {
 		errCount++
 	}
@@ -109,7 +109,7 @@ func validateDateRange(r RowArgs) (Row, uint64) {
 	}, errCount
 }
 
-func validatePerson(r RowArgs) (Row, uint64) {
+func validatePerson(r RowArgs) (Row, int) {
 	res := Row{}
 	if r.Avatar != nil {
 		res.Avatar = *r.Avatar
@@ -120,7 +120,7 @@ func validatePerson(r RowArgs) (Row, uint64) {
 	return res, 0
 }
 
-func validateCompany(r RowArgs) (Row, uint64) {
+func validateCompany(r RowArgs) (Row, int) {
 	res := Row{}
 	if r.Avatar != nil {
 		res.Avatar = *r.Avatar

@@ -31,7 +31,7 @@ const (
 	RowCompany   = "company"
 )
 
-var rowTypes = map[string]func(RowArgs) (Row, uint64){
+var rowTypes = map[string]func(RowArgs) (Row, int){
 	RowEmail:     validateEmail,
 	RowPhone:     validatePhone,
 	RowUrl:       validateUrl,
@@ -173,6 +173,7 @@ type Row struct {
 
 type V1ErrorTypes struct {
 	CREATE_FAILED         error `text:"creating payslip is failed"`
+	MOBILE_USER_NOT_FOUND error `text:"mobile user not found"`
 	USER_AGENT_NOT_FOUND  error `text:"user agent not found"`
 	AGENT_NOT_FOUND       error `text:"agent not found"`
 	EMPLOYEE_NOT_FOUND    error `text:"employee not found"`
@@ -232,6 +233,16 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		return nil, v1Errors.USER_AGENT_NOT_FOUND
 	}
 
+	var userMobile *coreApiAdapter.UserUpdateUser
+	if dataEmp.Employee.UserFK != nil && *dataEmp.Employee.UserFK > 0 {
+		userCoreOpts.ID = *dataEmp.Employee.UserFK
+		userMobileData, err := handler.coreApi.UserUpdateV1(ctx, userCoreOpts)
+		if err != nil || userMobileData.User == nil {
+			return nil, v1Errors.MOBILE_USER_NOT_FOUND
+		}
+		userMobile = userMobileData.User
+	}
+
 	payslipData, errCount := opts.Payslip.toPayslipData()
 
 	if errCount > 0 {
@@ -249,7 +260,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	}
 
 	payslipData.addEmployer(agent)
-	payslipData.addEmployee(dataEmp.Employee)
+	payslipData.addEmployee(dataEmp.Employee, userMobile)
 	payslipData.addPersonPreparedBy(userData.User)
 	payslipData.addCompanyProceccedBy(agentProcessed)
 
