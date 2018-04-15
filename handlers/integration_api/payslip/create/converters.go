@@ -6,6 +6,9 @@ import (
 )
 
 func getErrorCountMessage(cnt int) string {
+	if cnt <= 0 {
+		return ""
+	}
 	return fmt.Sprintf("Errors: %d", cnt)
 }
 
@@ -18,14 +21,12 @@ func (p *PayslipArgs) toPayslipData() (*PayslipData, int) {
 		sections = append(sections, s)
 	}
 	res := &PayslipData{
+		Status:      getErrorCountMessage(errTotalCount),
 		Transaction: t,
 		Sections:    sections,
 	}
 	if p.Footnote != nil {
 		res.Footnote = *p.Footnote
-	}
-	if errTotalCount > 0 {
-		res.Status = getErrorCountMessage(errTotalCount)
 	}
 	return res, errTotalCount
 }
@@ -39,58 +40,51 @@ func (t TransactionArgs) toTransaction() (Transaction, int) {
 		sections = append(sections, s)
 	}
 	res := Transaction{
+		Status:      getErrorCountMessage(errTotalCount),
 		Description: t.Description,
 		Sections:    sections,
-	}
-	if errTotalCount > 0 {
-		res.Status = getErrorCountMessage(errTotalCount)
 	}
 	return res, errTotalCount
 }
 
 func (s TransactionSectionArgs) toTransactionSection() (TransactionSection, int) {
-	rows := make([]Row, 0, len(s.Rows))
-	errTotalCount := 0
-	for i := range s.Rows {
-		r, errCount := s.Rows[i].toRow()
-		errTotalCount += errCount
-		rows = append(rows, r)
-	}
-	res := TransactionSection{
-		Title: s.Title,
-		Rows:  rows,
+	rows, errTotalCount := rowArgsListToRowList(&s.Rows)
+	errorMessages := []string{}
+	if len(rows) == 0 {
+		errorMessages = append(errorMessages, "No section rows")
+		errTotalCount++
 	}
 	if errTotalCount > 0 {
-		res.Status = getErrorCountMessage(errTotalCount)
+		errorMessages = append(errorMessages, getErrorCountMessage(errTotalCount))
 	}
-	return res, errTotalCount
+	return TransactionSection{
+		Status: strings.Join(errorMessages, ", "),
+		Title:  s.Title,
+		Rows:   rows,
+	}, errTotalCount
 }
 
 func (s SectionArgs) toSection() (Section, int) {
-	rows := make([]Row, 0, len(s.Rows))
-	errTotalCount := 0
-	for i := range s.Rows {
-		r, errCount := s.Rows[i].toRow()
-		errTotalCount += errCount
-		rows = append(rows, r)
-	}
+	rows, errTotalCount := rowArgsListToRowList(&s.Rows)
 	res := Section{
-		Title:  s.Title,
 		Type:   strings.ToLower(s.Type),
-		Rows:   rows,
+		Title:  s.Title,
 		Amount: s.Amount,
+		Rows:   rows,
 	}
-	if errTotalCount > 0 {
-		res.Status = getErrorCountMessage(errTotalCount)
+	errorMessages := []string{}
+	if len(rows) == 0 {
+		errorMessages = append(errorMessages, "No section rows")
+		errTotalCount++
 	}
 	if t, ok := sectionTypes[res.Type]; !ok || !t {
-		message := fmt.Sprintf("Wrong section_type: %s", res.Type)
-		if res.Status != "" {
-			res.Status += ", " + message
-		} else {
-			res.Status = message
-		}
+		errTotalCount++
+		errorMessages = append(errorMessages, fmt.Sprintf("Wrong section_type: %s", res.Type))
 	}
+	if errTotalCount > 0 {
+		errorMessages = append(errorMessages, getErrorCountMessage(errTotalCount))
+	}
+	res.Status = strings.Join(errorMessages, ", ")
 	if s.Term != nil && *s.Term != "" {
 		res.Term = *s.Term
 	}
@@ -129,6 +123,7 @@ func (r RowArgs) toRow() (Row, int) {
 	rowChildren, errCount := rowArgsListToRowList(r.Children)
 	errTotalCount += errCount
 
+	res.Status = getErrorCountMessage(errTotalCount)
 	res.Title = r.Title
 	res.Type = t
 	res.Children = rowChildren
@@ -140,9 +135,6 @@ func (r RowArgs) toRow() (Row, int) {
 	}
 	if r.Footnote != nil {
 		res.Footnote = *r.Footnote
-	}
-	if errTotalCount > 0 {
-		res.Status = getErrorCountMessage(errTotalCount)
 	}
 	return res, errTotalCount
 }

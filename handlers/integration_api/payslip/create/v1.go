@@ -17,6 +17,8 @@ const (
 	SectionPersonProcesser  = "person_processer"
 	SectionCompanySender    = "company_sender"
 	SectionCompanyProcesser = "company_processer"
+	SectionDetails          = "details"
+	SectionPayslip          = "payslip"
 
 	RowEmail     = "email"
 	RowPhone     = "phone"
@@ -50,8 +52,8 @@ var sectionTypes = map[string]bool{
 	SectionPersonProcesser:  true,
 	SectionCompanySender:    true,
 	SectionCompanyProcesser: true,
-	"details":               true,
-	"payslip":               true,
+	SectionDetails:          true,
+	SectionPayslip:          true,
 }
 
 type V1Args struct {
