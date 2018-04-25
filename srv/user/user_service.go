@@ -152,6 +152,17 @@ func (service *UserService) IsEmailOrPhoneBusy(ctx context.Context, login string
 	return false, nil
 }
 
+func (service *UserService) GetUserIDByLogin(ctx context.Context, login string) (uint64, error) {
+	accessList, err := service.getUserAssessListByLogin(login)
+	if err != nil {
+		return 0, err
+	}
+	if len(accessList) == 0 || len(accessList) > 1 {
+		return 0, nil
+	}
+	return accessList[0].UserFK, nil
+}
+
 func (service *UserService) Authentificate(ctx context.Context, login, password string) (uint64, error) {
 	accessList, err := service.getUserAssessListByLoginAndPass(login, password)
 	if err != nil {
