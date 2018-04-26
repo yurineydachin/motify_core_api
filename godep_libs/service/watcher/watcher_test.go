@@ -1,7 +1,7 @@
 package watcher_test
 
 import (
-	"godep.lzd.co/service/watcher"
+	"motify_core_api/godep_libs/service/watcher"
 	"testing"
 	"time"
 )

@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/mobapi_lib/logger"
-	"godep.lzd.co/mobapi_lib/watcher"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
+	"motify_core_api/godep_libs/mobapi_lib/watcher"
 )
 
 type SelfRescuingFile struct {

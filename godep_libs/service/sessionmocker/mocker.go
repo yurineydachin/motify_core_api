@@ -12,9 +12,9 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/logger"
-	"godep.lzd.co/service/watcher"
+	"motify_core_api/godep_libs/service/config"
+	"motify_core_api/godep_libs/service/logger"
+	"motify_core_api/godep_libs/service/watcher"
 )
 
 type Mocker struct {

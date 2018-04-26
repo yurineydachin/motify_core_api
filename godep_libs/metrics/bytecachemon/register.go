@@ -6,7 +6,7 @@
 package bytecachemon
 
 import (
-	"godep.lzd.co/metrics"
+	"motify_core_api/godep_libs/metrics"
 
 	"github.com/prometheus/client_golang/prometheus"
 )

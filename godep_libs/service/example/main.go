@@ -1,15 +1,15 @@
 package main
 
 import (
-	"godep.lzd.co/service"
-	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/dconfig"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service"
+	"motify_core_api/godep_libs/service/config"
+	"motify_core_api/godep_libs/service/dconfig"
+	"motify_core_api/godep_libs/service/logger"
 
-	resourceSearchEngine "godep.lzd.co/service/example/resources/searchengine"
+	resourceSearchEngine "motify_core_api/godep_libs/service/example/resources/searchengine"
 
-	handlerHelloWorld "godep.lzd.co/service/example/handlers/hello/world"
-	handlerSearchGoogle "godep.lzd.co/service/example/handlers/search/google"
+	handlerHelloWorld "motify_core_api/godep_libs/service/example/handlers/hello/world"
+	handlerSearchGoogle "motify_core_api/godep_libs/service/example/handlers/search/google"
 )
 
 const serviceName = "Example"
@@ -53,12 +53,12 @@ func main() {
 		TransportCache: cache,
 		ProxyClient:    proxy,
 	}
-	srvc := service.NewWithOpts(serviceName, "godep.lzd.co/service/example/handlers", opts)
+	srvc := service.NewWithOpts(serviceName, "motify_core_api/godep_libs/service/example/handlers", opts)
 
 	srvc.RegisterResource(cache)
 	*/
 
-	srvc := service.New(serviceName, "godep.lzd.co/service/example/handlers")
+	srvc := service.New(serviceName, "motify_core_api/godep_libs/service/example/handlers")
 
 	se := &resourceSearchEngine.SearchEngine{}
 	srvc.RegisterResource(se)

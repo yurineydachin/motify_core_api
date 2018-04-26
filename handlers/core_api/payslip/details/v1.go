@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 type v1Args struct {

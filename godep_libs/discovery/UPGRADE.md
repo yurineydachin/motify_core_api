@@ -35,7 +35,7 @@ To install etcd3 provider you simply pass [`etcd3.Client`](https://godoc.org/git
 
 ```golang
 
-import "godep.lzd.co/discovery/provider/etcdV3"
+import "motify_core_api/godep_libs/discovery/provider/etcdV3"
 
 ...
 
@@ -128,7 +128,7 @@ There is special registrator implementation all services **MUST** use, enabling 
 
 ```golang
 import (
-    "godep.lzd.co/discovery/registrator"
+    "motify_core_api/godep_libs/discovery/registrator"
 
 )
 

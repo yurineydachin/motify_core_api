@@ -20,7 +20,7 @@ import (
 
 	"github.com/coreos/etcd/client"
 
-	"godep.lzd.co/etcd"
+	"motify_core_api/godep_libs/etcd"
 )
 
 const REAL_RUN = false

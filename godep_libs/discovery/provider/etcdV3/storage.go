@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"strings"
 
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // serviceKey represents storage key structure

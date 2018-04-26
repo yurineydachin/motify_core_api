@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"godep.lzd.co/discovery/locator"
+	"motify_core_api/godep_libs/discovery/locator"
 )
 
 func TestStats_Create(t *testing.T) {

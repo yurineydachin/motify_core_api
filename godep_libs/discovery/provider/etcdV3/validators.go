@@ -3,7 +3,7 @@ package etcdV3
 import (
 	"fmt"
 
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 func validateRegistrationData(kvs ...provider.KV) error {

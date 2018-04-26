@@ -1,4 +1,4 @@
-// backport of godep.lzd.co/go-cache for using `metrics` library
+// backport of motify_core_api/godep_libs/go-cache for using `metrics` library
 package cache
 
 import (

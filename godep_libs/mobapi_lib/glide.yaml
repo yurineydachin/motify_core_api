@@ -1,6 +1,6 @@
-package: godep.lzd.co/mobapi_lib
+package: motify_core_api/godep_libs/mobapi_lib
 import:
-- package: godep.lzd.co/discovery
+- package: motify_core_api/godep_libs/discovery
   version: ^4.4.2
   subpackages:
   - balancer
@@ -9,11 +9,11 @@ import:
   - locator
   - provider
   - provider/etcdV3
-- package: godep.lzd.co/metrics
+- package: motify_core_api/godep_libs/metrics
   version: ^1.14
-- package: godep.lzd.co/goprof
+- package: motify_core_api/godep_libs/goprof
   version: 1.2.0
-- package: godep.lzd.co/etcd
+- package: motify_core_api/godep_libs/etcd
   version: ^1.1.1
 - package: github.com/coreos/etcd
   version: ^3.2.4
@@ -30,15 +30,15 @@ import:
   - transport/http_json
   - transport/http_json/adapter
 - package: github.com/vaughan0/go-ini
-- package: godep.lzd.co/go-trace
+- package: motify_core_api/godep_libs/go-trace
   version: ^5.0.0
 - package: github.com/prometheus/client_golang/prometheus
   version: 0.8.0
-- package: godep.lzd.co/go-config
+- package: motify_core_api/godep_libs/go-config
   version: 1.0.3
-- package: godep.lzd.co/go-dconfig
+- package: motify_core_api/godep_libs/go-dconfig
   version: ^2.0.0
-- package: godep.lzd.co/go-log
+- package: motify_core_api/godep_libs/go-log
   version: ^3.8.0
-- package: godep.lzd.co/go-healthcheck
+- package: motify_core_api/godep_libs/go-healthcheck
   version: ^2.0.0

@@ -6,9 +6,9 @@ import (
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 
-	gocache "godep.lzd.co/service/cache"
-	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/dconfig"
+	gocache "motify_core_api/godep_libs/service/cache"
+	"motify_core_api/godep_libs/service/config"
+	"motify_core_api/godep_libs/service/dconfig"
 )
 
 type StructCache struct {

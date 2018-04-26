@@ -4,8 +4,8 @@ import (
 	"errors"
 	"testing"
 
-	"godep.lzd.co/awg"
-	"godep.lzd.co/go-config"
+	"motify_core_api/godep_libs/awg"
+	"motify_core_api/godep_libs/go-config"
 )
 
 func init() {

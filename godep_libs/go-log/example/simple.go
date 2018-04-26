@@ -7,7 +7,7 @@ import (
 	"sync/atomic"
 	"time"
 
-	"godep.lzd.co/go-log"
+	"motify_core_api/godep_libs/go-log"
 )
 
 var network = flag.String("network", "unixgram", `Known networks are:

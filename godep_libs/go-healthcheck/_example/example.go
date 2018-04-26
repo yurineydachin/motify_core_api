@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	"godep.lzd.co/go-healthcheck"
-	"godep.lzd.co/rabbit"
+	"motify_core_api/godep_libs/go-healthcheck"
+	"motify_core_api/godep_libs/rabbit"
 )
 
 // FIND MORE RESOURCE CHECKERS

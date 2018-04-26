@@ -2,7 +2,7 @@ package inmem_test
 
 import (
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/mobapi_lib/cache/inmem"
+	"motify_core_api/godep_libs/mobapi_lib/cache/inmem"
 	"log"
 	"strconv"
 	"sync"

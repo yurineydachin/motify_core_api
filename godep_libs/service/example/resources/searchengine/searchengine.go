@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/url"
 
-	"godep.lzd.co/service/interfaces"
+	"motify_core_api/godep_libs/service/interfaces"
 )
 
 type SearchEngine struct {

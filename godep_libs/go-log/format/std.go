@@ -11,7 +11,7 @@ import (
 	"bytes"
 
 	"github.com/mailru/easyjson/jwriter"
-	"godep.lzd.co/go-log/internal"
+	"motify_core_api/godep_libs/go-log/internal"
 )
 
 const NO_STACK_TRACE_INFO = -1

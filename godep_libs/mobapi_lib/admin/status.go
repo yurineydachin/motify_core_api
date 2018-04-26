@@ -2,7 +2,7 @@ package admin
 
 import (
 	"encoding/json"
-	"godep.lzd.co/mobapi_lib/resources"
+	"motify_core_api/godep_libs/mobapi_lib/resources"
 	"net/http"
 )
 

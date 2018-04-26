@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"sync"
 
-	"godep.lzd.co/discovery"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // IRegistrator is an interface handling registration in Service Discovery, implementing new standard

@@ -10,9 +10,9 @@ import (
 
 	"github.com/go-sql-driver/mysql" // we just need it here due design
 	"github.com/jmoiron/sqlx"
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/mysqlmon"
-	"godep.lzd.co/service/interfaces"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/mysqlmon"
+	"motify_core_api/godep_libs/service/interfaces"
 )
 
 const (

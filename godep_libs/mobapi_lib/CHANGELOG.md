@@ -1,10 +1,10 @@
 ## [3.2.0] - 2017-10-09
 ### Added
-- [`godep.lzd.co/etcd`](https://bitbucket.lzd.co/projects/GOLIBS/repos/etcd) `^1.1.1` integrated. It provides an ability to use SSL connection between service and ETCD.
+- [`motify_core_api/godep_libs/etcd`](https://bitbucket.lzd.co/projects/GOLIBS/repos/etcd) `^1.1.1` integrated. It provides an ability to use SSL connection between service and ETCD.
 
 ### Changed
 - [`github.com/coreos/etcd`](https://github.com/coreos/etcd) updated: `^3.2.4`
-- [`godep.lzd.co/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log) updated: `^3.8.0`. Use logger.Flush() method instead of timer.
+- [`motify_core_api/godep_libs/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log) updated: `^3.8.0`. Use logger.Flush() method instead of timer.
 
 ## [3.1.1] - 2017-09-01
 ### Changed
@@ -32,7 +32,7 @@ func (handler *Bar) V1(ctx context.Context, opts *V1Opts) (*V1Ret, error) {
 
 ## [3.0.0] - 2017-07-28
 ### Changed
-- [`godep.lzd.co/go-healthcheck`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-healthcheck) updated up to new major version 2
+- [`motify_core_api/godep_libs/go-healthcheck`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-healthcheck) updated up to new major version 2
 - Some methods and variables have removed or signature changed (check [upgrade guide](https://bitbucket.lzd.co/projects/GOLIBS/repos/mobapi_lib/browse/UPGRADEv3.md) for details)
 - `AppVersion`, `BuildDate`, `GoVersion` and `GitDescribe` are required. It could fail your UT.
 
@@ -47,7 +47,7 @@ func (handler *Bar) V1(ctx context.Context, opts *V1Opts) (*V1Ret, error) {
 ### Fixed
 - File descriptors leak in [go-log](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log/commits/00267ec061aa7d77b7adcfc5313a4b90f8e27c0c) library fixed
 ### Changed
--  [`godep.lzd.co/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log/browse) dependency updated up to `^3.0.1`
+-  [`motify_core_api/godep_libs/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log/browse) dependency updated up to `^3.0.1`
 
 ## [2.0.1] - 2017-06-01
 ### Fixed
@@ -57,20 +57,20 @@ func (handler *Bar) V1(ctx context.Context, opts *V1Opts) (*V1Ret, error) {
 
 ## [2.0.0] - 2017-05-26
 ### Changed
-- [`godep.lzd.co/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) dependency updated up to new major version `^4.0.0`
+- [`motify_core_api/godep_libs/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) dependency updated up to new major version `^4.0.0`
 - More information about migration to new discovery: https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse/UPGRADE.md?at=refs%2Fheads%2FGOLIBS-1080
 
 ## [1.9.0] - 2017-05-02
 ### Added
 - Ability to add gRPC external service (AddExternalGRPCService() method)
 ### Changed
--  [`godep.lzd.co/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) dependency updated up to `^3.5.0`
+-  [`motify_core_api/godep_libs/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) dependency updated up to `^3.5.0`
 
 
 ## [1.8.0] - 2017-04-24
 ### Changed
--  [`godep.lzd.co/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log/browse) dependency updated up to new major version `^3.0.0`
--  [`godep.lzd.co/go-trace`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-trace/browse) dependency updated up to new minor version `^4.5.0`
+-  [`motify_core_api/godep_libs/go-log`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-log/browse) dependency updated up to new major version `^3.0.0`
+-  [`motify_core_api/godep_libs/go-trace`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-trace/browse) dependency updated up to new minor version `^4.5.0`
 
 
 ## [1.7.0] - 2017-04-19
@@ -88,7 +88,7 @@ func (handler *Bar) V1(ctx context.Context, opts *V1Opts) (*V1Ret, error) {
 - Service registers itself in ETCD v3 by default
 
 ### Changed
-- Dependencies version changed: [`godep.lzd.co/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) `~3.3.0`, [`github.com/coreos/etcd`](https://github.com/coreos/etcd) `^v3.1.0`
+- Dependencies version changed: [`motify_core_api/godep_libs/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) `~3.3.0`, [`github.com/coreos/etcd`](https://github.com/coreos/etcd) `^v3.1.0`
 
 
 ## [1.5.3] - 2017-04-10

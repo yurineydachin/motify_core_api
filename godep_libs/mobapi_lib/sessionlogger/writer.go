@@ -10,9 +10,9 @@ import (
 	"time"
 
 	"github.com/davecgh/go-spew/spew"
-	"godep.lzd.co/mobapi_lib/logger"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/file"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/uniq_dumper"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/file"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/uniq_dumper"
 	"html"
 )
 

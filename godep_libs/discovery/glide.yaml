@@ -1,4 +1,4 @@
-package: godep.lzd.co/discovery
+package: motify_core_api/godep_libs/discovery
 import:
 - package: github.com/coreos/etcd
   version: ~3.2.4

@@ -1,7 +1,7 @@
 package k8s
 
 import (
-	"godep.lzd.co/service/config"
+	"motify_core_api/godep_libs/service/config"
 	"os"
 )
 

@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"godep.lzd.co/service/logger"
-	"godep.lzd.co/service/sessionlogger"
-	"godep.lzd.co/service/sessionlogger/libs/uniq_dumper"
+	"motify_core_api/godep_libs/service/logger"
+	"motify_core_api/godep_libs/service/sessionlogger"
+	"motify_core_api/godep_libs/service/sessionlogger/libs/uniq_dumper"
 )
 
 const noData = "NO_DATA\n"

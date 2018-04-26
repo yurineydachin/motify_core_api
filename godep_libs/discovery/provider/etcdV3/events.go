@@ -6,7 +6,7 @@ import (
 
 	"github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/mvcc/mvccpb"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 var eventTypes = map[mvccpb.Event_EventType]provider.EventType{

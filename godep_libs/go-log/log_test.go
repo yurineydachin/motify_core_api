@@ -12,8 +12,8 @@ import (
 	"testing"
 	"time"
 
-	"godep.lzd.co/go-log/format"
-	"godep.lzd.co/go-log/internal"
+	"motify_core_api/godep_libs/go-log/format"
+	"motify_core_api/godep_libs/go-log/internal"
 )
 
 var interceptorLogger, discardLogger, traceLogger *Logger

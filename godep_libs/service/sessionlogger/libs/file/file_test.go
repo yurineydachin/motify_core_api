@@ -2,7 +2,7 @@ package file
 
 import (
 	"fmt"
-	"godep.lzd.co/service/sessionlogger/libs/testutils"
+	"motify_core_api/godep_libs/service/sessionlogger/libs/testutils"
 	"io/ioutil"
 	"os"
 	"path"

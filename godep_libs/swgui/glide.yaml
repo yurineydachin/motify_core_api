@@ -1,4 +1,4 @@
-package: godep.lzd.co/swgui
+package: motify_core_api/godep_libs/swgui
 import:
 - package: github.com/elazarl/go-bindata-assetfs
   version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2

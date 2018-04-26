@@ -2,8 +2,8 @@ package admin
 
 import (
 	"fmt"
-	"godep.lzd.co/go-dconfig"
-	"godep.lzd.co/mobapi_lib/utils/middleware"
+	"motify_core_api/godep_libs/go-dconfig"
+	"motify_core_api/godep_libs/mobapi_lib/utils/middleware"
 	"net/http"
 	"strings"
 	"time"

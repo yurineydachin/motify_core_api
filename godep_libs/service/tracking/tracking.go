@@ -4,7 +4,7 @@ import (
 	"context"
 	"net/http"
 
-	"godep.lzd.co/service/flake"
+	"motify_core_api/godep_libs/service/flake"
 )
 
 const trackingKey = "tracking"

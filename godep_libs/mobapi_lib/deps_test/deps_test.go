@@ -18,7 +18,7 @@ func TestDepsDoesntContainExternalOnes(t *testing.T) {
 	commandGoFilterNonStandard := exec.Command(`xargs`, `go`, `list`, `-f`, `{{if not .Standard}}{{.ImportPath}}{{end}}`)
 	importsListFilter := []string{
 		"vendor",                   // don't need to check all dependencies of dependencies
-		"godep.lzd.co/mobapi_lib",  // don't need to check unused subpackages, because it could be used externally
+		"motify_core_api/godep_libs/mobapi_lib",  // don't need to check unused subpackages, because it could be used externally
 		"golang.org/x/net/context", // this package became non-standard in GO 1.8, standard "context" used instead
 	}
 

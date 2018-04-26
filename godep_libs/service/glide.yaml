@@ -1,6 +1,6 @@
-package: godep.lzd.co/service
+package: motify_core_api/godep_libs/service
 import:
-- package: godep.lzd.co/discovery
+- package: motify_core_api/godep_libs/discovery
   version: ^4.5.0
   subpackages:
   - balancer
@@ -9,7 +9,7 @@ import:
   - provider
   - provider/etcdV3
   - registrator
-- package: godep.lzd.co/goprof
+- package: motify_core_api/godep_libs/goprof
   version: ^1.0.0
 - package: github.com/coreos/etcd
   version: ~v3.2.4
@@ -31,21 +31,21 @@ import:
   - hpack
   - trace
   - http2
-- package: godep.lzd.co/go-trace
+- package: motify_core_api/godep_libs/go-trace
   version: ^5.0.0
-- package: godep.lzd.co/go-log
+- package: motify_core_api/godep_libs/go-log
   version: ^3.4.0
-- package: godep.lzd.co/etcd
+- package: motify_core_api/godep_libs/etcd
   version: ^2.0.0
-- package: godep.lzd.co/go-healthcheck
+- package: motify_core_api/godep_libs/go-healthcheck
   version: ^3.3.1
 - package: github.com/prometheus/client_golang/prometheus
   version: ~0.8
-- package: godep.lzd.co/metrics
+- package: motify_core_api/godep_libs/metrics
   version: v1.14
 - package: google.golang.org/grpc
   version: ~v1.7.4
-- package: godep.lzd.co/swgui
+- package: motify_core_api/godep_libs/swgui
   version: ^1.3.0
 - package: github.com/jpillora/backoff
   version: master

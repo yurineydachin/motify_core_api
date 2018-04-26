@@ -1,4 +1,4 @@
-# godep.lzd.co/go-config
+# motify_core_api/godep_libs/go-config
 ## Description
 The library combines \*.ini files and flags. You work with config parameters like with go flags.
 It supports groups in \*.ini files.
@@ -11,7 +11,7 @@ package main
 import (
 	"time"
 
-	"godep.lzd.co/go-config"
+	"motify_core_api/godep_libs/go-config"
 )
 
 func init() {

@@ -2,7 +2,7 @@ package app
 
 import (
 	"github.com/opentracing/basictracer-go"
-	"godep.lzd.co/go-trace"
+	"motify_core_api/godep_libs/go-trace"
 	"strconv"
 	"github.com/openzipkin/zipkin-go-opentracing"
 	"github.com/openzipkin/zipkin-go-opentracing/types"

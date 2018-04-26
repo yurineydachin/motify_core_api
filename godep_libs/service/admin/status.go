@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"godep.lzd.co/service/admin/wshub"
-	"godep.lzd.co/service/interfaces"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/admin/wshub"
+	"motify_core_api/godep_libs/service/interfaces"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 const updateInterval = time.Second

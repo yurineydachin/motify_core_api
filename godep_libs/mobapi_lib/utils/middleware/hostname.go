@@ -1,7 +1,7 @@
 package middleware
 
 import (
-	"godep.lzd.co/go-config"
+	"motify_core_api/godep_libs/go-config"
 	"os"
 )
 

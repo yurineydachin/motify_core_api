@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"sync"
 
-	"godep.lzd.co/goprof"
+	"motify_core_api/godep_libs/goprof"
 )
 
 // this is just a dummy handler which runs a bunch of goroutines which just check if random numbers are prime or not

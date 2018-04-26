@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/sergei-svistunov/gorpc/swagger_ui"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 type DocsHandler struct {

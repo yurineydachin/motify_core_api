@@ -1,7 +1,7 @@
 package handler_test
 
 import (
-	"godep.lzd.co/mobapi_lib/handler"
+	"motify_core_api/godep_libs/mobapi_lib/handler"
 	"net/http"
 	"testing"
 )

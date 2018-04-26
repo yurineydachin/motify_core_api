@@ -1,8 +1,8 @@
 package locator
 
 import (
-	"godep.lzd.co/discovery/provider"
-	"godep.lzd.co/discovery/registrator"
+	"motify_core_api/godep_libs/discovery/provider"
+	"motify_core_api/godep_libs/discovery/registrator"
 )
 
 // Event contains data about service location change

@@ -5,11 +5,11 @@ import (
 	"net/http"
 	"runtime"
 
-	"godep.lzd.co/go-config"
-	"godep.lzd.co/goprof"
-	"godep.lzd.co/mobapi_lib/admin/sessionlogger"
-	"godep.lzd.co/mobapi_lib/logger"
-	"godep.lzd.co/mobapi_lib/resources"
+	"motify_core_api/godep_libs/go-config"
+	"motify_core_api/godep_libs/goprof"
+	"motify_core_api/godep_libs/mobapi_lib/admin/sessionlogger"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
+	"motify_core_api/godep_libs/mobapi_lib/resources"
 )
 
 func init() {

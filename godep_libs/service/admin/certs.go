@@ -3,7 +3,7 @@ package admin
 import (
 	"net/http"
 
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 func CheckCertificate(certificates []string, h http.Handler) http.Handler {

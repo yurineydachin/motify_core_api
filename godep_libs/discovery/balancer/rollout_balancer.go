@@ -3,9 +3,9 @@ package balancer
 import (
 	"fmt"
 
-	"godep.lzd.co/discovery"
-	"godep.lzd.co/discovery/locator"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery"
+	"motify_core_api/godep_libs/discovery/locator"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 const (

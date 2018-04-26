@@ -13,7 +13,7 @@ import (
 	"time"
 
 	etcdcl "github.com/coreos/etcd/client"
-	"godep.lzd.co/discovery"
+	"motify_core_api/godep_libs/discovery"
 )
 
 const defaultKeyTTL = 30 * time.Second

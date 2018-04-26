@@ -7,8 +7,8 @@ import (
 	"time"
 
 	"github.com/opentracing/opentracing-go"
-	"godep.lzd.co/go-log"
-	"godep.lzd.co/go-trace"
+	"motify_core_api/godep_libs/go-log"
+	"motify_core_api/godep_libs/go-trace"
 )
 
 const (

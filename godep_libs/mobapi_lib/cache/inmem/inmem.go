@@ -5,10 +5,10 @@ import (
 	"time"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	structcache "godep.lzd.co/mobapi_lib/cache"
+	structcache "motify_core_api/godep_libs/mobapi_lib/cache"
 
-	"godep.lzd.co/go-config"
-	"godep.lzd.co/go-dconfig"
+	"motify_core_api/godep_libs/go-config"
+	"motify_core_api/godep_libs/go-dconfig"
 )
 
 func NewFromFlags(set string) cache.ICache {

@@ -9,8 +9,8 @@ import (
 	"sync"
 
 	etcdclient "github.com/coreos/etcd/client"
-	"godep.lzd.co/discovery"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 const (
@@ -207,7 +207,7 @@ func monitoringRegistrationInfo(params *AppRegistrationParams) registrationInfoV
 
 // monitoringV2Value returns monitoring value for registrator V2.
 // The format is slightly changed in V3, so we need to keep the compatibility,
-// but I don't want to import "godep.lzd.co/monitoring_prometheus" as is done in every component
+// but I don't want to import "motify_core_api/godep_libs/monitoring_prometheus" as is done in every component
 func monitoringV2Value(params *AppRegistrationParams) string {
 	// ignore the error, because it's checked in validation
 	b, _ := json.Marshal(monitoringValue{

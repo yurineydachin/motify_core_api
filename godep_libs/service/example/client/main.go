@@ -6,12 +6,12 @@ import (
 	"net/http"
 	"time"
 
-	"godep.lzd.co/go-metrics"
-	gotrace "godep.lzd.co/go-trace"
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/service/example/client/adapter"
-	"godep.lzd.co/service/interfaces"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/go-metrics"
+	gotrace "motify_core_api/godep_libs/go-trace"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/service/example/client/adapter"
+	"motify_core_api/godep_libs/service/interfaces"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 // TODO: go generate dumps it to stdout not to file //go:generate go run ../main.go -gen-client-lib > adapter/client.go

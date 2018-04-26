@@ -1,8 +1,8 @@
 package balancer
 
 import (
-	"godep.lzd.co/discovery/locator"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/locator"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 type balancerType uint8

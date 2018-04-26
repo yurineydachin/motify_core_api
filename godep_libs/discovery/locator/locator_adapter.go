@@ -4,8 +4,8 @@ import (
 	"context"
 
 	etcd "github.com/coreos/etcd/client"
-	"godep.lzd.co/discovery"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // locatorAdapter is a temp locator adapter for discovery IServiceLocator2 to implement ILocator interface.

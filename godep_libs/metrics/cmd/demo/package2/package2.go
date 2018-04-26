@@ -3,9 +3,9 @@ package package2
 import (
 	"time"
 
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/asmon"
-	"godep.lzd.co/metrics/httpmon"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/asmon"
+	"motify_core_api/godep_libs/metrics/httpmon"
 )
 
 func DoSomething() {

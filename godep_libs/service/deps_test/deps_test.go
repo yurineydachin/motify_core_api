@@ -20,7 +20,7 @@ func TestDepsDoesntContainExternalOnes(t *testing.T) {
 	deps := strings.Split(string(output), "\n")
 	prohibited := make([]string, 0, 5)
 	for _, dep := range deps {
-		if len(dep) > 0 && !strings.Contains(dep, `vendor`) && !strings.Contains(dep, `godep.lzd.co/service`) {
+		if len(dep) > 0 && !strings.Contains(dep, `vendor`) && !strings.Contains(dep, `motify_core_api/godep_libs/service`) {
 			prohibited = append(prohibited, dep)
 		}
 

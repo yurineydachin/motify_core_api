@@ -9,8 +9,8 @@ import (
 	"testing"
 	"time"
 
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/file"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/testutils"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/file"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/testutils"
 )
 
 var zeroDuration = time.Duration(0)

@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"sync/atomic"
 
-	logfmt "godep.lzd.co/go-log/format"
+	logfmt "motify_core_api/godep_libs/go-log/format"
 )
 
 // Span request information

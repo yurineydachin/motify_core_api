@@ -2,7 +2,7 @@
 (if you need to upgrade up to v3 please check [how to upgrade from v2 to v3](https://bitbucket.lzd.co/projects/GOLIBS/repos/mobapi_lib/browse/UPGRADEv3.md) )
 
 ## Breaking changes
-- new major discovery library [`godep.lzd.co/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) version `v4`
+- new major discovery library [`motify_core_api/godep_libs/discovery`](https://bitbucket.lzd.co/projects/GOLIBS/repos/discovery/browse) version `v4`
 - [`mobapi_lib/context`](https://bitbucket.lzd.co/projects/GOLIBS/repos/mobapi_lib/browse/context/manager.go) methods `NewContext` and `FromContext` requires pointer type *Context instead of Context
 - new ldflag required on build: `'-X main.GitDescribe==$(shell git describe --tags --long'`
 
@@ -52,7 +52,7 @@ LDFLAGS=-X 'main.AppVersion=$(VER)($(GITHASH_SHORT))$(DIRTY)' -X 'main.GoVersion
 ## FAQ
 ### I've set last mobapi_lib version in `glide.yaml` and performed `glide up`, but it still returns error.
 ```
-[ERROR]    Error scanning godep.lzd.co/discovery/discovery: open /Users/minh.ton/.glide/cache/src/https-godep.lzd.co-discovery/discovery: no such file or directory
+[ERROR]    Error scanning motify_core_api/godep_libs/discovery/discovery: open /Users/minh.ton/.glide/cache/src/https-motify_core_api/godep_libs-discovery/discovery: no such file or directory
 [ERROR]    This error means the referenced package was not found.
 [ERROR]    Missing file or directory errors usually occur when multiple packages
 [ERROR]    share a common dependency and the first reference encountered by the scanner
@@ -61,7 +61,7 @@ LDFLAGS=-X 'main.AppVersion=$(VER)($(GITHASH_SHORT))$(DIRTY)' -X 'main.GoVersion
 [ERROR]    version in your glide.yaml that works for all packages that share this
 [ERROR]    dependency.
 ```
-It's very common case. As you can see the problem occured because in your code you still have imports like `import "godep.lzd.co-discovery/discovery"`, but this sub-package does not exist anymore in discovery library.
+It's very common case. As you can see the problem occured because in your code you still have imports like `import "motify_core_api/godep_libs-discovery/discovery"`, but this sub-package does not exist anymore in discovery library.
 
 In most cases you just need to set proper version of client library in glide.yaml to particular external resource.
 
@@ -84,7 +84,7 @@ So, it seems some dependency still uses old discovery library version. How to fi
 1. Make `glide up` and get the error
 2. Find wrong import in glide cache
 ```
-grep -irn "godep.lzd.co/discovery/discovery" ~/.glide/cache
+grep -irn "motify_core_api/godep_libs/discovery/discovery" ~/.glide/cache
 ```
 3. Define which component tries to make wrong import and find its latest version that already compatible with discovery v4.
 4. Share information about this problem with @yuriy.savalin in Slack (to make this guide more relevant)

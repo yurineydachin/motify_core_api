@@ -11,7 +11,7 @@ import (
 	"time"
 
 	etcdcl "github.com/coreos/etcd/client"
-	"godep.lzd.co/discovery"
+	"motify_core_api/godep_libs/discovery"
 )
 
 // LocationInfo contains params to get service discovery information.

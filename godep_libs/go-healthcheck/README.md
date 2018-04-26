@@ -4,7 +4,7 @@ This library provides a tool for easy health check handler implementation. It fi
 ## Usage
 0. Import healthcheck library
 ```
-    import "godep.lzd.co/go-healthcheck"
+    import "motify_core_api/godep_libs/go-healthcheck"
 ```
 
 1. Initialize base health check
@@ -39,7 +39,7 @@ This library provides a tool for easy health check handler implementation. It fi
     }
 
     // init RabbitMQ client and use it for resource health check
-    // import "godep.lzd.co/rabbit"
+    // import "motify_core_api/godep_libs/rabbit"
     rabbitClient, _ = rabbit.New(rabbit.WithEtcdEndpoints("127.0.0.1:2379"))
 
     // rabbitClient has method "HealthCheck(context.Context)error" so it's ok to pass "rabbitClient" as checker

@@ -5,9 +5,9 @@ import (
 	"errors"
 	"net/http"
 
-	"godep.lzd.co/mobapi_lib/logger"
-	"godep.lzd.co/mobapi_lib/sessionlogger"
-	"godep.lzd.co/mobapi_lib/sessionmocker"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger"
+	"motify_core_api/godep_libs/mobapi_lib/sessionmocker"
 )
 
 type key int

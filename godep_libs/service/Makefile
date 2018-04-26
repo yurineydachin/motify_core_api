@@ -74,8 +74,7 @@ endif
 		go test ./$($@_package) $($@_TEST_ARGS) >> $(TEST_REPORT_DIR)/$($@_reportfile).out || ( echo 'fail $($@_package)' >> $(TEST_COVERAGE_FAIL_FILE); exit 0); \
 	fi;
 _test-deps: deps
-	@go get godep.lzd.co/gocover-cobertura
-	@go get godep.lzd.co/go2xunit
+	@echo "== test deps == \n"
 get-glide:               ##install glide
 ifeq ($(wildcard $(GLIDE_BIN)),)
 	$(info #Installing glide version $(GLIDE_VERSION)...)
@@ -92,7 +91,6 @@ endif
 get-lint:                ##install gometalinter
 	go get -u github.com/alecthomas/gometalinter
 	gometalinter --install
-	go get -u godep.lzd.co/hint/gohint
 help:                    ##show this help.
 	@fgrep -h "##" $(MAKEFILE_LIST) | fgrep -v fgrep | sed -e 's/\\$$//' | sed -e 's/##//'
 .PHONY: build deps ci-lint ci-test-all _test-install ci-deps get-glide get-lint help

@@ -14,7 +14,7 @@ import (
 	"time"
 
 	cryptoRand "crypto/rand"
-	"godep.lzd.co/go-config"
+	"motify_core_api/godep_libs/go-config"
 	mathRand "math/rand"
 )
 

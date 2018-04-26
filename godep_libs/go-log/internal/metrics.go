@@ -5,7 +5,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/client_model/go"
-	"godep.lzd.co/metrics"
+	"motify_core_api/godep_libs/metrics"
 )
 
 type LogMetrics struct {

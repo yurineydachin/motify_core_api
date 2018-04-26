@@ -7,7 +7,7 @@ import (
 	"net/url"
 
 	"context"
-	"godep.lzd.co/mobapi_lib/resources"
+	"motify_core_api/godep_libs/mobapi_lib/resources"
 )
 
 type SearchEngine struct {

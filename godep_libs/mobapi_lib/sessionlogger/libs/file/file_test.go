@@ -2,7 +2,7 @@ package file
 
 import (
 	"fmt"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/testutils"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/testutils"
 	"io/ioutil"
 	"os"
 	"path"

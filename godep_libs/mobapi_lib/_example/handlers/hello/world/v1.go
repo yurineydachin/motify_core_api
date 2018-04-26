@@ -4,8 +4,8 @@ import (
 	"context"
 	"net/http"
 
-	ctxMngr "godep.lzd.co/mobapi_lib/context"
-	"godep.lzd.co/mobapi_lib/logger"
+	ctxMngr "motify_core_api/godep_libs/mobapi_lib/context"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 )

@@ -10,15 +10,15 @@ http://opentracing.io/documentation/pages/quick-start for more info.
 ## Installation
 Add dependency in your `glide.yaml` and `glide up`:
 ```
-- package: godep.lzd.co/go-trace
+- package: motify_core_api/godep_libs/go-trace
 ```
 
 ## Usage
 Initialize Tracer at the beginning!
 ```go
     import "github.com/opentracing/opentracing-go"
-    import "godep.lzd.co/go-trace"
-    import "godep.lzd.co/go-log"
+    import "motify_core_api/godep_libs/go-trace"
+    import "motify_core_api/godep_libs/go-log"
 
     func main() {
         logger = log.NewLogger(...)
@@ -105,8 +105,8 @@ package main
 import (
 	"net/http"
 	
-	"godep.lzd.co/go-trace"
-	"godep.lzd.co/metrics"
+	"motify_core_api/godep_libs/go-trace"
+	"motify_core_api/godep_libs/metrics"
 	"github.com/opentracing/opentracing-go"
 )
 

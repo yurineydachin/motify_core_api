@@ -4,7 +4,7 @@ import (
 	"strings"
 
 	"github.com/sergei-svistunov/gorpc/transport/http_json"
-	"godep.lzd.co/mobapi_lib/handlersmanager"
+	"motify_core_api/godep_libs/mobapi_lib/handlersmanager"
 )
 
 func NewSwaggerJSONCallbacks(serviceID, venture string) http_json.SwaggerJSONCallbacks {

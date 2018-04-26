@@ -2,7 +2,7 @@
 (if you still use v1 please check [how to upgrade from v1 to v2](https://bitbucket.lzd.co/projects/GOLIBS/repos/mobapi_lib/browse/UPGRADE.md) first)
 
 ## Breaking changes
-- new major health_check library [`godep.lzd.co/go-healthcheck`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-healthcheck/browse) version `v2`
+- new major health_check library [`motify_core_api/godep_libs/go-healthcheck`](https://bitbucket.lzd.co/projects/GOLIBS/repos/go-healthcheck/browse) version `v2`
 - `service.Run()` method signature changed (it does not return error anymore)
 - `service.Healthcheck()` method added. It returns pre-initialized healthcheck instance or nil if service is not initialized yet
 - `service.SetResourceHealthChecker()` removed. Please use `service.Healthcheck().SetResourceChecker()` instead.

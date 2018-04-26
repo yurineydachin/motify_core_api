@@ -2,7 +2,7 @@ package utils
 
 import (
 	"fmt"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 type DiscoveryLogger struct{}

@@ -3,9 +3,9 @@ package package3
 import (
 	"time"
 
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/bytecachemon"
-	"godep.lzd.co/metrics/httpmon"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/bytecachemon"
+	"motify_core_api/godep_libs/metrics/httpmon"
 )
 
 func DoSomething() {

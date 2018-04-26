@@ -7,8 +7,8 @@ import (
 	"container/list"
 
 	"errors"
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/structcachemon"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/structcachemon"
 )
 
 type StructCache struct {

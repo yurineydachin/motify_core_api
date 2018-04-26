@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"context"
-	gotrace "godep.lzd.co/go-trace"
-	"godep.lzd.co/mobapi_lib/example/client/adapter"
-	"godep.lzd.co/mobapi_lib/logger"
+	gotrace "motify_core_api/godep_libs/go-trace"
+	"motify_core_api/godep_libs/mobapi_lib/example/client/adapter"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
 )
 
 // TODO: go generate dumps it to stdout not to file //go:generate go run ../main.go -gen-client-lib > adapter/client.go

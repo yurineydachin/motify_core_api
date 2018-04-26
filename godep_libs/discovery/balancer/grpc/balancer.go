@@ -5,7 +5,7 @@ import (
 	"time"
 
 	"errors"
-	"godep.lzd.co/discovery/balancer"
+	"motify_core_api/godep_libs/discovery/balancer"
 	"golang.org/x/net/context"
 	"google.golang.org/grpc"
 )

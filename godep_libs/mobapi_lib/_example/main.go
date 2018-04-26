@@ -1,15 +1,15 @@
 package main
 
 import (
-	"godep.lzd.co/go-config"
-	"godep.lzd.co/go-dconfig"
-	"godep.lzd.co/mobapi_lib"
-	"godep.lzd.co/mobapi_lib/logger"
+	"motify_core_api/godep_libs/go-config"
+	"motify_core_api/godep_libs/go-dconfig"
+	"motify_core_api/godep_libs/mobapi_lib"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
 
-	resourceSearchEngine "godep.lzd.co/mobapi_lib/_example/resources/searchengine"
+	resourceSearchEngine "motify_core_api/godep_libs/mobapi_lib/_example/resources/searchengine"
 
-	handlerHelloWorld "godep.lzd.co/mobapi_lib/_example/handlers/hello/world"
-	handlerSearchGoogle "godep.lzd.co/mobapi_lib/_example/handlers/search/google"
+	handlerHelloWorld "motify_core_api/godep_libs/mobapi_lib/_example/handlers/hello/world"
+	handlerSearchGoogle "motify_core_api/godep_libs/mobapi_lib/_example/handlers/search/google"
 )
 
 const serviceName = "Example"
@@ -31,7 +31,7 @@ func init() {
 }
 
 func main() {
-	srvc := service.New(serviceName, "godep.lzd.co/mobapi_lib/_example/handlers")
+	srvc := service.New(serviceName, "motify_core_api/godep_libs/mobapi_lib/_example/handlers")
 	srvc.Init()
 
 	se := &resourceSearchEngine.SearchEngine{}

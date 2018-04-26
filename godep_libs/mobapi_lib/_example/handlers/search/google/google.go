@@ -1,6 +1,6 @@
 package google
 
-import "godep.lzd.co/mobapi_lib/_example/resources/searchengine"
+import "motify_core_api/godep_libs/mobapi_lib/_example/resources/searchengine"
 
 type Handler struct {
 	se *searchengine.SearchEngine

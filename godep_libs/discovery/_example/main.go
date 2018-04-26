@@ -7,8 +7,8 @@ import (
 	"syscall"
 	"time"
 
-	gologger "godep.lzd.co/go-logger"
-	"godep.lzd.co/loggo"
+	gologger "motify_core_api/godep_libs/go-logger"
+	"motify_core_api/godep_libs/loggo"
 )
 
 var logger = initLogger()

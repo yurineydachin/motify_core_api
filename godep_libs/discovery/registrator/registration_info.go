@@ -1,7 +1,7 @@
 package registrator
 
 import (
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // IRegistrationInfo is an interface to store service registration data

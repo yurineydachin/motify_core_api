@@ -5,7 +5,7 @@ import (
 	"strings"
 
 	etcd "github.com/coreos/etcd/client"
-	"godep.lzd.co/discovery/locator"
+	"motify_core_api/godep_libs/discovery/locator"
 )
 
 // inMemLocator is used for testing

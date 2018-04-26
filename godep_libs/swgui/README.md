@@ -9,7 +9,7 @@ All assets are embedded in GO source code, so just build and run.
     package main
 
     import "http"
-    import "godep.lzd.co/swgui"
+    import "motify_core_api/godep_libs/swgui"
 
     func main() {
         http.Handle("/", swgui.NewHandler("Page title", "path/to/swagger.json", "/"))
@@ -21,7 +21,7 @@ All assets are embedded in GO source code, so just build and run.
 
 Install swgui server
 
-    go get godep.lzd.co/swgui/...
+    go get motify_core_api/godep_libs/swgui/...
 
 Start server
 
@@ -31,7 +31,7 @@ Start server
 
 [![GoDoc](https://godoc.org/bitbucket.org/lazadaweb/swgui?status.svg)](https://godoc.org/bitbucket.org/lazadaweb/swgui)
 
-    godoc godep.lzd.co/swgui
+    godoc motify_core_api/godep_libs/swgui
     
 ## Updating
 

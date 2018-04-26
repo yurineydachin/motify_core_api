@@ -3,7 +3,7 @@ package registrator
 import (
 	"fmt"
 
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // AppRegistrationParams contains application discovery and registration data

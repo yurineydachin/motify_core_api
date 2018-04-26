@@ -6,10 +6,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/sergei-svistunov/gorpc"
-	"godep.lzd.co/metrics"
-	ctxmanager "godep.lzd.co/mobapi_lib/context"
-	"godep.lzd.co/mobapi_lib/logger"
-	"godep.lzd.co/mobapi_lib/token"
+	"motify_core_api/godep_libs/metrics"
+	ctxmanager "motify_core_api/godep_libs/mobapi_lib/context"
+	"motify_core_api/godep_libs/mobapi_lib/logger"
+	"motify_core_api/godep_libs/mobapi_lib/token"
 )
 
 type HandlersManager struct {

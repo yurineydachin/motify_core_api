@@ -1,8 +1,8 @@
 package service
 
 import (
-	"godep.lzd.co/discovery/balancer"
-	"godep.lzd.co/mobapi_lib/resources"
+	"motify_core_api/godep_libs/discovery/balancer"
+	"motify_core_api/godep_libs/mobapi_lib/resources"
 	"sort"
 	"strconv"
 )

@@ -21,7 +21,7 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/service/k8s"
+	"motify_core_api/godep_libs/service/k8s"
 )
 
 const (

@@ -10,7 +10,7 @@ import (
 	"net/http/httptest"
 
 	"github.com/opentracing/opentracing-go"
-	gotrace "godep.lzd.co/go-trace"
+	gotrace "motify_core_api/godep_libs/go-trace"
 )
 
 type jsonRPCHandler struct {

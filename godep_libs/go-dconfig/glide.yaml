@@ -1,4 +1,4 @@
-package: godep.lzd.co/go-dconfig
+package: motify_core_api/godep_libs/go-dconfig
 import:
 - package: github.com/coreos/etcd
   subpackages:

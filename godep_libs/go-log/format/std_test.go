@@ -7,7 +7,7 @@ import (
 	"testing"
 	"time"
 
-	"godep.lzd.co/go-log/internal"
+	"motify_core_api/godep_libs/go-log/internal"
 )
 
 const service = "service"

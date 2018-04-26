@@ -9,15 +9,15 @@ import (
 	"time"
 
 	"github.com/sergei-svistunov/gorpc/transport/http_json"
-	"godep.lzd.co/goprof"
-	logger_viewer "godep.lzd.co/service/admin/sessionlogger"
-	"godep.lzd.co/service/admin/static"
-	"godep.lzd.co/service/config"
-	"godep.lzd.co/service/dconfig"
-	"godep.lzd.co/service/interfaces"
-	"godep.lzd.co/service/k8s"
-	"godep.lzd.co/service/logger"
-	"godep.lzd.co/swgui"
+	"motify_core_api/godep_libs/goprof"
+	logger_viewer "motify_core_api/godep_libs/service/admin/sessionlogger"
+	"motify_core_api/godep_libs/service/admin/static"
+	"motify_core_api/godep_libs/service/config"
+	"motify_core_api/godep_libs/service/dconfig"
+	"motify_core_api/godep_libs/service/interfaces"
+	"motify_core_api/godep_libs/service/k8s"
+	"motify_core_api/godep_libs/service/logger"
+	"motify_core_api/godep_libs/swgui"
 )
 
 const autoProfilingRPSCheckerInterval = 10 // seconds

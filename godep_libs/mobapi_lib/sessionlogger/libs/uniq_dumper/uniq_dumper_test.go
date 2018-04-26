@@ -1,8 +1,8 @@
 package uniq_dumper_test
 
 import (
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/testutils"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/uniq_dumper"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/testutils"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/uniq_dumper"
 	"io/ioutil"
 	"os"
 	"testing"

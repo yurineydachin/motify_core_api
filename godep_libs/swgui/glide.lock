@@ -5,6 +5,6 @@ imports:
   version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
 - name: github.com/jteeuwen/go-bindata
   version: bbd0c6e271208dce66d8fda4bc536453cd27fc4a
-- name: godep.lzd.co/swgui
+- name: motify_core_api/godep_libs/swgui
   version: 3645b159d06dd942e2b24bab45eea47c3db8e179
 devImports: []

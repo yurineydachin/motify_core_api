@@ -4,7 +4,7 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/go-dconfig"
+	"motify_core_api/godep_libs/go-dconfig"
 
 	etcdcl "github.com/coreos/etcd/client"
 	"context"

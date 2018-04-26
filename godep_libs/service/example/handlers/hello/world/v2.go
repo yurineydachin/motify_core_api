@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 // v2Args contains a request arguments

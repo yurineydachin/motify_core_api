@@ -91,8 +91,8 @@ endif
 	fi;
 
 _test-deps: deps
-	@go get godep.lzd.co/gocover-cobertura
-	@go get godep.lzd.co/go2xunit
+	@go get motify_core_api/godep_libs/gocover-cobertura
+	@go get motify_core_api/godep_libs/go2xunit
 
 
 get-glide:               ##install glide
@@ -111,9 +111,9 @@ endif
 
 
 get-lint:                ##install gometalinter
-	go get -u godep.lzd.co/gometalinter
+	go get -u motify_core_api/godep_libs/gometalinter
 	gometalinter --install
-	go get -u godep.lzd.co/hint/gohint
+	go get -u motify_core_api/godep_libs/hint/gohint
 
 
 help:                    ##show this help.

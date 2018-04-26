@@ -10,8 +10,8 @@ Official logger library for Go services
 package main
 
 import (
-    "godep.lzd.co/go-log"
-    "godep.lzd.co/go-log/format"
+    "motify_core_api/godep_libs/go-log"
+    "motify_core_api/godep_libs/go-log/format"
 )
     
 // create Logger
@@ -49,7 +49,7 @@ l.SetLevel(log.ERROR)
 
 ## Installation
 
-    go get godep.lzd.co/go-log
+    go get motify_core_api/godep_libs/go-log
 
 ## Benchmark
 

@@ -2,7 +2,7 @@ package balancer
 
 import (
 	"fmt"
-	"godep.lzd.co/discovery"
+	"motify_core_api/godep_libs/discovery"
 )
 
 // FallbackBalancer is a load balancer, which should be used for migration period

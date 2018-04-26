@@ -4,7 +4,7 @@ import (
 	"testing"
 	"time"
 
-	"godep.lzd.co/mobapi_lib/watcher"
+	"motify_core_api/godep_libs/mobapi_lib/watcher"
 )
 
 func TestWatchForever(t *testing.T) {

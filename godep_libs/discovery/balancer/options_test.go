@@ -3,8 +3,8 @@ package balancer
 import (
 	"testing"
 
-	"godep.lzd.co/discovery/locator"
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/locator"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 func checkDefaultOptions(opts LoadBalancerOptions, t *testing.T) {

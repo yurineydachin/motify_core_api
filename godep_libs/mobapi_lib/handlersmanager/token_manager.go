@@ -5,7 +5,7 @@ import (
 	"reflect"
 
 	"github.com/sergei-svistunov/gorpc"
-	"godep.lzd.co/mobapi_lib/token"
+	"motify_core_api/godep_libs/mobapi_lib/token"
 )
 
 const (

@@ -6,9 +6,9 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"godep.lzd.co/service/admin/wshub"
-	"godep.lzd.co/service/dconfig"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/admin/wshub"
+	"motify_core_api/godep_libs/service/dconfig"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 type DConfigHTTPHandler struct {

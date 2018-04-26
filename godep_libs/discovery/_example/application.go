@@ -11,11 +11,11 @@ import (
 
 	etcdClient "github.com/coreos/etcd/client"
 	etcdClientV3 "github.com/coreos/etcd/clientv3"
-	"godep.lzd.co/discovery"
-	"godep.lzd.co/discovery/balancer"
-	"godep.lzd.co/discovery/provider"
-	"godep.lzd.co/discovery/provider/etcdV3"
-	"godep.lzd.co/discovery/registrator"
+	"motify_core_api/godep_libs/discovery"
+	"motify_core_api/godep_libs/discovery/balancer"
+	"motify_core_api/godep_libs/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider/etcdV3"
+	"motify_core_api/godep_libs/discovery/registrator"
 )
 
 type Application struct {

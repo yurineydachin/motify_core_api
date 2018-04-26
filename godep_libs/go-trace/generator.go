@@ -1,7 +1,7 @@
 package gotrace
 
 import (
-	"godep.lzd.co/go-trace/flake"
+	"motify_core_api/godep_libs/go-trace/flake"
 )
 
 var (

@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
-	"godep.lzd.co/swgui"
+	"motify_core_api/godep_libs/swgui"
 )
 
 var (

@@ -2,5 +2,5 @@ package: go-log
 import:
 - package: github.com/mailru/easyjson
   version: 9d6630dc8c577b56cb9687a9cf9e8578aca7298a
-- package: godep.lzd.co/metrics
+- package: motify_core_api/godep_libs/metrics
   version: ^1.16.7

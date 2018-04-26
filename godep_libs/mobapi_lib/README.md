@@ -7,7 +7,7 @@ MobAPI framework
 - [Changelog](#Changelog)
 
 ## Installation
-Initially you can put mobapi_lib in your %GOPATH% using `go get godep.lzd.co/mobapi_lib`.
+Initially you can put mobapi_lib in your %GOPATH% using `go get motify_core_api/godep_libs/mobapi_lib`.
 
 If you use vendoring with some dependency manager ([glide](https://github.com/Masterminds/glide) for example) you can simply add mobapi_lib dependency to glide.yaml and perform `glide up`.
 

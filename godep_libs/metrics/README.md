@@ -33,9 +33,9 @@ really need monitoring in your service.
 // For example your service offers HTTP handlers and
 // uses MySQL. So you import only subpackages for HTTP and MySQL metrics.
 import (
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/httpmon"
-	"godep.lzd.co/metrics/mysqlmon"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/httpmon"
+	"motify_core_api/godep_libs/metrics/mysqlmon"
 )
 
 // Example for middleware how to insert RT metric for HTTP.
@@ -76,7 +76,7 @@ with help of `metrics` library:
 package mymetrics
 
 import (
-  "godep.lzd.co/metrics"
+  "motify_core_api/godep_libs/metrics"
 )
 
 var (
@@ -100,7 +100,7 @@ Then in other packages of your service you will need import declarations above:
 
 ```
 import (
-  "godep.lzd.co/myservice/mymetrics"
+  "motify_core_api/godep_libs/myservice/mymetrics"
 )
 
 func () {

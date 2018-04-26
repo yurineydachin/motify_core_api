@@ -1,4 +1,4 @@
-# godep.lzd.co/go-dconfig
+# motify_core_api/godep_libs/go-dconfig
 ## Description
 The library uses etcd as config storage. It can add options to etcd, edit their values
 with saving history (last 10 records) and listen changes. If one node change value all
@@ -13,7 +13,7 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/go-dconfig"
+	"motify_core_api/godep_libs/go-dconfig"
 
 	etcdcl "github.com/coreos/etcd/client"
 	"context"

@@ -3,7 +3,7 @@ package log
 import (
 	"regexp"
 
-	"godep.lzd.co/go-log/format"
+	"motify_core_api/godep_libs/go-log/format"
 )
 
 // NewSpanCollector creates collector that writes opentracing.Span to log
@@ -63,7 +63,7 @@ func (r *spanCollector) Collect(
 	r.l.writer.WriteFrom(f)
 }
 
-// collector implements godep.lzd.co/go-trace.collector
+// collector implements motify_core_api/godep_libs/go-trace.collector
 // Deprecated
 type collector struct {
 	l       *Logger
@@ -71,7 +71,7 @@ type collector struct {
 	version string
 }
 
-// NewCollector returns collector, it implements godep.lzd.co/go-trace.collector
+// NewCollector returns collector, it implements motify_core_api/godep_libs/go-trace.collector
 // Deprecated use NewSpanCollector instead
 func NewCollector(l *Logger, node, version string) collector {
 	return collector{

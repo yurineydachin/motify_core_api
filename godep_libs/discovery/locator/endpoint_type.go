@@ -1,7 +1,7 @@
 package locator
 
 import (
-	"godep.lzd.co/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider"
 )
 
 // EndpointType is the type of requested endpoint.

@@ -12,12 +12,12 @@ import (
 	"time"
 
 	etcdClientV3 "github.com/coreos/etcd/clientv3"
-	"godep.lzd.co/discovery/_example/common"
-	"godep.lzd.co/discovery/provider"
-	"godep.lzd.co/discovery/provider/etcdV3"
-	"godep.lzd.co/discovery/registrator"
-	gologger "godep.lzd.co/go-logger"
-	"godep.lzd.co/loggo"
+	"motify_core_api/godep_libs/discovery/_example/common"
+	"motify_core_api/godep_libs/discovery/provider"
+	"motify_core_api/godep_libs/discovery/provider/etcdV3"
+	"motify_core_api/godep_libs/discovery/registrator"
+	gologger "motify_core_api/godep_libs/go-logger"
+	"motify_core_api/godep_libs/loggo"
 )
 
 var logger = initLogger()

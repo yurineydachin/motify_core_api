@@ -3,7 +3,7 @@ package log
 import (
 	"testing"
 	"time"
-	"godep.lzd.co/go-log/format"
+	"motify_core_api/godep_libs/go-log/format"
 	"log/syslog"
 	"bytes"
 )

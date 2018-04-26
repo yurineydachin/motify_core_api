@@ -4,7 +4,7 @@ import (
 	"fmt"
 
 	"crypto/md5"
-	"godep.lzd.co/mobapi_lib/sessionlogger/libs/locker"
+	"motify_core_api/godep_libs/mobapi_lib/sessionlogger/libs/locker"
 	"io/ioutil"
 	"os"
 	"path/filepath"

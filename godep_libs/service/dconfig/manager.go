@@ -11,7 +11,7 @@ import (
 
 	etcdcl "github.com/coreos/etcd/client"
 	"github.com/jpillora/backoff"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 )
 
 const maxHistoryLen = 10

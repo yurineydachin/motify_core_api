@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 
-	"godep.lzd.co/discovery/_example/common"
+	"motify_core_api/godep_libs/discovery/_example/common"
 )
 
 type Config struct {

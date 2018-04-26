@@ -1,4 +1,4 @@
-// backport of godep.lzd.co/go-cache for using `metrics` library
+// backport of motify_core_api/godep_libs/go-cache for using `metrics` library
 package cache
 
 import (
@@ -7,9 +7,9 @@ import (
 	"sync"
 	"time"
 
-	"godep.lzd.co/go-errors/errors"
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/structcachemon"
+	"motify_core_api/godep_libs/go-errors/errors"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/structcachemon"
 )
 
 // StructCache is simple storage with locking
