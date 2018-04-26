@@ -463,7 +463,7 @@ type EmployeeCreateUser struct {
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
+	Avatar      string `json:"avatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	UpdatedAt   string `json:"updated_at"`
@@ -690,7 +690,7 @@ type EmployeeUpdateUser struct {
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
+	Avatar      string `json:"avatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	UpdatedAt   string `json:"updated_at"`
@@ -1038,7 +1038,7 @@ type SettingCreateUser struct {
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
+	Avatar      string `json:"avatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	UpdatedAt   string `json:"updated_at"`
@@ -1159,7 +1159,7 @@ type SettingUpdateUser struct {
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
+	Avatar      string `json:"avatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 	UpdatedAt   string `json:"updated_at"`
@@ -1194,7 +1194,7 @@ type UserCreateV1Args struct {
 	Name          *string `json:"name,omitempty"`
 	Short         *string `json:"p_description,omitempty"`
 	Description   *string `json:"description,omitempty"`
-	Awatar        *string `json:"awatar,omitempty"`
+	Avatar        *string `json:"avatar,omitempty"`
 	Phone         *string `json:"phone,omitempty"`
 	Email         *string `json:"email,omitempty"`
 	Password      string  `json:"password"`
@@ -1211,7 +1211,7 @@ type UserCreateUser struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -1252,7 +1252,7 @@ type UserLoginUser struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -1278,7 +1278,7 @@ type UserUpdateV1Args struct {
 	Name          *string `json:"name,omitempty"`
 	Short         *string `json:"p_description,omitempty"`
 	Description   *string `json:"description,omitempty"`
-	Awatar        *string `json:"awatar,omitempty"`
+	Avatar        *string `json:"avatar,omitempty"`
 	Phone         *string `json:"phone,omitempty"`
 	Email         *string `json:"email,omitempty"`
 	Password      *string `json:"password,omitempty"`
@@ -1295,7 +1295,7 @@ type UserUpdateUser struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`

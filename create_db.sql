@@ -95,7 +95,7 @@ CREATE TABLE IF NOT EXISTS `motify_users` (
   `u_name` varchar(255) NOT NULL,
   `u_description` varchar(255) NOT NULL,
   `u_short` varchar(255) NOT NULL,
-  `u_awatar` varchar(255) NOT NULL,
+  `u_avatar` varchar(255) NOT NULL,
   `u_phone` varchar(50) NOT NULL,
   `u_email` varchar(255) NOT NULL,
   `u_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,

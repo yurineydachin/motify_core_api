@@ -6,7 +6,7 @@ type User struct {
 	Name          string  `db:"u_name"`
 	Short         string  `db:"u_short"`
 	Description   string  `db:"u_description"`
-	Awatar        string  `db:"u_awatar"`
+	Avatar        string  `db:"u_avatar"`
 	Phone         string  `db:"u_phone"`
 	Email         string  `db:"u_email"`
 	UpdatedAt     string  `db:"u_updated_at"`
@@ -19,7 +19,7 @@ func (user *User) ToArgs() map[string]interface{} {
 		"u_name":        user.Name,
 		"u_short":       user.Short,
 		"u_description": user.Description,
-		"u_awatar":      user.Awatar,
+		"u_avatar":      user.Avatar,
 		"u_phone":       user.Phone,
 		"u_email":       user.Email,
 	}

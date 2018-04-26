@@ -14,7 +14,7 @@ type V1Args struct {
 	Name          *string `key:"name" description:"Name"`
 	Short         *string `key:"p_description" description:"Short description"`
 	Description   *string `key:"description" description:"Long Description"`
-	Awatar        *string `key:"awatar" description:"Awatar url"`
+	Avatar        *string `key:"avatar" description:"Avatar url"`
 	Phone         *string `key:"phone" description:"Phone number"`
 	Email         *string `key:"email" description:"Email"`
 	Password      string  `key:"password" description:"Password"`
@@ -30,7 +30,7 @@ type User struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -86,8 +86,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if opts.Description != nil && *opts.Description != "" {
 		newUser.Description = *opts.Description
 	}
-	if opts.Awatar != nil && *opts.Awatar != "" {
-		newUser.Awatar = *opts.Awatar
+	if opts.Avatar != nil && *opts.Avatar != "" {
+		newUser.Avatar = *opts.Avatar
 	}
 	userID, err := handler.userService.SetUser(ctx, newUser)
 	if err != nil {
@@ -140,7 +140,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			Name:          user.Name,
 			Short:         user.Short,
 			Description:   user.Description,
-			Awatar:        user.Awatar,
+			Avatar:        user.Avatar,
 			Phone:         user.Phone,
 			Email:         user.Email,
 			UpdatedAt:     user.UpdatedAt,

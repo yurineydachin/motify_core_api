@@ -15,7 +15,7 @@ type V1Args struct {
 	Name        *string `key:"name" description:"Name"`
 	Short       *string `key:"p_description" description:"Short description"`
 	Description *string `key:"description" description:"Long Description"`
-	Awatar      *string `key:"awatar" description:"Awatar url"`
+	Avatar      *string `key:"avatar" description:"Avatar url"`
 	Phone       *string `key:"phone" description:"Phone number"`
 	Email       *string `key:"email" description:"Email"`
 	Password    *string `key:"password" description:"Password"`
@@ -30,7 +30,7 @@ type User struct {
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
 	Description string `json:"description"`
-	Awatar      string `json:"awatar"`
+	Avatar      string `json:"avatar"`
 	Phone       string `json:"phone"`
 	Email       string `json:"email"`
 }
@@ -56,7 +56,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 		Name:        opts.Name,
 		Short:       opts.Short,
 		Description: opts.Description,
-		Awatar:      opts.Awatar,
+		Avatar:      opts.Avatar,
 		Phone:       opts.Phone,
 		Email:       opts.Email,
 		Password:    opts.Password,
@@ -86,7 +86,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 			Name:        user.Name,
 			Short:       user.Short,
 			Description: user.Description,
-			Awatar:      user.Awatar,
+			Avatar:      user.Avatar,
 			Phone:       user.Phone,
 			Email:       user.Email,
 		},

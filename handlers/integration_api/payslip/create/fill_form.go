@@ -107,7 +107,7 @@ func (p *PayslipData) addEmployee(emp *coreApiAdapter.EmployeeDetailsEmployee, u
 			{
 				Type:   RowPerson,
 				Title:  emp.Name,
-				Avatar: user.Awatar,
+				Avatar: user.Avatar,
 				//Footnote: "* Employee details are relevant to this payslip only",
 				Children: empDetailsRows,
 			},
@@ -145,7 +145,7 @@ func (p *PayslipData) addPersonPreparedBy(user *coreApiAdapter.UserUpdateUser) {
 			{
 				Type:        RowPerson,
 				Title:       user.Name,
-				Avatar:      user.Awatar,
+				Avatar:      user.Avatar,
 				Role:        user.Short,
 				Description: user.Description,
 				//Footnote: "* Employee details are relevant to this payslip only",
