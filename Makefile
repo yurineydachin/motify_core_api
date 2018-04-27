@@ -1,7 +1,7 @@
 # https://confluence.lazada.com/display/RE/Requirements+to+build+process+for+GO+components
 
 PWD = $(shell pwd)
-GOPATH = ~/go
+GOPATH:=$(HOME)/go
 
 GOVER:=1.10
 INSTALL_PATH:=/tmp/go${GOVER}
