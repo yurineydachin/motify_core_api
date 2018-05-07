@@ -171,7 +171,7 @@ func (token *V1) GetExtraID() uint64 {
 
 // GetDate getdate
 func (token *V1) GetDate() time.Time {
-	return time.Unix(token.IssuedAt, 0)
+	return time.Unix(token.IssuedAt/1000000000, token.IssuedAt % 1000000000)
 }
 
 // String performs token encoding and returns hash in string
