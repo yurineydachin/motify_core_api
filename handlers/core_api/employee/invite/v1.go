@@ -84,7 +84,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		logger.Error(ctx, "Error generate QR code: %v", err)
 		status = "Error generate QR code"
 	} else if email != "" && handler.emailFrom != "" {
-		err = handler.emailService.SendEmployeeInvite(ctx, email, handler.emailFrom, code)
+		err = handler.emailService.EmployeeInvite(ctx, email, handler.emailFrom, code)
 		if err != nil {
 			logger.Error(ctx, "Error sending email: %v", err)
 			status = "Error sending email"

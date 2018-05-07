@@ -4,8 +4,8 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
 
+	"motify_core_api/godep_libs/service/logger"
 	"motify_core_api/models"
 	wrapToken "motify_core_api/utils/token"
 )
@@ -16,8 +16,9 @@ type V1Args struct {
 }
 
 type V1Res struct {
-	Token string `json:"token" description:"Token to remind pass"`
-	User *User `json:"user" description:"User if success"`
+	Result string `json:"result" description:"Result status"`
+	Code   string `json:"magic_code" description:"Magic code for generating QR code"`
+	User   *User  `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -26,7 +27,7 @@ type User struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -34,8 +35,8 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
-	EMAIL_NOT_SENDED   error `text:"Email not sended"`
-	USER_NOT_FOUND error `text:"User not found"`
+	EMAIL_NOT_SENDED error `text:"Email not sended"`
+	USER_NOT_FOUND   error `text:"User not found"`
 }
 
 var v1Errors V1ErrorTypes
@@ -69,29 +70,33 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.USER_NOT_FOUND
 	}
 
-    integrationID := uint64(0)
-    if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
-        integrationID = *opts.IntegrationFK
-    }
+	integrationID := uint64(0)
+	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
+		integrationID = *opts.IntegrationFK
+	}
+
 	magicCode := wrapToken.NewRemindUser(userID, integrationID).String()
-	if email != "" && handler.emailFrom != "" {
-		err = handler.emailService.SendEmployeeInvite(ctx, email, handler.emailFrom, code)
+	status := "Email not sended"
+	if user.Email != "" && handler.emailFrom != "" {
+		err = handler.emailService.UserRemind(ctx, user.Email, handler.emailFrom, magicCode)
 		if err != nil {
 			logger.Error(ctx, "Error sending email: %v", err)
 			status = "Error sending email"
 		} else {
 			status = "OK"
 		}
-    }
+	}
 
 	return &V1Res{
+		Result: status,
+		Code:   magicCode,
 		User: &User{
 			ID:            user.ID,
 			IntegrationFK: user.IntegrationFK,
 			Name:          user.Name,
 			Short:         user.Short,
 			Description:   user.Description,
-			Awatar:        user.Awatar,
+			Avatar:        user.Avatar,
 			Phone:         user.Phone,
 			Email:         user.Email,
 			UpdatedAt:     user.UpdatedAt,
