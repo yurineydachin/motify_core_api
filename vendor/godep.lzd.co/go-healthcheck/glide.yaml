@@ -1,5 +1,0 @@
-package: godep.lzd.co/go-healthcheck
-testImport:
-- package: github.com/stretchr/testify
-  subpackages:
-  - assert

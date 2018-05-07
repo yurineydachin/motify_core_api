@@ -1,0 +1,5 @@
+package: motify_core_api/godep_libs/go-healthcheck
+testImport:
+- package: github.com/stretchr/testify
+  subpackages:
+  - assert

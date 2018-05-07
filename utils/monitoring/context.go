@@ -2,8 +2,8 @@ package monitoring
 
 import (
 	"context"
-	"godep.lzd.co/metrics"
-	"godep.lzd.co/metrics/extmon"
+	"motify_core_api/godep_libs/metrics"
+	"motify_core_api/godep_libs/metrics/extmon"
 	"regexp"
 	"time"
 )

@@ -1,9 +1,0 @@
-package: godep.lzd.co/go-dconfig
-import:
-- package: github.com/coreos/etcd
-  subpackages:
-  - client
-- package: golang.org/x/net
-  subpackages:
-  - context
-- package: github.com/jpillora/backoff

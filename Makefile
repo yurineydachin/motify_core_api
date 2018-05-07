@@ -1,6 +1,7 @@
 # https://confluence.lazada.com/display/RE/Requirements+to+build+process+for+GO+components
 
 PWD = $(shell pwd)
+GOPATH:=$(HOME)/go
 
 GOVER:=1.10
 INSTALL_PATH:=/tmp/go${GOVER}
@@ -97,9 +98,7 @@ build-static: deps get-bindata download-translations ${GO}
 	${BINDATA_ASSETFS_BIN} -pkg=motify_core_api translations/...
 	${GO} build -ldflags "$(LDFLAGS_STATIC)" -o $(BIN) ./web/core_api/main.go
 
-fast-build:            ##building binary with translations
-fast-build: get-bindata download-translations ${GO}
-	${BINDATA_ASSETFS_BIN} -pkg=motify_core_api translations/...
+fast-build: 
 	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN) -i ./web/core_api/main.go
 
 get-bindata: ${GO}
@@ -128,6 +127,10 @@ ifeq (, $(shell which python))
 else
 	python $(PROJECT_PATH)/deploy/download-translations.py $(PROJECT_PATH) $(WTI_TOKEN)
 endif
+
+fast-test:
+	$(info #Running tests...)
+	${GO} test $(${GO} list ${PWD}/... | grep -v /vendor/ | grep -v /godep_libs/)
 
 # make test
 test:                  ##run unit tests

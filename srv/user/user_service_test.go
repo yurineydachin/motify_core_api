@@ -37,7 +37,7 @@ func TestSetUser_Create(t *testing.T) {
 		Name:        "user test",
 		Short:       "short test",
 		Description: "desc test",
-		Awatar:      "awatar test",
+		Avatar:      "avatar test",
 		Phone:       "phone test",
 		Email:       "email_test@text.com",
 	}
@@ -66,7 +66,7 @@ func TestSetUser_Update(t *testing.T) {
 		Name:        "user " + testUserIDStr,
 		Short:       "short " + testUserIDStr,
 		Description: "desc " + testUserIDStr,
-		Awatar:      "awatar " + testUserIDStr,
+		Avatar:      "avatar " + testUserIDStr,
 		Phone:       "phone " + testUserIDStr,
 		Email:       "email_" + testUserIDStr + "@text.com",
 	}
@@ -205,7 +205,7 @@ func TestSetUser_Create1(t *testing.T) {
 		Name:        "yuri",
 		Short:       "short no",
 		Description: "desc no",
-		Awatar:      "no",
+		Avatar:      "no",
 		Phone:       "123456",
 		Email:       "yuri@test.com",
 	}

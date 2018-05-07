@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 
 	"motify_core_api/models"
 )
@@ -25,7 +25,7 @@ type User struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -73,7 +73,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			Name:          user.Name,
 			Short:         user.Short,
 			Description:   user.Description,
-			Awatar:        user.Awatar,
+			Avatar:        user.Avatar,
 			Phone:         user.Phone,
 			Email:         user.Email,
 			UpdatedAt:     user.UpdatedAt,

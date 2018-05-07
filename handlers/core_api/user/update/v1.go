@@ -4,7 +4,7 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"godep.lzd.co/service/logger"
+	"motify_core_api/godep_libs/service/logger"
 
 	"motify_core_api/models"
 )
@@ -15,7 +15,7 @@ type V1Args struct {
 	Name          *string `key:"name" description:"Name"`
 	Short         *string `key:"p_description" description:"Short description"`
 	Description   *string `key:"description" description:"Long Description"`
-	Awatar        *string `key:"awatar" description:"Awatar url"`
+	Avatar        *string `key:"avatar" description:"Avatar url"`
 	Phone         *string `key:"phone" description:"Phone number"`
 	Email         *string `key:"email" description:"Email"`
 	Password      *string `key:"password" description:"Password"`
@@ -31,7 +31,7 @@ type User struct {
 	Name          string  `json:"name"`
 	Short         string  `json:"p_description"`
 	Description   string  `json:"description"`
-	Awatar        string  `json:"awatar"`
+	Avatar        string  `json:"avatar"`
 	Phone         string  `json:"phone"`
 	Email         string  `json:"email"`
 	UpdatedAt     string  `json:"updated_at"`
@@ -134,9 +134,9 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		needUpdate = true
 		user.Description = *opts.Description
 	}
-	if opts.Awatar != nil && *opts.Awatar != user.Awatar {
+	if opts.Avatar != nil && *opts.Avatar != user.Avatar {
 		needUpdate = true
-		user.Awatar = *opts.Awatar
+		user.Avatar = *opts.Avatar
 	}
 	if opts.Phone != nil && *opts.Phone != user.Phone {
 		needUpdate = true
@@ -167,7 +167,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			Name:          user.Name,
 			Short:         user.Short,
 			Description:   user.Description,
-			Awatar:        user.Awatar,
+			Avatar:        user.Avatar,
 			Phone:         user.Phone,
 			Email:         user.Email,
 			UpdatedAt:     user.UpdatedAt,
