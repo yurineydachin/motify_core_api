@@ -30,6 +30,7 @@ import (
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/signup"
 	"motify_core_api/handlers/mobile_api/user/update"
+	"motify_core_api/handlers/mobile_api/user/remind/send"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -102,6 +103,7 @@ func main() {
 		user_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
+		user_remind_send.New(coreApi),
 		employer_adduser.New(coreApi),
 		employer_details.New(coreApi),
 		employer_list.New(coreApi),

@@ -252,6 +252,16 @@ func (api *MotifyCoreAPIGoRPC) UserLoginV1(ctx context.Context, options UserLogi
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) UserRemindV1(ctx context.Context, options UserRemindV1Args) (*UserRemindV1Res, error) {
+	var result *UserRemindV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/user/remind/v1/", options, &entry, _UserRemindV1ErrorsMapping)
+	if result, ok := entry.Body.(**UserRemindV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) UserUpdateV1(ctx context.Context, options UserUpdateV1Args) (*UserUpdateV1Res, error) {
 	var result *UserUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -1269,6 +1279,44 @@ const (
 var _UserLoginV1ErrorsMapping = map[string]int{
 	"LOGIN_FAILED":   UserLoginV1Errors_LOGIN_FAILED,
 	"USER_NOT_FOUND": UserLoginV1Errors_USER_NOT_FOUND,
+}
+
+// easyjson:json
+type UserRemindV1Args struct {
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Login         string  `json:"login"`
+}
+
+// easyjson:json
+type UserRemindV1Res struct {
+	Result string          `json:"result"`
+	Code   string          `json:"magic_code"`
+	User   *UserRemindUser `json:"user"`
+}
+
+type UserRemindUser struct {
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Avatar        string  `json:"avatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
+}
+
+type UserRemindV1Errors int
+
+const (
+	UserRemindV1Errors_EMAIL_NOT_SENDED = iota
+	UserRemindV1Errors_USER_NOT_FOUND
+)
+
+var _UserRemindV1ErrorsMapping = map[string]int{
+	"EMAIL_NOT_SENDED": UserRemindV1Errors_EMAIL_NOT_SENDED,
+	"USER_NOT_FOUND":   UserRemindV1Errors_USER_NOT_FOUND,
 }
 
 // easyjson:json
