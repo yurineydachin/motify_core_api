@@ -17,6 +17,7 @@ const (
 )
 
 type V1Args struct {
+	Hash     string `key:"integration_hash" description:"Hash for checking integration"`
 	Code     string `key:"code" description:"Code from email"`
 	Password string `key:"password" description:"New password"`
 }
@@ -37,6 +38,7 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
+	INTEGRATION_NOT_FOUND  error `text:"Integraion not found by hash"`
 	USER_UPDATE_FAILED     error `text:"User creating failed"`
 	USER_NOT_FOUND         error `text:"User not found"`
 	ERROR_PARSE_MAGIC_CODE error `text:"Error parse magic code"`
@@ -54,6 +56,19 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	cache.DisableTransportCache(ctx)
 	if apiToken != nil && !apiToken.IsGuest() {
 		return nil, v1Errors.USER_ALREADY_LOGGED_IN
+	}
+
+	intData, err := handler.coreApi.IntegrationCheckV1(ctx, coreApiAdapter.IntegrationCheckV1Args{
+		Hash: opts.Hash,
+	})
+	if err != nil {
+		if err.Error() == "MotifyCoreAPI: INTEGRATION_NOT_FOUND" {
+			return nil, v1Errors.INTEGRATION_NOT_FOUND
+		}
+		return nil, err
+	}
+	if intData == nil || intData.Integration == nil {
+		return nil, v1Errors.INTEGRATION_NOT_FOUND
 	}
 
 	userToken, err := wrapToken.ParseRemindUser(opts.Code)

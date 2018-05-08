@@ -11,6 +11,7 @@ import (
 )
 
 type V1Args struct {
+	Hash  string `key:"integration_hash" description:"Hash for checking integration"`
 	Login string `key:"login" description:"Email or phone"`
 }
 
@@ -19,6 +20,7 @@ type V1Res struct {
 }
 
 type V1ErrorTypes struct {
+	INTEGRATION_NOT_FOUND  error `text:"Integraion not found by hash"`
 	EMAIL_NOT_SENDED       error `text:"Email not sended"`
 	USER_NOT_FOUND         error `text:"User not found"`
 	USER_ALREADY_LOGGED_IN error `text:"Request with already authorized apiToken"`
@@ -37,8 +39,22 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.USER_ALREADY_LOGGED_IN
 	}
 
+	intData, err := handler.coreApi.IntegrationCheckV1(ctx, coreApiAdapter.IntegrationCheckV1Args{
+		Hash: opts.Hash,
+	})
+	if err != nil {
+		if err.Error() == "MotifyCoreAPI: INTEGRATION_NOT_FOUND" {
+			return nil, v1Errors.INTEGRATION_NOT_FOUND
+		}
+		return nil, err
+	}
+	if intData == nil || intData.Integration == nil {
+		return nil, v1Errors.INTEGRATION_NOT_FOUND
+	}
+
 	coreOpts := coreApiAdapter.UserRemindV1Args{
-		Login: opts.Login,
+		IntegrationFK: &intData.Integration.ID,
+		Login:         opts.Login,
 	}
 
 	remindData, err := handler.coreApi.UserRemindV1(ctx, coreOpts)
