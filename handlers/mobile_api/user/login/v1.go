@@ -55,8 +55,11 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		Password: opts.Password,
 	})
 	if err != nil {
+		if err.Error() == "MotifyCoreAPI: LOGIN_FAILED" {
+			return nil, v1Errors.LOGIN_FAILED
+		}
 		logger.Error(ctx, "Failed login: %v", err)
-		return nil, v1Errors.USER_NOT_FOUND
+		return nil, err
 	}
 	if loginData == nil || loginData.User == nil {
 		logger.Error(ctx, "Failed login: user is nil")

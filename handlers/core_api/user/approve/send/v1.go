@@ -1,22 +1,23 @@
-package user_login
+package user_approve_send
 
 import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"motify_core_api/godep_libs/service/logger"
 
+	"motify_core_api/godep_libs/service/logger"
 	"motify_core_api/models"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
 	IntegrationFK *uint64 `key:"fk_integration" description:"Integration ID"`
-	Login         string  `key:"login" description:"Email or phone"`
-	Password      string  `key:"password" description:"Password"`
+	Login         string  `key:"login" description:"Login"`
 }
 
 type V1Res struct {
-	User *User `json:"user" description:"User if success"`
+	Result string `json:"result" description:"Result status"`
+	User   *User  `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -33,10 +34,7 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
-	LOGIN_FAILED       error `text:"Login is failed"`
-	USER_NOT_FOUND     error `text:"User not found"`
-	EMAIL_NOT_APPROVED error `text:"Email not approved"`
-	PHONE_NOT_APPROVED error `text:"Phone not approved"`
+	USER_NOT_FOUND error `text:"user not found"`
 }
 
 var v1Errors V1ErrorTypes
@@ -46,19 +44,20 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 }
 
 func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
-	logger.Debug(ctx, "User/Login/V1")
+	logger.Debug(ctx, "User/Create/V1")
 	cache.DisableTransportCache(ctx)
 
 	login := opts.Login + models.LoginSufix(opts.IntegrationFK)
-	userID, err := handler.userService.Authentificate(ctx, login, opts.Password)
+	userID, err := handler.userService.GetUserIDByLogin(ctx, login)
 	if err != nil {
-		logger.Error(ctx, "Failed login: %v", err)
-		return nil, v1Errors.LOGIN_FAILED
-	}
-	if userID == 0 {
-		logger.Error(ctx, "Failed login: userID = 0")
+		logger.Error(ctx, "User not found: %v", err)
 		return nil, v1Errors.USER_NOT_FOUND
 	}
+	if userID == 0 {
+		logger.Error(ctx, "User not found: userID = 0")
+		return nil, v1Errors.USER_NOT_FOUND
+	}
+
 	user, err := handler.userService.GetUserByID(ctx, userID)
 	if err != nil {
 		logger.Error(ctx, "Failed login: %v", err)
@@ -68,15 +67,23 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		logger.Error(ctx, "Failed login: user is nil")
 		return nil, v1Errors.USER_NOT_FOUND
 	}
+
+	status := "Email not sended"
 	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
-		if user.Email == opts.Login && !user.EmailApproved {
-			return nil, v1Errors.EMAIL_NOT_APPROVED
-		}
-		if user.Phone == opts.Login && !user.EmailApproved {
-			return nil, v1Errors.PHONE_NOT_APPROVED
+		magicCode := wrapToken.NewApproveUser(userID, *opts.IntegrationFK).String()
+		if user.Email != "" && handler.emailFrom != "" {
+			err = handler.emailService.UserApprove(ctx, user.Email, handler.emailFrom, magicCode)
+			if err != nil {
+				logger.Error(ctx, "Error sending email: %v", err)
+				status = "Error sending email"
+			} else {
+				status = "OK"
+			}
 		}
 	}
+
 	return &V1Res{
+		Result: status,
 		User: &User{
 			ID:            user.ID,
 			IntegrationFK: user.IntegrationFK,

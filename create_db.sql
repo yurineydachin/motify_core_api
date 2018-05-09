@@ -182,3 +182,6 @@ ADD CONSTRAINT `motify_users_ibfk_1` FOREIGN KEY (`u_fk_integration`) REFERENCES
 ALTER TABLE `motify_user_access`
 ADD CONSTRAINT `ua_motify_user_access_ibfk_1` FOREIGN KEY (`ua_fk_user`) REFERENCES `motify_users` (`id_user`) ON UPDATE CASCADE;
 
+-- migration1
+
+ALTER TABLE `motify_users` ADD `email_approved` BOOLEAN NOT NULL AFTER `u_email`, ADD `phone_approved` BOOLEAN NOT NULL AFTER `email_approved`;

@@ -15,6 +15,7 @@ const (
 	ModelPayslip       = uint64(6)
 	ModelSetting       = uint64(7)
 	ModelRemindUser    = uint64(8)
+	ModelApproveUser   = uint64(9)
 )
 
 type Token struct {
@@ -53,6 +54,10 @@ func NewSetting(id uint64, integrationID uint64) *Token {
 
 func NewRemindUser(id, integrationID uint64) *Token {
 	return newToken(id, ModelRemindUser, integrationID)
+}
+
+func NewApproveUser(id, integrationID uint64) *Token {
+	return newToken(id, ModelApproveUser, integrationID)
 }
 
 func (token *Token) Fixed() *Token {
@@ -95,4 +100,8 @@ func ParsePayslip(value string) (mtoken.IToken, error) {
 
 func ParseRemindUser(value string) (mtoken.IToken, error) {
 	return parseToken(value, ModelRemindUser)
+}
+
+func ParseApproveUser(value string) (mtoken.IToken, error) {
+	return parseToken(value, ModelApproveUser)
 }

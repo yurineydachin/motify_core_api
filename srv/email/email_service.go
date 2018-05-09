@@ -71,7 +71,24 @@ func (s *Service) UserRemind(ctx context.Context, to string, from string, code s
     <h1>Hola!</h1>
     <p>Thank you for using Motify. You've received this email because someone want to remind your password!</p>
     <p>If it was not you, just ignore this email or notify our support team.</p>
-    <p>Use this code to remind your password: `+code+`.</p>
+    <p>Use this code to remind your password: `+code+`</p>
+    </body></html>
+    `)
+
+	return s.send(m)
+}
+
+func (s *Service) UserApprove(ctx context.Context, to string, from string, code string) error {
+	m := gomail.NewMessage()
+	m.SetHeader("From", from)
+	m.SetHeader("To", to)
+	m.SetHeader("Subject", "Approve motify user email")
+	m.SetBody("text/html", `
+    <html><body>
+    <h1>Hola!</h1>
+    <p>Thank you for using Motify. You've received this email to approve your email!</p>
+    <p>If it was not you, just ignore this email or notify our support team.</p>
+    <p>Use this code to approve your email: `+code+`</p>
     </body></html>
     `)
 

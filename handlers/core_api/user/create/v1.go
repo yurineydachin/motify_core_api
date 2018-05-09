@@ -4,9 +4,10 @@ import (
 	"context"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
-	"motify_core_api/godep_libs/service/logger"
 
+	"motify_core_api/godep_libs/service/logger"
 	"motify_core_api/models"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type V1Args struct {
@@ -21,7 +22,8 @@ type V1Args struct {
 }
 
 type V1Res struct {
-	User *User `json:"user" description:"User if success"`
+	Result string `json:"result" description:"Result status"`
+	User   *User  `json:"user" description:"User if success"`
 }
 
 type User struct {
@@ -133,7 +135,22 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.CREATE_FAILED
 	}
 
+	status := "Email not sended"
+	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
+		magicCode := wrapToken.NewApproveUser(user.ID, *opts.IntegrationFK).String()
+		if user.Email != "" && handler.emailFrom != "" {
+			err = handler.emailService.UserApprove(ctx, user.Email, handler.emailFrom, magicCode)
+			if err != nil {
+				logger.Error(ctx, "Error sending email: %v", err)
+				status = "Error sending email"
+			} else {
+				status = "OK"
+			}
+		}
+	}
+
 	return &V1Res{
+		Result: status,
 		User: &User{
 			ID:            user.ID,
 			IntegrationFK: user.IntegrationFK,

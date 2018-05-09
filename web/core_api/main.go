@@ -43,6 +43,7 @@ import (
 	"motify_core_api/handlers/core_api/setting/create"
 	"motify_core_api/handlers/core_api/setting/list"
 	"motify_core_api/handlers/core_api/setting/update"
+	"motify_core_api/handlers/core_api/user/approve/send"
 	"motify_core_api/handlers/core_api/user/create"
 	"motify_core_api/handlers/core_api/user/login"
 	"motify_core_api/handlers/core_api/user/remind"
@@ -169,8 +170,9 @@ func main() {
 		employee_invite.New(agentService, emailService, userInvite),
 		employee_list.New(agentService),
 		employee_update.New(agentService, userService),
+		user_approve_send.New(userService, emailService, userInvite),
 		user_login.New(userService),
-		user_create.New(userService),
+		user_create.New(userService, emailService, userInvite),
 		user_remind.New(userService, emailService, userInvite),
 		user_update.New(userService),
 		setting_create.New(agentService, userService),

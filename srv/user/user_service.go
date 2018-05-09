@@ -22,7 +22,7 @@ func NewUserService(db *database.DbAdapter) *UserService {
 func (service *UserService) GetUserByID(ctx context.Context, modelID uint64) (*models.User, error) {
 	res := models.User{}
 	err := service.db.Get(&res, `
-        SELECT id_user, u_fk_integration, u_name, u_short, u_description, u_avatar, u_phone, u_email, u_updated_at, u_created_at
+        SELECT id_user, u_fk_integration, u_name, u_short, u_description, u_avatar, u_phone, u_email, u_phone_approved, u_email_approved, u_updated_at, u_created_at
         FROM motify_users WHERE id_user = ?
     `, modelID)
 	return &res, err
@@ -44,8 +44,8 @@ func (service *UserService) createUser(ctx context.Context, model *models.User) 
 		fkValue = ":u_fk_integration, "
 	}
 	insertRes, err := service.db.Exec(fmt.Sprintf(`
-            INSERT INTO motify_users (u_name, %s u_short, u_description, u_avatar, u_phone, u_email)
-            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email)
+            INSERT INTO motify_users (u_name, %s u_short, u_description, u_avatar, u_phone, u_email, u_phone_approved, u_email_approved)
+            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email, :u_phone_arroved, :u_email_arroved)
         `, fkField, fkValue), model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -70,6 +70,8 @@ func (service *UserService) updateUser(ctx context.Context, model *models.User) 
                 u_avatar = :u_avatar,
                 u_phone = :u_phone,
                 u_email = :u_email
+                u_phone_approved = :u_phone,_approved
+                u_email_approved = :u_email_approved
             WHERE id_user = :id_user
         `, fkField), args)
 	if err != nil {

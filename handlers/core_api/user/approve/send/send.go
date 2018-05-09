@@ -1,4 +1,4 @@
-package user_create
+package user_approve_send
 
 import (
 	"motify_core_api/srv/email"
@@ -20,9 +20,9 @@ func New(userService *user_service.UserService, emailService *email_service.Serv
 }
 
 func (*Handler) Caption() string {
-	return "Create user"
+	return "Approve user email"
 }
 
 func (*Handler) Description() string {
-	return "create user and return user with token if success"
+	return "Approve user email"
 }
