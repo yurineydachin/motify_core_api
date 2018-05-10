@@ -1,4 +1,4 @@
-package user_remind_reset
+package user_approve_update
 
 import (
 	"context"
@@ -17,9 +17,8 @@ const (
 )
 
 type V1Args struct {
-	Hash     string `key:"integration_hash" description:"Hash for checking integration"`
-	Code     string `key:"code" description:"Code from email"`
-	Password string `key:"password" description:"New password"`
+	Hash string `key:"integration_hash" description:"Hash for checking integration"`
+	Code string `key:"code" description:"Code from email"`
 }
 
 type V1Res struct {
@@ -71,7 +70,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.INTEGRATION_NOT_FOUND
 	}
 
-	userToken, err := wrapToken.ParseRemindUser(opts.Code)
+	userToken, err := wrapToken.ParseApproveUser(opts.Code)
 	if err != nil {
 		logger.Error(ctx, "Error parse magic code: ", err)
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
@@ -83,9 +82,10 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		return nil, v1Errors.ERROR_PARSE_MAGIC_CODE
 	}
 
+	boolTrue := true
 	coreOpts := coreApiAdapter.UserUpdateV1Args{
-		ID:       uint64(userToken.GetID()),
-		Password: &opts.Password,
+		ID:            uint64(userToken.GetID()),
+		EmailApproved: &boolTrue,
 	}
 
 	createData, err := handler.coreApi.UserUpdateV1(ctx, coreOpts)

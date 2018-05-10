@@ -36,6 +36,8 @@ import (
 	"motify_core_api/handlers/integration_api/employer/update"
 	"motify_core_api/handlers/integration_api/payslip/create"
 	"motify_core_api/handlers/integration_api/payslip/list"
+	"motify_core_api/handlers/integration_api/user/approve/send"
+	"motify_core_api/handlers/integration_api/user/approve/update"
 	"motify_core_api/handlers/integration_api/user/login"
 	"motify_core_api/handlers/integration_api/user/remind/reset"
 	"motify_core_api/handlers/integration_api/user/remind/send"
@@ -108,6 +110,8 @@ func main() {
 		user_update.New(coreApi),
 		user_remind_send.New(coreApi),
 		user_remind_reset.New(coreApi),
+		user_approve_send.New(coreApi),
+		user_approve_update.New(coreApi),
 		employee_details.New(coreApi),
 		employee_list.New(coreApi),
 		employee_invite.New(coreApi),

@@ -136,7 +136,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	status := "Email not sended"
-	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
+	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 { // only for integration_api user-agents
 		magicCode := wrapToken.NewApproveUser(user.ID, *opts.IntegrationFK).String()
 		if user.Email != "" && handler.emailFrom != "" {
 			err = handler.emailService.UserApprove(ctx, user.Email, handler.emailFrom, magicCode)

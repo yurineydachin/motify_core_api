@@ -69,9 +69,15 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}
 
 	status := "Email not sended"
-	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
-		magicCode := wrapToken.NewApproveUser(userID, *opts.IntegrationFK).String()
+	if user.EmailApproved {
+		status = "User email is already approved"
+	} else {
 		if user.Email != "" && handler.emailFrom != "" {
+			integrationID := uint64(0)
+			if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
+				integrationID = *opts.IntegrationFK
+			}
+			magicCode := wrapToken.NewApproveUser(userID, integrationID).String()
 			err = handler.emailService.UserApprove(ctx, user.Email, handler.emailFrom, magicCode)
 			if err != nil {
 				logger.Error(ctx, "Error sending email: %v", err)

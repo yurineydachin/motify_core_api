@@ -18,6 +18,8 @@ type V1Args struct {
 	Avatar        *string `key:"avatar" description:"Avatar url"`
 	Phone         *string `key:"phone" description:"Phone number"`
 	Email         *string `key:"email" description:"Email"`
+	PhoneApproved *bool   `key:"phone_approved" description:"Is phone approved"`
+	EmailApproved *bool   `key:"email_approved" description:"Is email approved"`
 	Password      *string `key:"password" description:"Password"`
 }
 
@@ -145,6 +147,14 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if opts.Email != nil && *opts.Email != user.Email {
 		needUpdate = true
 		user.Email = *opts.Email
+	}
+	if opts.Phone == nil && opts.PhoneApproved != nil && *opts.PhoneApproved != user.PhoneApproved {
+		needUpdate = true
+		user.PhoneApproved = *opts.PhoneApproved
+	}
+	if opts.Email == nil && opts.EmailApproved != nil && *opts.EmailApproved != user.EmailApproved {
+		needUpdate = true
+		user.EmailApproved = *opts.EmailApproved
 	}
 
 	if needUpdate {
