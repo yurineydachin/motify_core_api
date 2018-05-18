@@ -27,6 +27,7 @@ import (
 	"motify_core_api/handlers/mobile_api/employer/list"
 	"motify_core_api/handlers/mobile_api/payslip/details"
 	"motify_core_api/handlers/mobile_api/payslip/list"
+	"motify_core_api/handlers/mobile_api/user/avatar"
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/remind/reset"
 	"motify_core_api/handlers/mobile_api/user/remind/send"
@@ -55,6 +56,9 @@ func init() {
 
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
+
+	config.RegisterString("aws-s3-bucket", "AWS S3 bucket name", "motify-app")
+	config.RegisterString("aws-region", "AWS region", "us-east-1")
 
 	config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
 }
@@ -93,6 +97,10 @@ func main() {
 		},
 	)
 
+	awsRegion, _ := config.GetString("aws-region")
+	awsBucket, _ := config.GetString("aws-s3-bucket")
+	fileStoreService := file_storage_service.NewService(awsRegion, awsBucket)
+
 	srvc.MustRegisterHandlers(
 		/*
 			- login/ singup/ restore pass/ set new pass/ social logins
@@ -101,6 +109,7 @@ func main() {
 			- get employers, employer details
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
+		user_avatar.New(coreApi, fileStoreService),
 		user_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),

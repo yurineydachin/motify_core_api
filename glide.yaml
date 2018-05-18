@@ -4,6 +4,7 @@ import:
 - package: github.com/jmoiron/sqlx
 - package: github.com/boombuler/barcode
 - package: github.com/go-gomail/gomail
+- package: github.com/aws/aws-sdk-go
 testImphort:
 - package: github.com/stretchr/testify
   version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
