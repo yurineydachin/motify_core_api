@@ -1,4 +1,4 @@
-package user_update
+package user_avatar
 
 import (
 	"motify_core_api/resources/file_storage"

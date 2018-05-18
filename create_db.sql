@@ -184,4 +184,4 @@ ADD CONSTRAINT `ua_motify_user_access_ibfk_1` FOREIGN KEY (`ua_fk_user`) REFEREN
 
 -- migration1
 
-ALTER TABLE `motify_users` ADD `email_approved` BOOLEAN NOT NULL AFTER `u_email`, ADD `phone_approved` BOOLEAN NOT NULL AFTER `email_approved`;
+ALTER TABLE `motify_users` ADD `u_email_approved` BOOLEAN NOT NULL AFTER `u_email`, ADD `u_phone_approved` BOOLEAN NOT NULL AFTER `u_email_approved`;

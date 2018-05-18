@@ -18,6 +18,7 @@ import (
 	"motify_core_api/godep_libs/mobapi_lib/token"
 	"motify_core_api/godep_libs/service/logger"
 
+	"motify_core_api/resources/file_storage"
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
 	wrapToken "motify_core_api/utils/token"

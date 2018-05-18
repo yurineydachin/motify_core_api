@@ -45,7 +45,7 @@ func (service *UserService) createUser(ctx context.Context, model *models.User) 
 	}
 	insertRes, err := service.db.Exec(fmt.Sprintf(`
             INSERT INTO motify_users (u_name, %s u_short, u_description, u_avatar, u_phone, u_email, u_phone_approved, u_email_approved)
-            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email, :u_phone_arroved, :u_email_arroved)
+            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email, :u_phone_approved, :u_email_approved)
         `, fkField, fkValue), model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -70,7 +70,7 @@ func (service *UserService) updateUser(ctx context.Context, model *models.User) 
                 u_avatar = :u_avatar,
                 u_phone = :u_phone,
                 u_email = :u_email
-                u_phone_approved = :u_phone,_approved
+                u_phone_approved = :u_phone_approved
                 u_email_approved = :u_email_approved
             WHERE id_user = :id_user
         `, fkField), args)
