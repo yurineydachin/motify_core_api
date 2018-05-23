@@ -924,9 +924,10 @@ var _PayslipDetailsV1ErrorsMapping = map[string]int{
 
 // easyjson:json
 type PayslipListV1Args struct {
-	UserID uint64  `json:"user_id"`
-	Limit  *uint64 `json:"limit,omitempty"`
-	Offset *uint64 `json:"offset,omitempty"`
+	UserID    uint64  `json:"user_id"`
+	Limit     *uint64 `json:"limit,omitempty"`
+	Offset    *uint64 `json:"offset,omitempty"`
+	DateAfter *string `json:"date_after,omitempty"`
 }
 
 // easyjson:json
