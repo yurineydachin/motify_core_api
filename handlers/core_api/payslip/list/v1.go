@@ -92,12 +92,12 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	var (
 		list []payslip_service.PayslipAgentEmployee
 		err  error
-        t time.Time
+		t    time.Time
 	)
 
 	listLoaded := false
 	if opts.DateAfter != nil && *opts.DateAfter != "" {
-    t, err = time.Parse(time.RFC3339, "2006-01-02T15:04:05+07:00")
+		t, err = time.Parse(time.RFC3339, *opts.DateAfter)
 		if err == nil {
 			list, err = handler.payslipService.GetListByUserIDAfter(ctx, opts.UserID, limit, t)
 			if err != nil {
@@ -106,8 +106,8 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			}
 			listLoaded = true
 		} else {
-				logger.Error(ctx, "Failed parse opts.DateAfter %s: %v", *opts.DateAfter, err)
-    }
+			logger.Error(ctx, "Failed parse opts.DateAfter %s: %v", *opts.DateAfter, err)
+		}
 	}
 	if !listLoaded {
 		list, err = handler.payslipService.GetListByUserID(ctx, opts.UserID, limit, offset)
