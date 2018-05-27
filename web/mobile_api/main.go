@@ -30,10 +30,10 @@ import (
 	"motify_core_api/handlers/mobile_api/payslip/list"
 	"motify_core_api/handlers/mobile_api/user/avatar"
 	"motify_core_api/handlers/mobile_api/user/login"
-	"motify_core_api/handlers/mobile_api/user/social/fb_login"
 	"motify_core_api/handlers/mobile_api/user/remind/reset"
 	"motify_core_api/handlers/mobile_api/user/remind/send"
 	"motify_core_api/handlers/mobile_api/user/signup"
+	"motify_core_api/handlers/mobile_api/user/social/fb_login"
 	"motify_core_api/handlers/mobile_api/user/update"
 )
 

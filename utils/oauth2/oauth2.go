@@ -2,11 +2,11 @@ package oauth2
 
 import (
 	"encoding/json"
-  "strings"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"strings"
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/facebook"
@@ -32,17 +32,17 @@ const (
 // This authorization code has been used
 
 type FBProfile struct {
-    AccessToken string `json:"-,omitempty"`
-	ID   string `json:"id"`
-	Name string `json:"name"`
-/*
-    first_name
-    last_name
-    middle_name
-    name_format
-    picture
-    short_name
-*/
+	AccessToken string `json:"-,omitempty"`
+	ID          string `json:"id"`
+	Name        string `json:"name"`
+	/*
+	   first_name
+	   last_name
+	   middle_name
+	   name_format
+	   picture
+	   short_name
+	*/
 }
 
 func GetCodeUrl() (string, error) {
@@ -83,10 +83,10 @@ func getFBProfileUrlByAccessToken(token string) (string, error) {
 }
 
 func GetFBUser(code, accessToken *string) (*FBProfile, error) {
-    var (
-        FBUrl string
-        err error
-    )
+	var (
+		FBUrl string
+		err   error
+	)
 	if accessToken != nil && *accessToken != "" {
 		FBUrl, err = getFBProfileUrlByAccessToken(*accessToken)
 	} else if code != nil && *code != "" {
@@ -94,14 +94,14 @@ func GetFBUser(code, accessToken *string) (*FBProfile, error) {
 		if err != nil {
 			return nil, fmt.Errorf("getFBProfileUrl, GetAccessTokenByCode: %s", err)
 		}
-        accessToken = &accessTokenFB
+		accessToken = &accessTokenFB
 		FBUrl, err = getFBProfileUrlByAccessToken(accessTokenFB)
 	} else {
-        return nil, fmt.Errorf("There are no code or access_token")
-    }
-    if err != nil {
-        return nil, fmt.Errorf("GetFBUser: %s", err)
-    }
+		return nil, fmt.Errorf("There are no code or access_token")
+	}
+	if err != nil {
+		return nil, fmt.Errorf("GetFBUser: %s", err)
+	}
 
 	resp, err := http.Get(FBUrl)
 	if err != nil {
@@ -119,8 +119,8 @@ func GetFBUser(code, accessToken *string) (*FBProfile, error) {
 	if err != nil {
 		return nil, fmt.Errorf("GetFBUser, json.Unmarshal: %s - text: %s\n", err, response)
 	}
-    if accessToken != nil {
-        profile.AccessToken = *accessToken
-    }
+	if accessToken != nil {
+		profile.AccessToken = *accessToken
+	}
 	return &profile, nil
 }
