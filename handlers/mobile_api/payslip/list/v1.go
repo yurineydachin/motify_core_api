@@ -60,7 +60,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.ITo
 	}
 	for i := range data.List {
 		agent := data.List[i].Agent
-		employee := data.List[i].Employee
 		p := data.List[i].Payslip
 		res.List = append(res.List, Payslip{
 			Hash:      wrapToken.NewPayslip(p.ID, agent.IntegrationFK).Fixed().String(),
