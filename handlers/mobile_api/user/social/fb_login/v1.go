@@ -106,18 +106,18 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 
 	return &res, nil
 	/*
-		return &V1Res{
-		FBUrl: Url.String(),
-	    Code: *opts.Code,
-	    State: *opts.State,
-			Token:       wrapToken.NewMobileUser(user.ID).String(),
-			Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
-			Name:        user.Name,
-			Short:       user.Short,
-			Description: user.Description,
-			Avatar:      user.Avatar,
-			Phone:       user.Phone,
-			Email:       user.Email,
-		}, nil
+			return &V1Res{
+			FBUrl: Url.String(),
+		    Code: *opts.Code,
+		    State: *opts.State,
+				Token:       wrapToken.NewMobileUser(user.ID).String(),
+				Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
+				Name:        user.Name,
+				Short:       user.Short,
+				Description: user.Description,
+				Avatar:      user.Avatar,
+				Phone:       user.Phone,
+				Email:       user.Email,
+			}, nil
 	*/
 }

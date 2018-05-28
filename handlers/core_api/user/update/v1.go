@@ -57,6 +57,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	logger.Debug(ctx, "User/Create/V1")
 	cache.DisableTransportCache(ctx)
 
+	needUpdate := false
 	user, err := handler.userService.GetUserByID(ctx, opts.ID)
 	if err != nil {
 		logger.Error(ctx, "Failed login: %v", err)
@@ -71,55 +72,21 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		(opts.Phone != nil && *opts.Phone != user.Phone) ||
 		(opts.Password != nil && *opts.Password != "") {
 
-		access, err := handler.userService.GetUserAssessByUserIDAndType(ctx, user.ID, models.UserAccessEmail)
+		accessList, err := handler.userService.GetUserAssessListByUserID(ctx, user.ID)
 		if err != nil {
 			logger.Error(ctx, "Fail loading user_access: %v", err)
 			return nil, v1Errors.USER_NOT_FOUND
 		}
-		if access == nil {
-			access = &models.UserAccess{
-				IntegrationFK: opts.IntegrationFK,
-				UserFK:        user.ID,
-				Type:          models.UserAccessEmail,
-				Password:      *opts.Password,
-			}
-			access.SetEmail(user.Email)
-			access.SetPhone(user.Phone)
-		} else {
-			if opts.Email != nil && *opts.Email != user.Email {
-				isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Email)
-				if err != nil || isBusy {
-					logger.Error(ctx, "User exists: %v, err: %v", isBusy, err)
-					return nil, v1Errors.NEW_EMAIL_IS_BUSY
-				}
-				access.SetEmail(*opts.Email)
-			}
-			if opts.Phone != nil && *opts.Phone != user.Phone {
-				isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Phone)
-				if err != nil || isBusy {
-					logger.Error(ctx, "User exists: %v, err: %v", isBusy, err)
-					return nil, v1Errors.NEW_EMAIL_IS_BUSY
-				}
-				access.SetPhone(*opts.Phone)
-			}
-			if opts.Password != nil && *opts.Password != "" {
-				access.SetPassword(*opts.Password)
-			}
-		}
 
-		logger.Debug(ctx, "update user_access: %#v", access)
-		userAccessID, err := handler.userService.SetUserAccess(ctx, access)
-		if err != nil {
-			logger.Error(ctx, "Failed updating user access: %v", err)
-			return nil, v1Errors.UPDATE_FAILED
+		if err := handler.saveUserAccess(ctx, user.ID, opts.IntegrationFK, opts.Email, opts.Password, user.Email, model.UserAccessEmail, accessList[model.UserAccessEmail], accessList[model.UserAccessPhone]); err != nil {
+			return nil, err
 		}
-		if userAccessID == 0 {
-			logger.Error(ctx, "Failed updating user access: userAccessID is 0")
-			return nil, v1Errors.UPDATE_FAILED
+		if err := handler.saveUserAccess(ctx, user.ID, opts.IntegrationFK, opts.Phone, opts.Password, user.Phone, model.UserAccessPhone, accessList[model.UserAccessPhone], accessList[model.UserAccessEmail]); err != nil {
+			return nil, err
 		}
 	}
 
-	needUpdate := false
+	needUpdate = false
 	if opts.IntegrationFK != nil && (user.IntegrationFK == nil || *opts.IntegrationFK != *user.IntegrationFK) {
 		needUpdate = true
 		user.IntegrationFK = opts.IntegrationFK
@@ -184,4 +151,50 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			CreatedAt:     user.CreatedAt,
 		},
 	}, nil
+}
+
+func (handler *Handler) saveUserAccess(ctx context.Context, userID uint64, integrationFK *uint64, newLogin, newPass *string, oldLogin, field string, access *model.UserAccess, accessPair *model.UserAccess) error {
+	needUpdate := false
+	if access != nil {
+		if newLogin != nil && *newLogin != "" && *newLogin != oldLogin {
+			if isBusy, err := handler.userService.IsLoginBusy(ctx, *newLogin); err != nil || isBusy {
+				logger.Error(ctx, "User exists: %v, err: %v", isBusy, err)
+				return v1Errors.NEW_EMAIL_OR_PHONE_IS_BUSY
+			}
+			needUpdate = true
+			access.SetLogin(*newLogin)
+		}
+	} else if (newLogin != nil && *newLogin != "") || oldLogin != "" {
+		needUpdate = true
+		access = &models.UserAccess{
+			IntegrationFK: integrationFK,
+			UserFK:        userID,
+			Type:          field,
+		}
+		if newLogin != nil && *newLogin != "" {
+			access.SetLogin(*newLogin)
+		} else {
+			access.SetLogin(oldLogin)
+		}
+		if accessPair != nil {
+			access.Password = accessPair.Password
+		}
+	}
+	if access != nil {
+		if newPass != nil && *newPass != "" {
+			needUpdate = true
+			access.SetPassword(*newPass)
+		}
+		if access.Password == "" {
+			logger.Error(ctx, "User add access: no pass")
+			return v1Errors.UPDATE_FAILED
+		}
+		if needUpdate {
+			logger.Debug(ctx, "update user_access: %#v", access)
+			if _, err := handler.userService.SetUserAccess(ctx, access); err != nil {
+				logger.Error(ctx, "Failed updating user access: %v", err)
+				return v1Errors.UPDATE_FAILED
+			}
+		}
+	}
 }

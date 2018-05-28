@@ -60,7 +60,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		IntegrationFK: opts.IntegrationFK,
 	}
 	if opts.Email != nil && *opts.Email != "" {
-		isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Email)
+		isBusy, err := handler.userService.IsLoginBusy(ctx, *opts.Email)
 		if err != nil || isBusy {
 			logger.Error(ctx, "User exists: %v, err: %v", isBusy, err)
 			return nil, v1Errors.USER_EXISTS
@@ -68,7 +68,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		newUser.Email = *opts.Email
 	}
 	if opts.Phone != nil && *opts.Phone != "" {
-		isBusy, err := handler.userService.IsEmailOrPhoneBusy(ctx, *opts.Phone)
+		isBusy, err := handler.userService.IsLoginBusy(ctx, *opts.Phone)
 		if err != nil || isBusy {
 			logger.Error(ctx, "User exists: %v, err: %v", isBusy, err)
 			return nil, v1Errors.USER_EXISTS
@@ -111,28 +111,23 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		return nil, v1Errors.USER_NOT_CREATED
 	}
 
-	newUserAccess := &models.UserAccess{
-		IntegrationFK: opts.IntegrationFK,
-		UserFK:        user.ID,
-		Type:          models.UserAccessEmail,
-		Password:      opts.Password,
-	}
-	newUserAccess.SetEmail(user.Email)
-	newUserAccess.SetPhone(user.Phone)
-	userAccessID, err := handler.userService.SetUserAccess(ctx, newUserAccess)
-	if err != nil {
-		logger.Error(ctx, "Failed creating user access: %v", err)
-		if err := handler.userService.DeleteUser(ctx, user.ID); err != nil {
-			logger.Error(ctx, "Failed creating user: failed deleting user")
+	if user.Email != "" {
+		if err := handler.addUserAccess(ctx, user.Email, opts.Password, models.UserAccessEmail, user.ID, opts.IntegrationFK); err != nil {
+			logger.Error(ctx, "Failed creating user access: %v", err)
+			if err := handler.userService.DeleteUser(ctx, user.ID); err != nil {
+				logger.Error(ctx, "Failed creating user: failed deleting user")
+			}
+			return nil, v1Errors.CREATE_FAILED
 		}
-		return nil, v1Errors.CREATE_FAILED
 	}
-	if userAccessID == 0 {
-		logger.Error(ctx, "Failed creating user access: userAccessID is 0")
-		if err := handler.userService.DeleteUser(ctx, user.ID); err != nil {
-			logger.Error(ctx, "Failed creating user: failed deleting user")
+	if user.Phone != "" {
+		if err := handler.addUserAccess(ctx, user.Phone, opts.Password, models.UserAccessPhone, user.ID, opts.IntegrationFK); err != nil {
+			logger.Error(ctx, "Failed creating user access: %v", err)
+			if err := handler.userService.DeleteUser(ctx, user.ID); err != nil {
+				logger.Error(ctx, "Failed creating user: failed deleting user")
+			}
+			return nil, v1Errors.CREATE_FAILED
 		}
-		return nil, v1Errors.CREATE_FAILED
 	}
 
 	status := "Email not sended"
@@ -164,4 +159,17 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			CreatedAt:     user.CreatedAt,
 		},
 	}, nil
+}
+
+//models.UserAccessEmail
+func (handler *Handler) addUserAccess(ctx context.Context, login, password, field social, userID uint64, integrationFK *uint64) error {
+	newUserAccess := &models.UserAccess{
+		IntegrationFK: integrationFK,
+		UserFK:        userID,
+		Type:          field,
+	}
+	newUserAccess.SetLogin(login)
+	newUserAccess.SetPassword(password)
+	_, err := handler.userService.SetUserAccess(ctx, newUserAccess)
+	return err
 }
