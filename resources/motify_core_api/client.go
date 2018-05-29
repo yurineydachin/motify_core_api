@@ -272,6 +272,16 @@ func (api *MotifyCoreAPIGoRPC) UserRemindV1(ctx context.Context, options UserRem
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) UserSocialV1(ctx context.Context, options UserSocialV1Args) (*UserSocialV1Res, error) {
+	var result *UserSocialV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/user/social/v1/", options, &entry, _UserSocialV1ErrorsMapping)
+	if result, ok := entry.Body.(**UserSocialV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) UserUpdateV1(ctx context.Context, options UserUpdateV1Args) (*UserUpdateV1Res, error) {
 	var result *UserUpdateV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -1371,6 +1381,54 @@ var _UserRemindV1ErrorsMapping = map[string]int{
 }
 
 // easyjson:json
+type UserSocialV1Args struct {
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	UserID        *uint64 `json:"id_user,omitempty"`
+	Social        string  `json:"social"`
+	Login         string  `json:"login"`
+	Name          string  `json:"name"`
+	Avatar        *string `json:"avatar,omitempty"`
+}
+
+// easyjson:json
+type UserSocialV1Res struct {
+	User *UserSocialUser `json:"user"`
+}
+
+type UserSocialUser struct {
+	ID            uint64  `json:"id_user"`
+	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
+	Name          string  `json:"name"`
+	Short         string  `json:"p_description"`
+	Description   string  `json:"description"`
+	Avatar        string  `json:"avatar"`
+	Phone         string  `json:"phone"`
+	Email         string  `json:"email"`
+	UpdatedAt     string  `json:"updated_at"`
+	CreatedAt     string  `json:"created_at"`
+}
+
+type UserSocialV1Errors int
+
+const (
+	UserSocialV1Errors_LOGIN_FAILED = iota
+	UserSocialV1Errors_USER_NOT_FOUND
+	UserSocialV1Errors_SOCIAL_USER_HAS_ALREADY_PINNED
+	UserSocialV1Errors_USER_EXISTS
+	UserSocialV1Errors_CREATE_FAILED
+	UserSocialV1Errors_USER_NOT_CREATED
+)
+
+var _UserSocialV1ErrorsMapping = map[string]int{
+	"LOGIN_FAILED":                   UserSocialV1Errors_LOGIN_FAILED,
+	"USER_NOT_FOUND":                 UserSocialV1Errors_USER_NOT_FOUND,
+	"SOCIAL_USER_HAS_ALREADY_PINNED": UserSocialV1Errors_SOCIAL_USER_HAS_ALREADY_PINNED,
+	"USER_EXISTS":                    UserSocialV1Errors_USER_EXISTS,
+	"CREATE_FAILED":                  UserSocialV1Errors_CREATE_FAILED,
+	"USER_NOT_CREATED":               UserSocialV1Errors_USER_NOT_CREATED,
+}
+
+// easyjson:json
 type UserUpdateV1Args struct {
 	ID            uint64  `json:"id_user"`
 	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
@@ -1408,15 +1466,13 @@ type UserUpdateV1Errors int
 const (
 	UserUpdateV1Errors_USER_NOT_FOUND = iota
 	UserUpdateV1Errors_UPDATE_FAILED
-	UserUpdateV1Errors_NEW_EMAIL_IS_BUSY
-	UserUpdateV1Errors_NEW_PHONE_IS_BUSY
+	UserUpdateV1Errors_NEW_EMAIL_OR_PHONE_IS_BUSY
 )
 
 var _UserUpdateV1ErrorsMapping = map[string]int{
-	"USER_NOT_FOUND":    UserUpdateV1Errors_USER_NOT_FOUND,
-	"UPDATE_FAILED":     UserUpdateV1Errors_UPDATE_FAILED,
-	"NEW_EMAIL_IS_BUSY": UserUpdateV1Errors_NEW_EMAIL_IS_BUSY,
-	"NEW_PHONE_IS_BUSY": UserUpdateV1Errors_NEW_PHONE_IS_BUSY,
+	"USER_NOT_FOUND":             UserUpdateV1Errors_USER_NOT_FOUND,
+	"UPDATE_FAILED":              UserUpdateV1Errors_UPDATE_FAILED,
+	"NEW_EMAIL_OR_PHONE_IS_BUSY": UserUpdateV1Errors_NEW_EMAIL_OR_PHONE_IS_BUSY,
 }
 
 // TODO: duplicates http_json.httpSessionResponse

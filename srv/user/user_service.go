@@ -72,8 +72,8 @@ func (service *UserService) updateUser(ctx context.Context, model *models.User) 
                 u_description = :u_description,
                 u_avatar = :u_avatar,
                 u_phone = :u_phone,
-                u_email = :u_email
-                u_phone_approved = :u_phone_approved
+                u_email = :u_email,
+                u_phone_approved = :u_phone_approved,
                 u_email_approved = :u_email_approved
             WHERE id_user = :id_user
         `, fkField), args)

@@ -185,3 +185,8 @@ ADD CONSTRAINT `ua_motify_user_access_ibfk_1` FOREIGN KEY (`ua_fk_user`) REFEREN
 -- migration1
 
 ALTER TABLE `motify_users` ADD `u_email_approved` BOOLEAN NOT NULL AFTER `u_email`, ADD `u_phone_approved` BOOLEAN NOT NULL AFTER `u_email_approved`;
+
+-- migration2
+
+ALTER TABLE `motify_user_access` CHANGE `ua_email` `ua_login` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `motify_user_access` DROP `ua_phone`;

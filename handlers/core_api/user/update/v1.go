@@ -77,10 +77,10 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 			return nil, v1Errors.USER_NOT_FOUND
 		}
 
-		if err := handler.saveUserAccess(ctx, user.ID, opts.IntegrationFK, opts.Email, opts.Password, user.Email, models.UserAccessEmail, accessList[models.UserAccessEmail], accessList[models.UserAccessPhone]); err != nil {
+		if err := handler.saveUserAccess(ctx, opts.Email, opts.Password, user.Email, models.UserAccessEmail, accessList[models.UserAccessEmail], accessList[models.UserAccessPhone], user.ID, opts.IntegrationFK); err != nil {
 			return nil, err
 		}
-		if err := handler.saveUserAccess(ctx, user.ID, opts.IntegrationFK, opts.Phone, opts.Password, user.Phone, models.UserAccessPhone, accessList[models.UserAccessPhone], accessList[models.UserAccessEmail]); err != nil {
+		if err := handler.saveUserAccess(ctx, opts.Phone, opts.Password, user.Phone, models.UserAccessPhone, accessList[models.UserAccessPhone], accessList[models.UserAccessEmail], user.ID, opts.IntegrationFK); err != nil {
 			return nil, err
 		}
 	}
@@ -152,7 +152,7 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}, nil
 }
 
-func (handler *Handler) saveUserAccess(ctx context.Context, userID uint64, integrationFK *uint64, newLogin, newPass *string, oldLogin, field string, access *models.UserAccess, accessPair *models.UserAccess) error {
+func (handler *Handler) saveUserAccess(ctx context.Context, newLogin, newPass *string, oldLogin, field string, access *models.UserAccess, accessPair *models.UserAccess, userID uint64, integrationFK *uint64) error {
 	needUpdate := false
 	if access != nil {
 		if newLogin != nil && *newLogin != "" && *newLogin != oldLogin {

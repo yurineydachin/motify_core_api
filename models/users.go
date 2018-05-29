@@ -17,15 +17,23 @@ type User struct {
 
 func (user *User) ToArgs() map[string]interface{} {
 	res := map[string]interface{}{
-		"id_user":          user.ID,
-		"u_name":           user.Name,
-		"u_short":          user.Short,
-		"u_description":    user.Description,
-		"u_avatar":         user.Avatar,
-		"u_phone":          user.Phone,
-		"u_email":          user.Email,
-		"u_phone_approved": user.PhoneApproved,
-		"u_email_approved": user.EmailApproved,
+		"id_user":       user.ID,
+		"u_name":        user.Name,
+		"u_short":       user.Short,
+		"u_description": user.Description,
+		"u_avatar":      user.Avatar,
+		"u_phone":       user.Phone,
+		"u_email":       user.Email,
+	}
+	if user.PhoneApproved {
+		res["u_phone_approved"] = 1
+	} else {
+		res["u_phone_approved"] = 0
+	}
+	if user.EmailApproved {
+		res["u_email_approved"] = 1
+	} else {
+		res["u_email_approved"] = 0
 	}
 	if user.IntegrationFK != nil && *user.IntegrationFK > 0 {
 		res["u_fk_integration"] = *user.IntegrationFK

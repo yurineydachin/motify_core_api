@@ -10,31 +10,41 @@ import (
 
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/facebook"
+	"golang.org/x/oauth2/google"
 )
 
 var (
-	oauthConf = &oauth2.Config{
-		ClientID:     "841018762765680",
-		ClientSecret: "45d763707855c3fce3b2299aa461c5fa",
-		RedirectURL:  "https://mobile-api.motifyapp.com/user/social/fb_token/v1",
-		Scopes:       []string{"public_profile"},
-		Endpoint:     facebook.Endpoint,
+	configs = map[string]*oauth2.Config{
+		"fb": &oauth2.Config{
+			ClientID:     "841018762765680",
+			ClientSecret: "45d763707855c3fce3b2299aa461c5fa",
+			RedirectURL:  "https://mobile-api.motifyapp.com/user/social/fb_login/v1",
+			Scopes:       []string{"public_profile"},
+			Endpoint:     facebook.Endpoint,
+		},
+		"google": &oauth2.Config{
+			ClientID:     "",
+			ClientSecret: "",
+			RedirectURL:  "https://mobile-api.motifyapp.com/user/social/google_login/v1",
+			Scopes:       []string{"public_profile"},
+			Endpoint:     google.Endpoint,
+		},
 	}
-	oauthStateString = "somenotverysecretstring)"
 )
 
 const (
-	FBProfileUrl = "https://graph.facebook.com/me"
+	FBConf     = "fb"
+	GoogleConf = "google"
+
+	FBProfileUrl     = "https://graph.facebook.com/me"
+	GoogleProfileUrl = "https://www.googleapis.com/oauth2/v1/userinfo"
 )
 
-// errors:
-// This authorization code has expired
-// This authorization code has been used
-
-type FBProfile struct {
+type Profile struct {
 	AccessToken string `json:"-,omitempty"`
 	ID          string `json:"id"`
 	Name        string `json:"name"`
+	Avatar      string `json:"picture"`
 	/*
 	   first_name
 	   last_name
@@ -45,7 +55,21 @@ type FBProfile struct {
 	*/
 }
 
-func GetCodeUrl() (string, error) {
+func getConf(social string) *oauth2.Config {
+	if conf, found := configs[social]; found && conf != nil {
+		return conf
+	}
+	return &oauth2.Config{
+		ClientID:     "",
+		ClientSecret: "",
+		RedirectURL:  "",
+		Scopes:       []string{"public_profile"},
+		Endpoint:     facebook.Endpoint,
+	}
+}
+
+func GetCodeUrl(social string) (string, error) {
+	oauthConf := getConf(social)
 	res, err := url.Parse(oauthConf.Endpoint.AuthURL)
 	if err != nil {
 		return "", fmt.Errorf("GetCodeUrl, url.ParseUrl: %s", err)
@@ -55,12 +79,13 @@ func GetCodeUrl() (string, error) {
 	params.Add("scope", strings.Join(oauthConf.Scopes, " "))
 	params.Add("redirect_uri", oauthConf.RedirectURL)
 	params.Add("response_type", "code")
-	params.Add("state", oauthStateString)
+	params.Add("state", "somenotverysecretstring")
 	res.RawQuery = params.Encode()
 	return res.String(), nil
 }
 
-func GetAccessTokenByCode(code string) (string, error) {
+func GetAccessTokenByCode(social, code string) (string, error) {
+	oauthConf := getConf(social)
 	if code == "" {
 		return "", fmt.Errorf("No code for access_token")
 	}
@@ -82,7 +107,7 @@ func getFBProfileUrlByAccessToken(token string) (string, error) {
 	return res.String(), nil
 }
 
-func GetFBUser(code, accessToken *string) (*FBProfile, error) {
+func GetFBUser(code, accessToken *string) (*Profile, error) {
 	var (
 		FBUrl string
 		err   error
@@ -90,7 +115,7 @@ func GetFBUser(code, accessToken *string) (*FBProfile, error) {
 	if accessToken != nil && *accessToken != "" {
 		FBUrl, err = getFBProfileUrlByAccessToken(*accessToken)
 	} else if code != nil && *code != "" {
-		accessTokenFB, err := GetAccessTokenByCode(*code)
+		accessTokenFB, err := GetAccessTokenByCode(FBConf, *code)
 		if err != nil {
 			return nil, fmt.Errorf("getFBProfileUrl, GetAccessTokenByCode: %s", err)
 		}
@@ -114,7 +139,7 @@ func GetFBUser(code, accessToken *string) (*FBProfile, error) {
 		return nil, fmt.Errorf("GetFBUser, ioutil.ReadAll: %s\n", err)
 	}
 
-	var profile FBProfile
+	var profile Profile
 	err = json.Unmarshal(response, &profile)
 	if err != nil {
 		return nil, fmt.Errorf("GetFBUser, json.Unmarshal: %s - text: %s\n", err, response)

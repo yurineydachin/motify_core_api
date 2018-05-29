@@ -2,6 +2,7 @@ package user_social
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"motify_core_api/godep_libs/service/logger"
@@ -39,9 +40,7 @@ type V1ErrorTypes struct {
 	LOGIN_FAILED                   error `text:"Login is failed"`
 	USER_NOT_FOUND                 error `text:"User not found"`
 	SOCIAL_USER_HAS_ALREADY_PINNED error `text:"User has already pinned to anouther account"`
-	USER_EXISTS                    error `text:"user exists"`
 	CREATE_FAILED                  error `text:"creating user is failed"`
-	USER_NOT_CREATED               error `text:"created user not found"`
 }
 
 var v1Errors V1ErrorTypes
@@ -57,21 +56,21 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	login := fmt.Sprintf("social:%s/%s%s", opts.Social, opts.Login, models.LoginSufix(opts.IntegrationFK))
 	password := "pass_" + login
 
-	userID, err := handler.getUserIDByLoginAndPass(ctx, login, password, opts.IntegrationFK)
+	userID, err := handler.getUserIDByLoginAndPass(ctx, login, password)
 	if err != nil {
 		return nil, err
 	}
 	if opts.UserID != nil && *opts.UserID > 0 {
 		if userID == 0 {
-			if err := handler.addUserAccess(ctx, login, password, social, *opts.UserID, opts.IntegrationFK); err != nil {
-				return 0, v1Errors.CREATE_FAILED
+			if err := handler.addUserAccess(ctx, login, password, opts.Social, *opts.UserID, opts.IntegrationFK); err != nil {
+				return nil, v1Errors.CREATE_FAILED
 			}
 		} else if userID != *opts.UserID {
 			return nil, v1Errors.SOCIAL_USER_HAS_ALREADY_PINNED
 		}
 		userID = *opts.UserID
 	} else if userID == 0 {
-		userID, err = handler.createUser(ctx, login, password, social, opts.Name, opts.Avatar, opts.IntegrationFK)
+		userID, err = handler.createUser(ctx, login, password, opts.Social, opts.Name, opts.Avatar, opts.IntegrationFK)
 	}
 
 	if userID == 0 {
@@ -114,7 +113,7 @@ func (handler *Handler) getUserIDByLoginAndPass(ctx context.Context, login, pass
 	return userID, nil
 }
 
-func (handler *Hanlder) createUser(ctx context.Context, login, password, social, name string, avatar *string, intergrationFK *uint64) (uint64, error) {
+func (handler *Handler) createUser(ctx context.Context, login, password, social, name string, avatar *string, integrationFK *uint64) (uint64, error) {
 	newUser := &models.User{
 		IntegrationFK: integrationFK,
 		Name:          name,
@@ -129,7 +128,7 @@ func (handler *Hanlder) createUser(ctx context.Context, login, password, social,
 		return 0, v1Errors.CREATE_FAILED
 	}
 
-	if err := handler.addUserAccess(ctx, login, password, social, userID, intergrationFK); err != nil {
+	if err := handler.addUserAccess(ctx, login, password, social, userID, integrationFK); err != nil {
 		logger.Error(ctx, "Failed creating user access: %v", err)
 		if err := handler.userService.DeleteUser(ctx, userID); err != nil {
 			logger.Error(ctx, "Failed creating user: failed deleting user")
@@ -140,14 +139,14 @@ func (handler *Hanlder) createUser(ctx context.Context, login, password, social,
 	return userID, nil
 }
 
-func (handler *Handler) addUserAccess(ctx context.Context, login, password, social, userID uint64, intergrationFK *uint64) error {
+func (handler *Handler) addUserAccess(ctx context.Context, login, password, field string, userID uint64, integrationFK *uint64) error {
 	newUserAccess := &models.UserAccess{
 		IntegrationFK: integrationFK,
 		UserFK:        userID,
-		Type:          social,
-		Password:      password,
+		Type:          field,
 	}
 	newUserAccess.SetLogin(login)
+	newUserAccess.SetPassword(password)
 	_, err := handler.userService.SetUserAccess(ctx, newUserAccess)
 	return err
 }

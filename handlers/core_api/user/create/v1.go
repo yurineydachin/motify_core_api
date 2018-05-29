@@ -161,7 +161,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	}, nil
 }
 
-//models.UserAccessEmail
 func (handler *Handler) addUserAccess(ctx context.Context, login, password, field string, userID uint64, integrationFK *uint64) error {
 	newUserAccess := &models.UserAccess{
 		IntegrationFK: integrationFK,
