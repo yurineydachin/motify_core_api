@@ -234,13 +234,13 @@ func (service *UserService) GetUserAssessByUserIDAndType(ctx context.Context, us
 
 func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) (map[string]*models.UserAccess, error) {
 	list := []*models.UserAccess{}
-	err := service.db.Select(&res, `
+	err := service.db.Select(&list, `
         SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
         FROM motify_user_access WHERE ua_fk_user = ?
     `, userID)
 
 	res := make(map[string]*models.UserAccess, len(list))
-	for i, access := range list {
+	for _, access := range list {
 		access.MarkAllHashed()
 		res[access.Type] = access
 	}

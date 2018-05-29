@@ -35,7 +35,7 @@ func LoginSufix(integrationID *uint64) string {
 
 func (access *UserAccess) SetLogin(value string) {
 	value += LoginSufix(access.IntegrationFK)
-	access.Login = &value
+	access.Login = value
 	access.IsHashedLogin = false
 }
 
