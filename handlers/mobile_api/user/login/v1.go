@@ -17,7 +17,11 @@ type V1Args struct {
 }
 
 type V1Res struct {
-	Token       string `json:"token" description:"Authorized token"`
+	Token string `json:"token" description:"Authorized token"`
+	User  *User  `json:"user" description:"User"`
+}
+
+type User struct {
 	Hash        string `json:"hash"`
 	Name        string `json:"name"`
 	Short       string `json:"p_description"`
@@ -64,13 +68,15 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	user := loginData.User
 
 	return &V1Res{
-		Token:       wrapToken.NewMobileUser(user.ID).String(),
-		Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
-		Name:        user.Name,
-		Short:       user.Short,
-		Description: user.Description,
-		Avatar:      user.Avatar,
-		Phone:       user.Phone,
-		Email:       user.Email,
+		Token: wrapToken.NewMobileUser(user.ID).String(),
+		User: &User{
+			Hash:        wrapToken.NewMobileUser(user.ID).Fixed().String(),
+			Name:        user.Name,
+			Short:       user.Short,
+			Description: user.Description,
+			Avatar:      user.Avatar,
+			Phone:       user.Phone,
+			Email:       user.Email,
+		},
 	}, nil
 }

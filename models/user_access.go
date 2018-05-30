@@ -58,12 +58,12 @@ func (access UserAccess) ToArgs() map[string]interface{} {
 	if access.IsHashedLogin {
 		args["ua_login"] = access.Login
 	} else {
-		args["ua_login"] = utils.Hash(access.Login)
+		args["ua_login"] = utils.HashLogin(access.Login)
 	}
 	if access.IsHashedPassword {
 		args["ua_password"] = access.Password
 	} else {
-		args["ua_password"] = utils.Hash(access.Password)
+		args["ua_password"] = utils.HashPass(access.Password)
 	}
 	return args
 }

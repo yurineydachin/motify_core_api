@@ -184,7 +184,7 @@ func (service *UserService) Authentificate(ctx context.Context, login, password 
 	}
 	if len(userIDs) > 1 {
 		return 0, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', too many users: %v", login, password, userIDs)
-	} else if len(userIDs) == 0 {
+	} else if len(userIDs) == 1 {
 		return accessList[0].UserFK, nil
 	}
 	return 0, nil
@@ -192,7 +192,7 @@ func (service *UserService) Authentificate(ctx context.Context, login, password 
 
 func (service *UserService) getUserAssessListByLogin(login string) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
-	loginHash := utils.Hash(login)
+	loginHash := utils.HashLogin(login)
 	err := service.db.Select(&res, `
         SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
         FROM motify_user_access WHERE ua_login = ?
@@ -206,8 +206,8 @@ func (service *UserService) getUserAssessListByLogin(login string) ([]*models.Us
 
 func (service *UserService) getUserAssessListByLoginAndPass(login, password string) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
-	loginHash := utils.Hash(login)
-	passwordHash := utils.Hash(password)
+	loginHash := utils.HashLogin(login)
+	passwordHash := utils.HashPass(password)
 	err := service.db.Select(&res, `
         SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
         FROM motify_user_access WHERE ua_login = ? AND ua_password = ?

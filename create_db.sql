@@ -190,3 +190,4 @@ ALTER TABLE `motify_users` ADD `u_email_approved` BOOLEAN NOT NULL AFTER `u_emai
 
 ALTER TABLE `motify_user_access` CHANGE `ua_email` `ua_login` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `motify_user_access` DROP `ua_phone`;
+ALTER TABLE `motify_user_access` CHANGE `ua_type` `ua_type` ENUM('email','fb','google','phone') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;

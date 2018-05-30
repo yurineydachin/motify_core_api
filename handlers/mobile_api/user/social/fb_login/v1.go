@@ -21,11 +21,6 @@ type V1Args struct {
 type V1Res struct {
 	Token string `json:"token" description:"Authorized token"`
 	User  *User  `json:"user" description:"User"`
-	//FBUrl     string     `json:"url" description:"url"`
-	//Code      *string    `json:"code" description:"code"`
-	//State     *string    `json:"state" description:"state"`
-	//FBProfile *FBProfile `json:"profile" description:"r"`
-	//Error     string     `json:"error" description:"error"`
 }
 type User struct {
 	Hash        string `json:"hash"`
@@ -52,11 +47,6 @@ func (*Handler) V1ErrorsVar() *V1ErrorTypes {
 	return &v1Errors
 }
 
-var oauthErrors = []error{
-	v1Errors.CODE_HAS_EXPIRED,
-	v1Errors.CODE_HAS_BEEN_USED,
-}
-
 func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INullToken) (*V1Res, error) {
 	logger.Debug(ctx, "User/Social/FBLogin/V1")
 	cache.DisableTransportCache(ctx)
@@ -65,39 +55,31 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		userID = uint64(apiToken.GetID())
 	}
 
-	/*
-		res := V1Res{
-			Code:  opts.Code,
-			State: opts.State,
-		}
-		res.FBUrl, _ = oauth2.GetCodeUrl(oauth2.FBConf)
-	*/
+	FBUrl, _ := oauth2.GetCodeUrl(oauth2.FBConf)
+	logger.Error(ctx, "FB url for code: %s", FBUrl)
 
 	if opts.Code == nil && opts.FBToken == nil {
 		return nil, v1Errors.MISSED_REQUIRED_FIELDS
 	}
+
+	oauthErrors := []error{
+		v1Errors.CODE_HAS_EXPIRED,
+		v1Errors.CODE_HAS_BEEN_USED,
+	}
+
 	profile, err := oauth2.GetFBUser(opts.Code, opts.FBToken)
 	if err != nil {
-		for i := range oauthErrors {
-			if strings.Index(err.Error(), oauthErrors[i].Error()) > 0 {
-				return nil, oauthErrors[i]
+		for _, e := range oauthErrors {
+			if strings.Index(err.Error(), e.Error()) > 0 {
+				return nil, e
 			}
 		}
+		logger.Error(ctx, "Some error from oauth2: %v", err)
 		return nil, err
-		//res.Error = err.Error()
-	} else if profile != nil {
+	} else if profile == nil {
+		logger.Error(ctx, "FB profile is nil")
 		return nil, v1Errors.USER_NOT_FOUND
 	}
-	/*
-		res.FBProfile = &FBProfile{
-			ID:          profile.ID,
-			Name:        profile.Name,
-			AccessToken: profile.AccessToken,
-		}
-	*/
-	/*} else {
-		res.Error = "No profile from oauth2 module"
-	}*/
 
 	loginData, err := handler.coreApi.UserSocialV1(ctx, coreApiAdapter.UserSocialV1Args{
 		UserID: &userID,
@@ -120,11 +102,6 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 	}
 	user := loginData.User
 
-	/*return &res, nil
-		FBUrl: Url.String(),
-	    Code: *opts.Code,
-	    State: *opts.State,
-	*/
 	return &V1Res{
 		Token: wrapToken.NewMobileUser(user.ID).String(),
 		User: &User{
