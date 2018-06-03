@@ -34,6 +34,7 @@ import (
 	"motify_core_api/handlers/mobile_api/user/remind/send"
 	"motify_core_api/handlers/mobile_api/user/signup"
 	"motify_core_api/handlers/mobile_api/user/social/fb_login"
+	"motify_core_api/handlers/mobile_api/user/social/google_login"
 	"motify_core_api/handlers/mobile_api/user/update"
 )
 
@@ -114,6 +115,7 @@ func main() {
 		user_avatar.New(coreApi, fileStoreService),
 		user_login.New(coreApi),
 		user_fb_login.New(coreApi),
+		user_google_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
 		user_remind_send.New(coreApi),

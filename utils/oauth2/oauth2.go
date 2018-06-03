@@ -23,11 +23,16 @@ var (
 			Endpoint:     facebook.Endpoint,
 		},
 		"google": &oauth2.Config{
-			ClientID:     "",
-			ClientSecret: "",
+			ClientID:     "882675778848-9vdopoutu2b2sg2uu11dfomkki7h61hu.apps.googleusercontent.com",
+			ClientSecret: "mYYVDdrLlQEcELT1y_kccqsQ",
 			RedirectURL:  "https://mobile-api.motifyapp.com/user/social/google_login/v1",
-			Scopes:       []string{"public_profile"},
-			Endpoint:     google.Endpoint,
+			Scopes: []string{
+				"https://www.googleapis.com/auth/plus.login",
+				"https://www.googleapis.com/auth/plus.me",
+				"https://www.googleapis.com/auth/userinfo.email",
+				"https://www.googleapis.com/auth/userinfo.profile",
+			},
+			Endpoint: google.Endpoint,
 		},
 	}
 )
@@ -143,6 +148,60 @@ func GetFBUser(code, accessToken *string) (*Profile, error) {
 	err = json.Unmarshal(response, &profile)
 	if err != nil {
 		return nil, fmt.Errorf("GetFBUser, json.Unmarshal: %s - text: %s\n", err, response)
+	}
+	if accessToken != nil {
+		profile.AccessToken = *accessToken
+	}
+	return &profile, nil
+}
+
+func getGoogleProfileUrlByAccessToken(token string) (string, error) {
+	res, err := url.Parse(GoogleProfileUrl)
+	if err != nil {
+		return "", fmt.Errorf("getGoogleProfileUrl, url.ParseUrl: %s", err)
+	}
+	params := url.Values{}
+	params.Add("access_token", token)
+	res.RawQuery = params.Encode()
+	return res.String(), nil
+}
+
+func GetGoogleUser(code, accessToken *string) (*Profile, error) {
+	var (
+		GoogleUrl string
+		err       error
+	)
+	if accessToken != nil && *accessToken != "" {
+		GoogleUrl, err = getGoogleProfileUrlByAccessToken(*accessToken)
+	} else if code != nil && *code != "" {
+		accessTokenGoogle, err := GetAccessTokenByCode(GoogleConf, *code)
+		if err != nil {
+			return nil, fmt.Errorf("getGoogleProfileUrl, GetAccessTokenByCode: %s", err)
+		}
+		accessToken = &accessTokenGoogle
+		GoogleUrl, err = getGoogleProfileUrlByAccessToken(accessTokenGoogle)
+	} else {
+		return nil, fmt.Errorf("There are no code or access_token")
+	}
+	if err != nil {
+		return nil, fmt.Errorf("GetGoogleUser: %s", err)
+	}
+
+	resp, err := http.Get(GoogleUrl)
+	if err != nil {
+		return nil, fmt.Errorf("GetGoogleUser, http.Get: %s", err)
+	}
+	defer resp.Body.Close()
+
+	response, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, fmt.Errorf("GetGoogleUser, ioutil.ReadAll: %s\n", err)
+	}
+
+	var profile Profile
+	err = json.Unmarshal(response, &profile)
+	if err != nil {
+		return nil, fmt.Errorf("GetGoogleUser, json.Unmarshal: %s - text: %s\n", err, response)
 	}
 	if accessToken != nil {
 		profile.AccessToken = *accessToken
