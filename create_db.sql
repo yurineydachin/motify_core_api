@@ -191,3 +191,29 @@ ALTER TABLE `motify_users` ADD `u_email_approved` BOOLEAN NOT NULL AFTER `u_emai
 ALTER TABLE `motify_user_access` CHANGE `ua_email` `ua_login` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
 ALTER TABLE `motify_user_access` DROP `ua_phone`;
 ALTER TABLE `motify_user_access` CHANGE `ua_type` `ua_type` ENUM('email','fb','google','phone') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+-- migration3
+
+DROP TABLE IF EXISTS `motify_push_device`;
+CREATE TABLE `motify_push_device` (
+  `id_push_device` int(11) NOT NULL,
+  `pd_fk_user` int(11) NOT NULL,
+  `pd_token` varchar(255) NOT NULL,
+  `pd_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `pd_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `motify_push_device`
+  ADD PRIMARY KEY (`id_push_device`),
+  ADD KEY `pd_fk_user_ind` (`pd_fk_user`);
+
+
+ALTER TABLE `motify_push_device`
+  MODIFY `id_push_device` int(11) NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE `motify_push_device`
+  ADD CONSTRAINT `pd_motify_push_device_ibfk_1` FOREIGN KEY (`pd_fk_user`) REFERENCES `motify_users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+
