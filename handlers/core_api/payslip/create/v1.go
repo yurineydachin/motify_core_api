@@ -2,6 +2,7 @@ package payslip_create
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"motify_core_api/godep_libs/service/logger"
@@ -103,6 +104,13 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if payslip == nil {
 		logger.Error(ctx, "Failed login: payslip is nil")
 		return nil, v1Errors.PAYSLIP_NOT_CREATED
+	}
+
+	devices, err := handler.agentService.GetDevicesByEmployeeID(ctx, employee.ID, 0, 0)
+	if err != nil {
+		logger.Error(ctx, "Can not load devices by empID: %v", err)
+	} else {
+		handler.pushService.SendMessages(ctx, fmt.Sprintf("New payslip: %.2f", payslip.Amount), devices)
 	}
 
 	return &V1Res{

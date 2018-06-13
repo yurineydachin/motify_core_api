@@ -194,26 +194,28 @@ ALTER TABLE `motify_user_access` CHANGE `ua_type` `ua_type` ENUM('email','fb','g
 
 -- migration3
 
-DROP TABLE IF EXISTS `motify_push_device`;
-CREATE TABLE `motify_push_device` (
-  `id_push_device` int(11) NOT NULL,
-  `pd_fk_user` int(11) NOT NULL,
-  `pd_token` varchar(255) NOT NULL,
-  `pd_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `pd_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+DROP TABLE IF EXISTS `motify_device`;
+CREATE TABLE `motify_device` (
+  `id_device` int(11) NOT NULL,
+  `d_fk_user` int(11) NOT NULL,
+  `d_token` varchar(255) NOT NULL,
+  `d_device` varchar(255) NOT NULL,
+  `d_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `d_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-ALTER TABLE `motify_push_device`
-  ADD PRIMARY KEY (`id_push_device`),
-  ADD KEY `pd_fk_user_ind` (`pd_fk_user`);
+ALTER TABLE `motify_device`
+  ADD PRIMARY KEY (`id_device`),
+  ADD KEY `d_fk_user_ind` (`d_fk_user`),
+  ADD UNIQUE( `d_token`);
 
 
-ALTER TABLE `motify_push_device`
-  MODIFY `id_push_device` int(11) NOT NULL AUTO_INCREMENT;
+ALTER TABLE `motify_device`
+  MODIFY `id_device` int(11) NOT NULL AUTO_INCREMENT;
 
 
-ALTER TABLE `motify_push_device`
-  ADD CONSTRAINT `pd_motify_push_device_ibfk_1` FOREIGN KEY (`pd_fk_user`) REFERENCES `motify_users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `motify_device`
+  ADD CONSTRAINT `d_motify_device_ibfk_1` FOREIGN KEY (`d_fk_user`) REFERENCES `motify_users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 

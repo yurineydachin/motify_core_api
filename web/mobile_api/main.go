@@ -30,6 +30,8 @@ import (
 	"motify_core_api/handlers/mobile_api/payslip/list"
 	"motify_core_api/handlers/mobile_api/user/avatar"
 	"motify_core_api/handlers/mobile_api/user/login"
+	"motify_core_api/handlers/mobile_api/user/register/device/android"
+	"motify_core_api/handlers/mobile_api/user/register/device/ios"
 	"motify_core_api/handlers/mobile_api/user/remind/reset"
 	"motify_core_api/handlers/mobile_api/user/remind/send"
 	"motify_core_api/handlers/mobile_api/user/signup"
@@ -120,6 +122,8 @@ func main() {
 		user_update.New(coreApi),
 		user_remind_send.New(coreApi),
 		user_remind_reset.New(coreApi),
+		user_device_ios.New(coreApi),
+		user_device_android.New(coreApi),
 		employer_adduser.New(coreApi),
 		employer_details.New(coreApi),
 		employer_list.New(coreApi),

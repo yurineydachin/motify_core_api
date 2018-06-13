@@ -1,4 +1,4 @@
-package push_device
+package device_service
 
 import (
 	"context"
@@ -18,32 +18,32 @@ func New(db *database.DbAdapter) *Service {
 	}
 }
 
-func (service *Service) GetListByEmployeeID(ctx context.Context, modelID uint64) ([]*models.PushDevice, error) {
-	res := []*models.PushDevice{}
+func (service *Service) GetListByEmployeeID(ctx context.Context, modelID uint64) ([]*models.Device, error) {
+	res := []*models.Device{}
 	err := service.db.Select(&res, `
-        SELECT id_push_device, pd_fk_user, pd_token, pd_updated_at, pd_created_at
-        FROM motify_push_device
-	INNER JOIN motify_users ON id_user = pd_fk_user
+        SELECT id_device, d_fk_user, d_token, d_updated_at, d_created_at
+        FROM motify_device
+	INNER JOIN motify_users ON id_user = d_fk_user
 	INNER JOIN motify_agent_employees
 	WHERE id_employee = ?
     `, modelID)
 	return res, err
 }
 
-func (service *Service) Set(ctx context.Context, model *models.PushDevice) (uint64, error) {
+func (service *Service) Set(ctx context.Context, model *models.Device) (uint64, error) {
 	if model.ID > 0 {
 		return service.update(ctx, model)
 	}
 	return service.create(ctx, model)
 }
 
-func (service *Service) create(ctx context.Context, model *models.PushDevice) (uint64, error) {
+func (service *Service) create(ctx context.Context, model *models.Device) (uint64, error) {
 	if model.UserFK == 0 {
 		return 0, fmt.Errorf("Insert DB exec error: no fk_user")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_push_device (pd_fk_user, pd_token)
-            VALUES (:pd_fk_user, :pd_token)
+            INSERT INTO motify_device (d_fk_user, d_token)
+            VALUES (:d_fk_user, :d_token)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -56,11 +56,11 @@ func (service *Service) create(ctx context.Context, model *models.PushDevice) (u
 	return uint64(id), err
 }
 
-func (service *Service) update(ctx context.Context, model *models.PushDevice) (uint64, error) {
+func (service *Service) update(ctx context.Context, model *models.Device) (uint64, error) {
 	updateRes, err := service.db.Exec(`
-            UPDATE motify_push_device SET
-                pd_token = :pd_token
-            WHERE id_push_device = :id_push_device
+            UPDATE motify_device SET
+                d_token = :d_token
+            WHERE id_device = :id_device
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Update DB exec error: %v", err)
@@ -74,10 +74,10 @@ func (service *Service) update(ctx context.Context, model *models.PushDevice) (u
 
 func (service *Service) DeleteByID(ctx context.Context, modelID uint64) error {
 	deleteRes, err := service.db.Exec(`
-            DELETE FROM motify_push_device
-            WHERE id_push_device = :id_push_device
+            DELETE FROM motify_device
+            WHERE id_device = :id_device
         `, map[string]interface{}{
-		"id_push_device": modelID,
+		"id_device": modelID,
 	})
 	if err != nil {
 		return fmt.Errorf("Delete DB exec error: %v", err)

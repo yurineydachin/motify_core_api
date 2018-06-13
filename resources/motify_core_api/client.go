@@ -252,6 +252,16 @@ func (api *MotifyCoreAPIGoRPC) UserCreateV1(ctx context.Context, options UserCre
 	return result, err
 }
 
+func (api *MotifyCoreAPIGoRPC) UserDeviceV1(ctx context.Context, options UserDeviceV1Args) (*UserDeviceV1Res, error) {
+	var result *UserDeviceV1Res
+	var entry = cache.CacheEntry{Body: &result}
+	err := api.setWithCache(ctx, "/user/device/v1/", options, &entry, _UserDeviceV1ErrorsMapping)
+	if result, ok := entry.Body.(**UserDeviceV1Res); ok {
+		return *result, err
+	}
+	return result, err
+}
+
 func (api *MotifyCoreAPIGoRPC) UserLoginV1(ctx context.Context, options UserLoginV1Args) (*UserLoginV1Res, error) {
 	var result *UserLoginV1Res
 	var entry = cache.CacheEntry{Body: &result}
@@ -1302,6 +1312,28 @@ var _UserCreateV1ErrorsMapping = map[string]int{
 }
 
 // easyjson:json
+type UserDeviceV1Args struct {
+	ID     uint64 `json:"id_user"`
+	Device string `json:"device"`
+	Token  string `json:"token"`
+}
+
+// easyjson:json
+type UserDeviceV1Res struct {
+	Token string `json:"token"`
+}
+
+type UserDeviceV1Errors int
+
+const (
+	UserDeviceV1Errors_FAILED_ADDING_TOKEN = iota
+)
+
+var _UserDeviceV1ErrorsMapping = map[string]int{
+	"FAILED_ADDING_TOKEN": UserDeviceV1Errors_FAILED_ADDING_TOKEN,
+}
+
+// easyjson:json
 type UserLoginV1Args struct {
 	IntegrationFK *uint64 `json:"fk_integration,omitempty"`
 	Login         string  `json:"login"`
@@ -1414,18 +1446,14 @@ const (
 	UserSocialV1Errors_LOGIN_FAILED = iota
 	UserSocialV1Errors_USER_NOT_FOUND
 	UserSocialV1Errors_SOCIAL_USER_HAS_ALREADY_PINNED
-	UserSocialV1Errors_USER_EXISTS
 	UserSocialV1Errors_CREATE_FAILED
-	UserSocialV1Errors_USER_NOT_CREATED
 )
 
 var _UserSocialV1ErrorsMapping = map[string]int{
 	"LOGIN_FAILED":                   UserSocialV1Errors_LOGIN_FAILED,
 	"USER_NOT_FOUND":                 UserSocialV1Errors_USER_NOT_FOUND,
 	"SOCIAL_USER_HAS_ALREADY_PINNED": UserSocialV1Errors_SOCIAL_USER_HAS_ALREADY_PINNED,
-	"USER_EXISTS":                    UserSocialV1Errors_USER_EXISTS,
 	"CREATE_FAILED":                  UserSocialV1Errors_CREATE_FAILED,
-	"USER_NOT_CREATED":               UserSocialV1Errors_USER_NOT_CREATED,
 }
 
 // easyjson:json
