@@ -19,6 +19,7 @@ import (
 	"motify_core_api/godep_libs/service/logger"
 
 	"motify_core_api/resources/database"
+	"motify_core_api/web/core_api/push"
 
 	"motify_core_api/srv/agent"
 	"motify_core_api/srv/device"
@@ -145,7 +146,7 @@ func main() {
 	integrationService := integration_service.NewIntegrationService(db)
 	deviceService := device_service.New(db)
 	emailService := email_service.NewService(host, port, userEmail, userPassword)
-	pushService := push_service.New().AddAPNS(apnsGateway, "", "")
+	pushService := push_service.New().AddAPNS(apnsGateway, push.GetAPNSCert(), push.GetAPNSCert())
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)

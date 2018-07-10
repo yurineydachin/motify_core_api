@@ -21,7 +21,7 @@ func New(db *database.DbAdapter) *Service {
 func (service *Service) GetListByEmployeeID(ctx context.Context, modelID uint64) ([]*models.Device, error) {
 	res := []*models.Device{}
 	err := service.db.Select(&res, `
-        SELECT id_device, d_fk_user, d_token, d_updated_at, d_created_at
+        SELECT id_device, d_fk_user, d_token, d_device, d_updated_at, d_created_at
         FROM motify_device
 	INNER JOIN motify_users ON id_user = d_fk_user
 	INNER JOIN motify_agent_employees
@@ -42,8 +42,8 @@ func (service *Service) create(ctx context.Context, model *models.Device) (uint6
 		return 0, fmt.Errorf("Insert DB exec error: no fk_user")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_device (d_fk_user, d_token)
-            VALUES (:d_fk_user, :d_token)
+            INSERT INTO motify_device (d_fk_user, d_token, d_device)
+	    VALUES (:d_fk_user, :d_token, :d_device)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
@@ -59,7 +59,8 @@ func (service *Service) create(ctx context.Context, model *models.Device) (uint6
 func (service *Service) update(ctx context.Context, model *models.Device) (uint64, error) {
 	updateRes, err := service.db.Exec(`
             UPDATE motify_device SET
-                d_token = :d_token
+                d_token = :d_token,
+                d_device = :d_device
             WHERE id_device = :id_device
         `, model.ToArgs())
 	if err != nil {
