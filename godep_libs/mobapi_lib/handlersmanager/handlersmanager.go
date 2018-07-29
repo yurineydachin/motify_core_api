@@ -61,7 +61,7 @@ func getHmCallbacks(tokenModel uint64) gorpc.HandlersManagerCallbacks {
 			preparedParams[1] = reflect.ValueOf(ctx)
 
 			// prepare token by input data and extraData (expected token type)
-			apiToken, shouldAppendToInputs, err := prepareToken(ctxData.ReqTokenHeader, extraData, tokenModel)
+			apiToken, shouldAppendToInputs, err := PrepareToken(ctxData.ReqTokenHeader, extraData, tokenModel)
 			if err != nil {
 				if tokenErr, ok := err.(*gorpc.HandlerError); ok {
 					switch tokenErr.UserMessage {

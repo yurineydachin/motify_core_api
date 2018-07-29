@@ -102,9 +102,11 @@ func main() {
 		},
 	)
 
+	fileUploadMode, _ := config.GetString("file-upload-mode")
+	fileUploadDir, _ := config.GetString("file-upload-dir")
 	awsRegion, _ := config.GetString("aws-region")
 	awsBucket, _ := config.GetString("aws-s3-bucket")
-	fileStoreService := file_storage_service.NewService(awsRegion, awsBucket)
+	fileStoreService := file_storage_service.NewService(fileUploadMode, fileUploadDir, awsRegion, awsBucket)
 
 	srvc.MustRegisterHandlers(
 		/*

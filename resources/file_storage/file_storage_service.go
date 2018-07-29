@@ -9,19 +9,46 @@ import (
 	"github.com/aws/aws-sdk-go/service/s3/s3manager"
 )
 
+const (
+    ModeDir = "nfs"
+    ModeBucket = "bucket"
+)
+
 type FileStorageService struct {
+    dirPath string
+    mode string
 	region string
 	bucket string
 }
 
-func NewService(region, bucket string) *FileStorageService {
+func NewService(node, dirPath, region, bucket string) *FileStorageService {
 	return &FileStorageService{
+    dirPath: dirPath,
+    mode: mode,
 		region: region,
 		bucket: bucket,
 	}
 }
 
 func (service *FileStorageService) Upload(filename string, file io.Reader) error {
+    if service.mode == ModeDir {
+        service.uploadToDir(filename, file)
+    } else if service.mode == ModeBucket {
+        service.uploadToBucket(filename, file)
+    }
+}
+
+func (service *FileStorageService) uploadToDir(filename string, file io.Reader) error {
+   f, err := os.OpenFile(service.dirPath + filename, os.O_WRONLY|os.O_CREATE, 0666)
+   if err != nil {
+       return err
+   }
+   defer f.Close()
+   _, err = io.Copy(f, file)
+   return err
+}
+
+func (service *FileStorageService) uploadToBucket(filename string, file io.Reader) error {
 	// Initialize a session in us-west-2 that the SDK will use to load
 	// credentials from the shared credentials file ~/.aws/credentials.
 	sess, err := session.NewSession(&aws.Config{
