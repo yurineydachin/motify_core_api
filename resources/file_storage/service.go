@@ -1,8 +1,10 @@
 package file_storage_service
 
 import (
+	"errors"
 	"fmt"
 	"io"
+	"os"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
@@ -10,42 +12,43 @@ import (
 )
 
 const (
-    ModeDir = "nfs"
-    ModeBucket = "bucket"
+	ModeDir    = "nfs"
+	ModeBucket = "bucket"
 )
 
 type FileStorageService struct {
-    dirPath string
-    mode string
-	region string
-	bucket string
+	dirPath string
+	mode    string
+	region  string
+	bucket  string
 }
 
-func NewService(node, dirPath, region, bucket string) *FileStorageService {
+func NewService(mode, dirPath, region, bucket string) *FileStorageService {
 	return &FileStorageService{
-    dirPath: dirPath,
-    mode: mode,
-		region: region,
-		bucket: bucket,
+		dirPath: dirPath,
+		mode:    mode,
+		region:  region,
+		bucket:  bucket,
 	}
 }
 
 func (service *FileStorageService) Upload(filename string, file io.Reader) error {
-    if service.mode == ModeDir {
-        service.uploadToDir(filename, file)
-    } else if service.mode == ModeBucket {
-        service.uploadToBucket(filename, file)
-    }
+	if service.mode == ModeDir {
+		return service.uploadToDir(filename, file)
+	} else if service.mode == ModeBucket {
+		return service.uploadToBucket(filename, file)
+	}
+	return errors.New("Unknow mode")
 }
 
 func (service *FileStorageService) uploadToDir(filename string, file io.Reader) error {
-   f, err := os.OpenFile(service.dirPath + filename, os.O_WRONLY|os.O_CREATE, 0666)
-   if err != nil {
-       return err
-   }
-   defer f.Close()
-   _, err = io.Copy(f, file)
-   return err
+	f, err := os.OpenFile(service.dirPath+filename, os.O_WRONLY|os.O_CREATE, 0666)
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = io.Copy(f, file)
+	return err
 }
 
 func (service *FileStorageService) uploadToBucket(filename string, file io.Reader) error {

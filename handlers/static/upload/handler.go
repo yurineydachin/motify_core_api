@@ -1,24 +1,25 @@
-package upload 
+package upload
 
 import (
-    "io"
-    "os"
-    "fmt"
-    //"context"
-    "net/http"
+	"fmt"
+	//"context"
+	"encoding/json"
+	"net/http"
 
-    "motify_core_api/godep_libs/service/logger"
-    "motify_core_api/resources/file_storage"
-    "motify_core_api/godep_libs/mobapi_lib/handlersmanager"
-    wrapToken "motify_core_api/utils/token"
-    coreApiAdapter "motify_core_api/resources/motify_core_api"
+	"motify_core_api/godep_libs/mobapi_lib/handler"
+	"motify_core_api/godep_libs/mobapi_lib/handlersmanager"
+	"motify_core_api/godep_libs/mobapi_lib/token"
+	"motify_core_api/godep_libs/service/logger"
+	"motify_core_api/resources/file_storage"
+	coreApiAdapter "motify_core_api/resources/motify_core_api"
+	wrapToken "motify_core_api/utils/token"
 )
 
 type Handler struct {
-    tokenModel uint64
-    dirPath string
-    fileStorage *file_storage_service.FileStorageService
-    coreApi     *coreApiAdapter.MotifyCoreAPI
+	tokenModel  uint64
+	dirPath     string
+	fileStorage *file_storage_service.FileStorageService
+	coreApi     *coreApiAdapter.MotifyCoreAPI
 }
 
 type V1Res struct {
@@ -36,7 +37,7 @@ type User struct {
 }
 
 var model = map[uint64]string{
-    wrapToken.ModelMobileUser: "users",
+	wrapToken.ModelMobileUser: "users",
 }
 var defaultModelName = "unknown"
 
@@ -48,81 +49,81 @@ type V1ErrorTypes struct {
 var v1Errors = V1ErrorTypes{}
 
 func New(tokenModel uint64, dirPath string, coreApi *coreApiAdapter.MotifyCoreAPI, fileStorage *file_storage_service.FileStorageService) *Handler {
-    return &Handler{
-        tokenModel: tokenModel,
-        dirPath: dirPath,
-        coreApi:     coreApi,
-        fileStorage: fileStorage,
-    }
+	return &Handler{
+		tokenModel:  tokenModel,
+		dirPath:     dirPath,
+		coreApi:     coreApi,
+		fileStorage: fileStorage,
+	}
 }
 
 func getModel(tokenModel uint64) string {
-    if m, ok := model[tokenModel]; ok && m != "" {
-        return m
-    }
-    return defaultModelName
+	if m, ok := model[tokenModel]; ok && m != "" {
+		return m
+	}
+	return defaultModelName
 }
 
 func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-    res, err := h.midleware(r)
-    if err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        w.Write([]byte(`{"error":"` + err.Error() + `"}`))
-    }
+	res, err := h.midleware(r)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"error":"` + err.Error() + `"}`))
+	}
 
-    response := struct{
-        Data interface{} `json:"data"`
-    }
-    response.Data = res
-    b, err := json.Marshal(response)
-    if err != nil {
-        w.WriteHeader(http.StatusInternalServerError)
-        w.Write([]byte(`{"error":"` + err.Error() + `"}`))
-    }
-    w.WriteHeader(http.StatusOK)
-    w.Write(b))
+	response := struct {
+		Data interface{} `json:"data"`
+	}{}
+	response.Data = res
+	b, err := json.Marshal(response)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(`{"error":"` + err.Error() + `"}`))
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(b)
 }
 
-func (h *Handler) midleware(r *http.Request) (interface{}, error)) {
-    if r.Method == "POST" {
-        return nil, fmt.Errorf("Need POST-request")
-    }
-    apiToken, _, err := handlersmanager.prepareToken(r.Header.Get(HeaderAPIToken), handlersmanager.TokenTypeAuthorized, h.tokenModel)
-    if err != nil {
-        return nil, fmt.Errorf("Token error: %s", err)
-    }
+func (h *Handler) midleware(r *http.Request) (interface{}, error) {
+	if r.Method == "POST" {
+		return nil, fmt.Errorf("Need POST-request")
+	}
+	apiToken, _, err := handlersmanager.PrepareToken(r.Header.Get(handler.HeaderAPIToken), handlersmanager.TokenTypeAuthorized, h.tokenModel)
+	if err != nil {
+		return nil, fmt.Errorf("Token error: %s", err)
+	}
 
-    // if r.URL.Path == ""
-    res, err := h.v1(r, apiToken)
-    if err != nil {
-        return nil, err
-    }
-    return res, nil
+	// if r.URL.Path == ""
+	res, err := h.v1(r, apiToken)
+	if err != nil {
+		return nil, err
+	}
+	return res, nil
 }
 
-func v1(r *http.Prequest, apiToken token.IToken) (*V1Res, error) {
-    r.ParseMultipartForm(32 << 20)
-    file, fileHeader, err := r.FormFile("uploadFile")
-    if err != nil {
-        logger.Error(r.Context(), "Error upload file: %s", err)
-        return nil, v1Errors.FILE_NOT_LOADED
-    }
-    defer file.Close()
+func (h *Handler) v1(r *http.Request, apiToken token.IToken) (*V1Res, error) {
+	r.ParseMultipartForm(32 << 20)
+	file, fileHeader, err := r.FormFile("uploadFile")
+	if err != nil {
+		logger.Error(r.Context(), "Error upload file: %s", err)
+		return nil, v1Errors.FILE_NOT_LOADED
+	}
+	defer file.Close()
 
-    fileName := file_storage_service.GenerateFileName(getModel(h.tokenModel), fileHeader.FileName, uint64(apiToken.GetID()))
+	fileName := file_storage_service.GenerateFileName(getModel(h.tokenModel), fileHeader.Filename, uint64(apiToken.GetID()))
 
-    err = h.fileStorage.Upload(fileName, file)
-    if err != nil {
-        logger.Error(r.Context(), "File not saved: %s", err)
-        return nil, v1Errors.FILE_NOT_LOADED
-    }
+	err = h.fileStorage.Upload(fileName, file)
+	if err != nil {
+		logger.Error(r.Context(), "File not saved: %s", err)
+		return nil, v1Errors.FILE_NOT_LOADED
+	}
 
 	coreOpts := coreApiAdapter.UserUpdateV1Args{
 		ID:     uint64(apiToken.GetID()),
-		Avatar: &avatarFile,
+		Avatar: &fileName,
 	}
 
-	data, err := handler.coreApi.UserUpdateV1(r.Context(), coreOpts)
+	data, err := h.coreApi.UserUpdateV1(r.Context(), coreOpts)
 	if err != nil {
 		if err.Error() == "MotifyCoreAPI: NEW_EMAIL_IS_BUSY" {
 			return nil, v1Errors.USER_UPDATE_FAILED
@@ -151,5 +152,4 @@ func v1(r *http.Prequest, apiToken token.IToken) (*V1Res, error) {
 			Email:       user.Email,
 		},
 	}, nil
-    return nil
 }

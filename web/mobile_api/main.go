@@ -1,6 +1,7 @@
 package main
 
 import (
+	"net/http"
 	"os"
 	"time"
 
@@ -38,6 +39,8 @@ import (
 	"motify_core_api/handlers/mobile_api/user/social/fb_login"
 	"motify_core_api/handlers/mobile_api/user/social/google_login"
 	"motify_core_api/handlers/mobile_api/user/update"
+	"motify_core_api/handlers/static/download"
+	"motify_core_api/handlers/static/upload"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -62,6 +65,9 @@ func init() {
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 
+	config.RegisterString("file-upload-mode", "How to upload and get files: from dir or proxy to file cdn", file_storage_service.ModeDir)
+	config.RegisterString("file-upload-dir", "Path for files", "/tmp/motify/")
+	config.RegisterString("file-download-prefix", "Path prefix", "/images/")
 	config.RegisterString("aws-s3-bucket", "AWS S3 bucket name", "motify-app")
 	config.RegisterString("aws-region", "AWS region", "us-east-1")
 
@@ -102,11 +108,13 @@ func main() {
 		},
 	)
 
-	fileUploadMode, _ := config.GetString("file-upload-mode")
-	fileUploadDir, _ := config.GetString("file-upload-dir")
+	fileStorageMode, _ := config.GetString("file-upload-mode")
+	fileStorageDir, _ := config.GetString("file-upload-dir")
+	urlPrefixPath, _ := config.GetString("file-download-prefix")
 	awsRegion, _ := config.GetString("aws-region")
 	awsBucket, _ := config.GetString("aws-s3-bucket")
-	fileStoreService := file_storage_service.NewService(fileUploadMode, fileUploadDir, awsRegion, awsBucket)
+	fileStoreService := file_storage_service.NewService(fileStorageMode, fileStorageDir, awsRegion, awsBucket)
+	addr, _ := config.GetString("addr")
 
 	srvc.MustRegisterHandlers(
 		/*
@@ -132,6 +140,21 @@ func main() {
 		payslip_list.New(coreApi),
 		payslip_details.New(coreApi),
 	)
+
+	mux := http.NewServeMux()
+	mux.Handle("/user/file/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
+	mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
+	baseHttpServer := &http.Server{
+		Addr:    addr,
+		Handler: mux,
+	}
+	go func() {
+		if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Critical(nil, err.Error())
+			logger.Flush(nil)
+			os.Exit(1)
+		}
+	}()
 
 	err = srvc.Run()
 	if err != nil {
