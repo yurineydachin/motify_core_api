@@ -1,3 +1,6 @@
+package proxy
+
+/*
 func (h *Handler) processProxyMode(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	res, err := http.Get(h.target + r.URL.RequestURI())
@@ -17,3 +20,4 @@ func (h *Handler) processProxyMode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+*/

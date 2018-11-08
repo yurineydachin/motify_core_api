@@ -1,10 +1,9 @@
 package token
 
 import (
-	"errors"
 	"testing"
 
-	"motify_core_api/godep_libs/awg"
+	//"motify_core_api/godep_libs/awg"
 	"motify_core_api/godep_libs/go-config"
 )
 
@@ -76,6 +75,7 @@ func TestTokenV1EncodingAndDecoding(t *testing.T) {
 }
 
 // TestGuestTokenV1ForUniqueness tries to create a lot of tokens in short time and checks it for uniqueness
+/*
 func TestGuestTokenV1ForUniqueness(t *testing.T) {
 	tries := 500
 	result1 := make(map[string]bool, tries)
@@ -118,6 +118,7 @@ func TestGuestTokenV1ForUniqueness(t *testing.T) {
 		}
 	}
 }
+*/
 
 // TestGuestToken checks guest token behaviour
 func TestGuestToken(t *testing.T) {
