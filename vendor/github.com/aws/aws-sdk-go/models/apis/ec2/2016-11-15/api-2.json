@@ -39,6 +39,15 @@
       "input":{"shape":"AcceptVpcPeeringConnectionRequest"},
       "output":{"shape":"AcceptVpcPeeringConnectionResult"}
     },
+    "AdvertiseByoipCidr":{
+      "name":"AdvertiseByoipCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AdvertiseByoipCidrRequest"},
+      "output":{"shape":"AdvertiseByoipCidrResult"}
+    },
     "AllocateAddress":{
       "name":"AllocateAddress",
       "http":{
@@ -205,6 +214,15 @@
       "input":{"shape":"CancelBundleTaskRequest"},
       "output":{"shape":"CancelBundleTaskResult"}
     },
+    "CancelCapacityReservation":{
+      "name":"CancelCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelCapacityReservationRequest"},
+      "output":{"shape":"CancelCapacityReservationResult"}
+    },
     "CancelConversionTask":{
       "name":"CancelConversionTask",
       "http":{
@@ -292,6 +310,15 @@
       },
       "input":{"shape":"CopySnapshotRequest"},
       "output":{"shape":"CopySnapshotResult"}
+    },
+    "CreateCapacityReservation":{
+      "name":"CreateCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCapacityReservationRequest"},
+      "output":{"shape":"CreateCapacityReservationResult"}
     },
     "CreateCustomerGateway":{
       "name":"CreateCustomerGateway",
@@ -890,6 +917,15 @@
       },
       "input":{"shape":"DeleteVpnGatewayRequest"}
     },
+    "DeprovisionByoipCidr":{
+      "name":"DeprovisionByoipCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeprovisionByoipCidrRequest"},
+      "output":{"shape":"DeprovisionByoipCidrResult"}
+    },
     "DeregisterImage":{
       "name":"DeregisterImage",
       "http":{
@@ -942,6 +978,24 @@
       },
       "input":{"shape":"DescribeBundleTasksRequest"},
       "output":{"shape":"DescribeBundleTasksResult"}
+    },
+    "DescribeByoipCidrs":{
+      "name":"DescribeByoipCidrs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeByoipCidrsRequest"},
+      "output":{"shape":"DescribeByoipCidrsResult"}
+    },
+    "DescribeCapacityReservations":{
+      "name":"DescribeCapacityReservations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationsRequest"},
+      "output":{"shape":"DescribeCapacityReservationsResult"}
     },
     "DescribeClassicLinkInstances":{
       "name":"DescribeClassicLinkInstances",
@@ -1302,6 +1356,15 @@
       },
       "input":{"shape":"DescribePrincipalIdFormatRequest"},
       "output":{"shape":"DescribePrincipalIdFormatResult"}
+    },
+    "DescribePublicIpv4Pools":{
+      "name":"DescribePublicIpv4Pools",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribePublicIpv4PoolsRequest"},
+      "output":{"shape":"DescribePublicIpv4PoolsResult"}
     },
     "DescribeRegions":{
       "name":"DescribeRegions",
@@ -1889,6 +1952,15 @@
       "input":{"shape":"ImportVolumeRequest"},
       "output":{"shape":"ImportVolumeResult"}
     },
+    "ModifyCapacityReservation":{
+      "name":"ModifyCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyCapacityReservationRequest"},
+      "output":{"shape":"ModifyCapacityReservationResult"}
+    },
     "ModifyFleet":{
       "name":"ModifyFleet",
       "http":{
@@ -1947,6 +2019,15 @@
         "requestUri":"/"
       },
       "input":{"shape":"ModifyInstanceAttributeRequest"}
+    },
+    "ModifyInstanceCapacityReservationAttributes":{
+      "name":"ModifyInstanceCapacityReservationAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyInstanceCapacityReservationAttributesRequest"},
+      "output":{"shape":"ModifyInstanceCapacityReservationAttributesResult"}
     },
     "ModifyInstanceCreditSpecification":{
       "name":"ModifyInstanceCreditSpecification",
@@ -2113,6 +2194,15 @@
       },
       "input":{"shape":"MoveAddressToVpcRequest"},
       "output":{"shape":"MoveAddressToVpcResult"}
+    },
+    "ProvisionByoipCidr":{
+      "name":"ProvisionByoipCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ProvisionByoipCidrRequest"},
+      "output":{"shape":"ProvisionByoipCidrResult"}
     },
     "PurchaseHostReservation":{
       "name":"PurchaseHostReservation",
@@ -2416,6 +2506,15 @@
       },
       "input":{"shape":"UpdateSecurityGroupRuleDescriptionsIngressRequest"},
       "output":{"shape":"UpdateSecurityGroupRuleDescriptionsIngressResult"}
+    },
+    "WithdrawByoipCidr":{
+      "name":"WithdrawByoipCidr",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"WithdrawByoipCidrRequest"},
+      "output":{"shape":"WithdrawByoipCidrResult"}
     }
   },
   "shapes":{
@@ -2614,6 +2713,10 @@
         "Tags":{
           "shape":"TagList",
           "locationName":"tagSet"
+        },
+        "PublicIpv4Pool":{
+          "shape":"String",
+          "locationName":"publicIpv4Pool"
         }
       }
     },
@@ -2622,6 +2725,23 @@
       "member":{
         "shape":"Address",
         "locationName":"item"
+      }
+    },
+    "AdvertiseByoipCidrRequest":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{"shape":"String"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "AdvertiseByoipCidrResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidr":{
+          "shape":"ByoipCidr",
+          "locationName":"byoipCidr"
+        }
       }
     },
     "Affinity":{
@@ -2636,6 +2756,7 @@
       "members":{
         "Domain":{"shape":"DomainType"},
         "Address":{"shape":"String"},
+        "PublicIpv4Pool":{"shape":"String"},
         "DryRun":{
           "shape":"Boolean",
           "locationName":"dryRun"
@@ -2652,6 +2773,10 @@
         "AllocationId":{
           "shape":"String",
           "locationName":"allocationId"
+        },
+        "PublicIpv4Pool":{
+          "shape":"String",
+          "locationName":"publicIpv4Pool"
         },
         "Domain":{
           "shape":"DomainType",
@@ -2686,6 +2811,10 @@
         "Quantity":{
           "shape":"Integer",
           "locationName":"quantity"
+        },
+        "TagSpecifications":{
+          "shape":"TagSpecificationList",
+          "locationName":"TagSpecification"
         }
       }
     },
@@ -3433,6 +3562,46 @@
         "failed"
       ]
     },
+    "ByoipCidr":{
+      "type":"structure",
+      "members":{
+        "Cidr":{
+          "shape":"String",
+          "locationName":"cidr"
+        },
+        "Description":{
+          "shape":"String",
+          "locationName":"description"
+        },
+        "StatusMessage":{
+          "shape":"String",
+          "locationName":"statusMessage"
+        },
+        "State":{
+          "shape":"ByoipCidrState",
+          "locationName":"state"
+        }
+      }
+    },
+    "ByoipCidrSet":{
+      "type":"list",
+      "member":{
+        "shape":"ByoipCidr",
+        "locationName":"item"
+      }
+    },
+    "ByoipCidrState":{
+      "type":"string",
+      "enum":[
+        "advertised",
+        "deprovisioned",
+        "failed-deprovision",
+        "failed-provision",
+        "pending-deprovision",
+        "pending-provision",
+        "provisioned"
+      ]
+    },
     "CancelBatchErrorCode":{
       "type":"string",
       "enum":[
@@ -3459,6 +3628,23 @@
         "BundleTask":{
           "shape":"BundleTask",
           "locationName":"bundleInstanceTask"
+        }
+      }
+    },
+    "CancelCapacityReservationRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "CapacityReservationId":{"shape":"String"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "CancelCapacityReservationResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "locationName":"return"
         }
       }
     },
@@ -3689,6 +3875,168 @@
       "member":{
         "shape":"CancelledSpotInstanceRequest",
         "locationName":"item"
+      }
+    },
+    "CapacityReservation":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"String",
+          "locationName":"capacityReservationId"
+        },
+        "InstanceType":{
+          "shape":"String",
+          "locationName":"instanceType"
+        },
+        "InstancePlatform":{
+          "shape":"CapacityReservationInstancePlatform",
+          "locationName":"instancePlatform"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "locationName":"availabilityZone"
+        },
+        "Tenancy":{
+          "shape":"CapacityReservationTenancy",
+          "locationName":"tenancy"
+        },
+        "TotalInstanceCount":{
+          "shape":"Integer",
+          "locationName":"totalInstanceCount"
+        },
+        "AvailableInstanceCount":{
+          "shape":"Integer",
+          "locationName":"availableInstanceCount"
+        },
+        "EbsOptimized":{
+          "shape":"Boolean",
+          "locationName":"ebsOptimized"
+        },
+        "EphemeralStorage":{
+          "shape":"Boolean",
+          "locationName":"ephemeralStorage"
+        },
+        "State":{
+          "shape":"CapacityReservationState",
+          "locationName":"state"
+        },
+        "EndDate":{
+          "shape":"DateTime",
+          "locationName":"endDate"
+        },
+        "EndDateType":{
+          "shape":"EndDateType",
+          "locationName":"endDateType"
+        },
+        "InstanceMatchCriteria":{
+          "shape":"InstanceMatchCriteria",
+          "locationName":"instanceMatchCriteria"
+        },
+        "CreateDate":{
+          "shape":"DateTime",
+          "locationName":"createDate"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "locationName":"tagSet"
+        }
+      }
+    },
+    "CapacityReservationIdSet":{
+      "type":"list",
+      "member":{
+        "shape":"String",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationInstancePlatform":{
+      "type":"string",
+      "enum":[
+        "Linux/UNIX",
+        "Red Hat Enterprise Linux",
+        "SUSE Linux",
+        "Windows",
+        "Windows with SQL Server",
+        "Windows with SQL Server Enterprise",
+        "Windows with SQL Server Standard",
+        "Windows with SQL Server Web"
+      ]
+    },
+    "CapacityReservationPreference":{
+      "type":"string",
+      "enum":[
+        "open",
+        "none"
+      ]
+    },
+    "CapacityReservationSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityReservation",
+        "locationName":"item"
+      }
+    },
+    "CapacityReservationSpecification":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{"shape":"CapacityReservationPreference"},
+        "CapacityReservationTarget":{"shape":"CapacityReservationTarget"}
+      }
+    },
+    "CapacityReservationSpecificationResponse":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "locationName":"capacityReservationPreference"
+        },
+        "CapacityReservationTarget":{
+          "shape":"CapacityReservationTargetResponse",
+          "locationName":"capacityReservationTarget"
+        }
+      }
+    },
+    "CapacityReservationState":{
+      "type":"string",
+      "enum":[
+        "active",
+        "expired",
+        "cancelled",
+        "pending",
+        "failed"
+      ]
+    },
+    "CapacityReservationTarget":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{"shape":"String"}
+      }
+    },
+    "CapacityReservationTargetResponse":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationId":{
+          "shape":"String",
+          "locationName":"capacityReservationId"
+        }
+      }
+    },
+    "CapacityReservationTenancy":{
+      "type":"string",
+      "enum":[
+        "default",
+        "dedicated"
+      ]
+    },
+    "CidrAuthorizationContext":{
+      "type":"structure",
+      "required":[
+        "Message",
+        "Signature"
+      ],
+      "members":{
+        "Message":{"shape":"String"},
+        "Signature":{"shape":"String"}
       }
     },
     "CidrBlock":{
@@ -4046,6 +4394,39 @@
         "ThreadsPerCore":{"shape":"Integer"}
       }
     },
+    "CreateCapacityReservationRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceType",
+        "InstancePlatform",
+        "AvailabilityZone",
+        "InstanceCount"
+      ],
+      "members":{
+        "ClientToken":{"shape":"String"},
+        "InstanceType":{"shape":"String"},
+        "InstancePlatform":{"shape":"CapacityReservationInstancePlatform"},
+        "AvailabilityZone":{"shape":"String"},
+        "Tenancy":{"shape":"CapacityReservationTenancy"},
+        "InstanceCount":{"shape":"Integer"},
+        "EbsOptimized":{"shape":"Boolean"},
+        "EphemeralStorage":{"shape":"Boolean"},
+        "EndDate":{"shape":"DateTime"},
+        "EndDateType":{"shape":"EndDateType"},
+        "InstanceMatchCriteria":{"shape":"InstanceMatchCriteria"},
+        "TagSpecifications":{"shape":"TagSpecificationList"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "CreateCapacityReservationResult":{
+      "type":"structure",
+      "members":{
+        "CapacityReservation":{
+          "shape":"CapacityReservation",
+          "locationName":"capacityReservation"
+        }
+      }
+    },
     "CreateCustomerGatewayRequest":{
       "type":"structure",
       "required":[
@@ -4162,6 +4543,7 @@
         "DryRun":{"shape":"Boolean"},
         "ClientToken":{"shape":"String"},
         "SpotOptions":{"shape":"SpotOptionsRequest"},
+        "OnDemandOptions":{"shape":"OnDemandOptionsRequest"},
         "ExcessCapacityTerminationPolicy":{"shape":"FleetExcessCapacityTerminationPolicy"},
         "LaunchTemplateConfigs":{"shape":"FleetLaunchTemplateConfigListRequest"},
         "TargetCapacitySpecification":{"shape":"TargetCapacitySpecificationRequest"},
@@ -4188,13 +4570,12 @@
     "CreateFlowLogsRequest":{
       "type":"structure",
       "required":[
-        "DeliverLogsPermissionArn",
-        "LogGroupName",
         "ResourceIds",
         "ResourceType",
         "TrafficType"
       ],
       "members":{
+        "DryRun":{"shape":"Boolean"},
         "ClientToken":{"shape":"String"},
         "DeliverLogsPermissionArn":{"shape":"String"},
         "LogGroupName":{"shape":"String"},
@@ -4203,7 +4584,9 @@
           "locationName":"ResourceId"
         },
         "ResourceType":{"shape":"FlowLogsResourceType"},
-        "TrafficType":{"shape":"TrafficType"}
+        "TrafficType":{"shape":"TrafficType"},
+        "LogDestinationType":{"shape":"LogDestinationType"},
+        "LogDestination":{"shape":"String"}
       }
     },
     "CreateFlowLogsResult":{
@@ -5305,6 +5688,7 @@
       "type":"structure",
       "required":["FlowLogIds"],
       "members":{
+        "DryRun":{"shape":"Boolean"},
         "FlowLogIds":{
           "shape":"ValueStringList",
           "locationName":"FlowLogId"
@@ -5793,6 +6177,23 @@
         }
       }
     },
+    "DeprovisionByoipCidrRequest":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{"shape":"String"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "DeprovisionByoipCidrResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidr":{
+          "shape":"ByoipCidr",
+          "locationName":"byoipCidr"
+        }
+      }
+    },
     "DeregisterImageRequest":{
       "type":"structure",
       "required":["ImageId"],
@@ -5924,6 +6325,57 @@
         "BundleTasks":{
           "shape":"BundleTaskList",
           "locationName":"bundleInstanceTasksSet"
+        }
+      }
+    },
+    "DescribeByoipCidrsRequest":{
+      "type":"structure",
+      "required":["MaxResults"],
+      "members":{
+        "DryRun":{"shape":"Boolean"},
+        "MaxResults":{"shape":"MaxResults"},
+        "NextToken":{"shape":"NextToken"}
+      }
+    },
+    "DescribeByoipCidrsResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidrs":{
+          "shape":"ByoipCidrSet",
+          "locationName":"byoipCidrSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribeCapacityReservationsRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationIds":{
+          "shape":"CapacityReservationIdSet",
+          "locationName":"CapacityReservationId"
+        },
+        "NextToken":{"shape":"String"},
+        "MaxResults":{"shape":"Integer"},
+        "Filters":{
+          "shape":"FilterList",
+          "locationName":"Filter"
+        },
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "DescribeCapacityReservationsResult":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"String",
+          "locationName":"nextToken"
+        },
+        "CapacityReservations":{
+          "shape":"CapacityReservationSet",
+          "locationName":"capacityReservationSet"
         }
       }
     },
@@ -6225,6 +6677,7 @@
     "DescribeFlowLogsRequest":{
       "type":"structure",
       "members":{
+        "DryRun":{"shape":"Boolean"},
         "Filter":{"shape":"FilterList"},
         "FlowLogIds":{
           "shape":"ValueStringList",
@@ -6964,7 +7417,9 @@
         "NetworkInterfaceIds":{
           "shape":"NetworkInterfaceIdList",
           "locationName":"NetworkInterfaceId"
-        }
+        },
+        "NextToken":{"shape":"String"},
+        "MaxResults":{"shape":"Integer"}
       }
     },
     "DescribeNetworkInterfacesResult":{
@@ -6973,6 +7428,10 @@
         "NetworkInterfaces":{
           "shape":"NetworkInterfaceList",
           "locationName":"networkInterfaceSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "locationName":"nextToken"
         }
       }
     },
@@ -7049,6 +7508,30 @@
         "Principals":{
           "shape":"PrincipalIdFormatList",
           "locationName":"principalSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "DescribePublicIpv4PoolsRequest":{
+      "type":"structure",
+      "members":{
+        "PoolIds":{
+          "shape":"ValueStringList",
+          "locationName":"PoolId"
+        },
+        "NextToken":{"shape":"NextToken"},
+        "MaxResults":{"shape":"PoolMaxResults"}
+      }
+    },
+    "DescribePublicIpv4PoolsResult":{
+      "type":"structure",
+      "members":{
+        "PublicIpv4Pools":{
+          "shape":"PublicIpv4PoolSet",
+          "locationName":"publicIpv4PoolSet"
         },
         "NextToken":{
           "shape":"String",
@@ -7237,7 +7720,9 @@
         "RouteTableIds":{
           "shape":"ValueStringList",
           "locationName":"RouteTableId"
-        }
+        },
+        "NextToken":{"shape":"String"},
+        "MaxResults":{"shape":"Integer"}
       }
     },
     "DescribeRouteTablesResult":{
@@ -7246,6 +7731,10 @@
         "RouteTables":{
           "shape":"RouteTableList",
           "locationName":"routeTableSet"
+        },
+        "NextToken":{
+          "shape":"String",
+          "locationName":"nextToken"
         }
       }
     },
@@ -7762,7 +8251,10 @@
     },
     "DescribeVolumeAttributeRequest":{
       "type":"structure",
-      "required":["VolumeId"],
+      "required":[
+        "Attribute",
+        "VolumeId"
+      ],
       "members":{
         "Attribute":{"shape":"VolumeAttributeName"},
         "VolumeId":{"shape":"String"},
@@ -8656,10 +9148,6 @@
     "EbsBlockDevice":{
       "type":"structure",
       "members":{
-        "Encrypted":{
-          "shape":"Boolean",
-          "locationName":"encrypted"
-        },
         "DeleteOnTermination":{
           "shape":"Boolean",
           "locationName":"deleteOnTermination"
@@ -8668,7 +9156,6 @@
           "shape":"Integer",
           "locationName":"iops"
         },
-        "KmsKeyId":{"shape":"String"},
         "SnapshotId":{
           "shape":"String",
           "locationName":"snapshotId"
@@ -8680,7 +9167,12 @@
         "VolumeType":{
           "shape":"VolumeType",
           "locationName":"volumeType"
-        }
+        },
+        "Encrypted":{
+          "shape":"Boolean",
+          "locationName":"encrypted"
+        },
+        "KmsKeyId":{"shape":"String"}
       }
     },
     "EbsInstanceBlockDevice":{
@@ -8936,6 +9428,13 @@
         }
       }
     },
+    "EndDateType":{
+      "type":"string",
+      "enum":[
+        "unlimited",
+        "limited"
+      ]
+    },
     "EventCode":{
       "type":"string",
       "enum":[
@@ -9180,6 +9679,10 @@
           "shape":"SpotOptions",
           "locationName":"spotOptions"
         },
+        "OnDemandOptions":{
+          "shape":"OnDemandOptions",
+          "locationName":"onDemandOptions"
+        },
         "Tags":{
           "shape":"TagList",
           "locationName":"tagSet"
@@ -9263,6 +9766,10 @@
         "WeightedCapacity":{
           "shape":"Double",
           "locationName":"weightedCapacity"
+        },
+        "Priority":{
+          "shape":"Double",
+          "locationName":"priority"
         }
       }
     },
@@ -9288,7 +9795,8 @@
         "MaxPrice":{"shape":"String"},
         "SubnetId":{"shape":"String"},
         "AvailabilityZone":{"shape":"String"},
-        "WeightedCapacity":{"shape":"Double"}
+        "WeightedCapacity":{"shape":"Double"},
+        "Priority":{"shape":"Double"}
       }
     },
     "FleetLaunchTemplateSpecification":{
@@ -9315,6 +9823,13 @@
         "LaunchTemplateName":{"shape":"LaunchTemplateName"},
         "Version":{"shape":"String"}
       }
+    },
+    "FleetOnDemandAllocationStrategy":{
+      "type":"string",
+      "enum":[
+        "lowest-price",
+        "prioritized"
+      ]
     },
     "FleetSet":{
       "type":"list",
@@ -9381,6 +9896,14 @@
         "TrafficType":{
           "shape":"TrafficType",
           "locationName":"trafficType"
+        },
+        "LogDestinationType":{
+          "shape":"LogDestinationType",
+          "locationName":"logDestinationType"
+        },
+        "LogDestination":{
+          "shape":"String",
+          "locationName":"logDestination"
         }
       }
     },
@@ -9865,6 +10388,10 @@
         "ReleaseTime":{
           "shape":"DateTime",
           "locationName":"releaseTime"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "locationName":"tagSet"
         }
       }
     },
@@ -10359,7 +10886,9 @@
           "locationName":"DiskContainer"
         },
         "DryRun":{"shape":"Boolean"},
+        "Encrypted":{"shape":"Boolean"},
         "Hypervisor":{"shape":"String"},
+        "KmsKeyId":{"shape":"String"},
         "LicenseType":{"shape":"String"},
         "Platform":{"shape":"String"},
         "RoleName":{"shape":"String"}
@@ -10376,6 +10905,10 @@
           "shape":"String",
           "locationName":"description"
         },
+        "Encrypted":{
+          "shape":"Boolean",
+          "locationName":"encrypted"
+        },
         "Hypervisor":{
           "shape":"String",
           "locationName":"hypervisor"
@@ -10387,6 +10920,10 @@
         "ImportTaskId":{
           "shape":"String",
           "locationName":"importTaskId"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "locationName":"kmsKeyId"
         },
         "LicenseType":{
           "shape":"String",
@@ -10425,6 +10962,10 @@
           "shape":"String",
           "locationName":"description"
         },
+        "Encrypted":{
+          "shape":"Boolean",
+          "locationName":"encrypted"
+        },
         "Hypervisor":{
           "shape":"String",
           "locationName":"hypervisor"
@@ -10436,6 +10977,10 @@
         "ImportTaskId":{
           "shape":"String",
           "locationName":"importTaskId"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "locationName":"kmsKeyId"
         },
         "LicenseType":{
           "shape":"String",
@@ -10577,13 +11122,6 @@
     },
     "ImportInstanceVolumeDetailItem":{
       "type":"structure",
-      "required":[
-        "AvailabilityZone",
-        "BytesConverted",
-        "Image",
-        "Status",
-        "Volume"
-      ],
       "members":{
         "AvailabilityZone":{
           "shape":"String",
@@ -10664,6 +11202,8 @@
         "Description":{"shape":"String"},
         "DiskContainer":{"shape":"SnapshotDiskContainer"},
         "DryRun":{"shape":"Boolean"},
+        "Encrypted":{"shape":"Boolean"},
+        "KmsKeyId":{"shape":"String"},
         "RoleName":{"shape":"String"}
       }
     },
@@ -10941,6 +11481,14 @@
         "CpuOptions":{
           "shape":"CpuOptions",
           "locationName":"cpuOptions"
+        },
+        "CapacityReservationId":{
+          "shape":"String",
+          "locationName":"capacityReservationId"
+        },
+        "CapacityReservationSpecification":{
+          "shape":"CapacityReservationSpecificationResponse",
+          "locationName":"capacityReservationSpecification"
         }
       }
     },
@@ -11238,6 +11786,13 @@
         "MarketType":{"shape":"MarketType"},
         "SpotOptions":{"shape":"SpotMarketOptions"}
       }
+    },
+    "InstanceMatchCriteria":{
+      "type":"string",
+      "enum":[
+        "open",
+        "targeted"
+      ]
     },
     "InstanceMonitoring":{
       "type":"structure",
@@ -11623,6 +12178,13 @@
         "t2.large",
         "t2.xlarge",
         "t2.2xlarge",
+        "t3.nano",
+        "t3.micro",
+        "t3.small",
+        "t3.medium",
+        "t3.large",
+        "t3.xlarge",
+        "t3.2xlarge",
         "m1.small",
         "m1.medium",
         "m1.large",
@@ -11652,6 +12214,30 @@
         "r4.4xlarge",
         "r4.8xlarge",
         "r4.16xlarge",
+        "r5.large",
+        "r5.xlarge",
+        "r5.2xlarge",
+        "r5.4xlarge",
+        "r5.8xlarge",
+        "r5.12xlarge",
+        "r5.16xlarge",
+        "r5.24xlarge",
+        "r5.metal",
+        "r5a.large",
+        "r5a.xlarge",
+        "r5a.2xlarge",
+        "r5a.4xlarge",
+        "r5a.12xlarge",
+        "r5a.24xlarge",
+        "r5d.large",
+        "r5d.xlarge",
+        "r5d.2xlarge",
+        "r5d.4xlarge",
+        "r5d.8xlarge",
+        "r5d.12xlarge",
+        "r5d.16xlarge",
+        "r5d.24xlarge",
+        "r5d.metal",
         "x1.16xlarge",
         "x1.32xlarge",
         "x1e.xlarge",
@@ -11704,6 +12290,7 @@
         "g3.4xlarge",
         "g3.8xlarge",
         "g3.16xlarge",
+        "g3s.xlarge",
         "cg1.4xlarge",
         "p2.xlarge",
         "p2.8xlarge",
@@ -11716,6 +12303,7 @@
         "d2.4xlarge",
         "d2.8xlarge",
         "f1.2xlarge",
+        "f1.4xlarge",
         "f1.16xlarge",
         "m5.large",
         "m5.xlarge",
@@ -11723,10 +12311,31 @@
         "m5.4xlarge",
         "m5.12xlarge",
         "m5.24xlarge",
+        "m5a.large",
+        "m5a.xlarge",
+        "m5a.2xlarge",
+        "m5a.4xlarge",
+        "m5a.12xlarge",
+        "m5a.24xlarge",
+        "m5d.large",
+        "m5d.xlarge",
+        "m5d.2xlarge",
+        "m5d.4xlarge",
+        "m5d.12xlarge",
+        "m5d.24xlarge",
         "h1.2xlarge",
         "h1.4xlarge",
         "h1.8xlarge",
-        "h1.16xlarge"
+        "h1.16xlarge",
+        "z1d.large",
+        "z1d.xlarge",
+        "z1d.2xlarge",
+        "z1d.3xlarge",
+        "z1d.6xlarge",
+        "z1d.12xlarge",
+        "u-6tb1.metal",
+        "u-9tb1.metal",
+        "u-12tb1.metal"
       ]
     },
     "InstanceTypeList":{
@@ -12116,6 +12725,26 @@
         "locationName":"BlockDeviceMapping"
       }
     },
+    "LaunchTemplateCapacityReservationSpecificationRequest":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{"shape":"CapacityReservationPreference"},
+        "CapacityReservationTarget":{"shape":"CapacityReservationTarget"}
+      }
+    },
+    "LaunchTemplateCapacityReservationSpecificationResponse":{
+      "type":"structure",
+      "members":{
+        "CapacityReservationPreference":{
+          "shape":"CapacityReservationPreference",
+          "locationName":"capacityReservationPreference"
+        },
+        "CapacityReservationTarget":{
+          "shape":"CapacityReservationTargetResponse",
+          "locationName":"capacityReservationTarget"
+        }
+      }
+    },
     "LaunchTemplateConfig":{
       "type":"structure",
       "members":{
@@ -12134,6 +12763,26 @@
       "member":{
         "shape":"LaunchTemplateConfig",
         "locationName":"item"
+      }
+    },
+    "LaunchTemplateCpuOptions":{
+      "type":"structure",
+      "members":{
+        "CoreCount":{
+          "shape":"Integer",
+          "locationName":"coreCount"
+        },
+        "ThreadsPerCore":{
+          "shape":"Integer",
+          "locationName":"threadsPerCore"
+        }
+      }
+    },
+    "LaunchTemplateCpuOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "CoreCount":{"shape":"Integer"},
+        "ThreadsPerCore":{"shape":"Integer"}
       }
     },
     "LaunchTemplateEbsBlockDevice":{
@@ -12354,6 +13003,10 @@
         "WeightedCapacity":{
           "shape":"Double",
           "locationName":"weightedCapacity"
+        },
+        "Priority":{
+          "shape":"Double",
+          "locationName":"priority"
         }
       }
     },
@@ -12622,6 +13275,13 @@
         "UserId":{"shape":"String"}
       }
     },
+    "LogDestinationType":{
+      "type":"string",
+      "enum":[
+        "cloud-watch-logs",
+        "s3"
+      ]
+    },
     "Long":{"type":"long"},
     "MarketType":{
       "type":"string",
@@ -12631,6 +13291,26 @@
       "type":"integer",
       "max":255,
       "min":5
+    },
+    "ModifyCapacityReservationRequest":{
+      "type":"structure",
+      "required":["CapacityReservationId"],
+      "members":{
+        "CapacityReservationId":{"shape":"String"},
+        "InstanceCount":{"shape":"Integer"},
+        "EndDate":{"shape":"DateTime"},
+        "EndDateType":{"shape":"EndDateType"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "ModifyCapacityReservationResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "locationName":"return"
+        }
+      }
     },
     "ModifyFleetRequest":{
       "type":"structure",
@@ -12843,6 +13523,27 @@
         "Value":{
           "shape":"String",
           "locationName":"value"
+        }
+      }
+    },
+    "ModifyInstanceCapacityReservationAttributesRequest":{
+      "type":"structure",
+      "required":[
+        "InstanceId",
+        "CapacityReservationSpecification"
+      ],
+      "members":{
+        "InstanceId":{"shape":"String"},
+        "CapacityReservationSpecification":{"shape":"CapacityReservationSpecification"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "ModifyInstanceCapacityReservationAttributesResult":{
+      "type":"structure",
+      "members":{
+        "Return":{
+          "shape":"Boolean",
+          "locationName":"return"
         }
       }
     },
@@ -13894,6 +14595,28 @@
         "All Upfront"
       ]
     },
+    "OnDemandAllocationStrategy":{
+      "type":"string",
+      "enum":[
+        "lowestPrice",
+        "prioritized"
+      ]
+    },
+    "OnDemandOptions":{
+      "type":"structure",
+      "members":{
+        "AllocationStrategy":{
+          "shape":"FleetOnDemandAllocationStrategy",
+          "locationName":"allocationStrategy"
+        }
+      }
+    },
+    "OnDemandOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "AllocationStrategy":{"shape":"FleetOnDemandAllocationStrategy"}
+      }
+    },
     "OperationType":{
       "type":"string",
       "enum":[
@@ -14030,6 +14753,11 @@
     "PlatformValues":{
       "type":"string",
       "enum":["Windows"]
+    },
+    "PoolMaxResults":{
+      "type":"integer",
+      "max":10,
+      "min":1
     },
     "PortRange":{
       "type":"structure",
@@ -14207,7 +14935,6 @@
     },
     "PrivateIpAddressSpecification":{
       "type":"structure",
-      "required":["PrivateIpAddress"],
       "members":{
         "Primary":{
           "shape":"Boolean",
@@ -14287,6 +15014,25 @@
         "locationName":"item"
       }
     },
+    "ProvisionByoipCidrRequest":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{"shape":"String"},
+        "CidrAuthorizationContext":{"shape":"CidrAuthorizationContext"},
+        "Description":{"shape":"String"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "ProvisionByoipCidrResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidr":{
+          "shape":"ByoipCidr",
+          "locationName":"byoipCidr"
+        }
+      }
+    },
     "ProvisionedBandwidth":{
       "type":"structure",
       "members":{
@@ -14317,6 +15063,66 @@
       "member":{
         "shape":"String",
         "locationName":"PublicIp"
+      }
+    },
+    "PublicIpv4Pool":{
+      "type":"structure",
+      "members":{
+        "PoolId":{
+          "shape":"String",
+          "locationName":"poolId"
+        },
+        "Description":{
+          "shape":"String",
+          "locationName":"description"
+        },
+        "PoolAddressRanges":{
+          "shape":"PublicIpv4PoolRangeSet",
+          "locationName":"poolAddressRangeSet"
+        },
+        "TotalAddressCount":{
+          "shape":"Integer",
+          "locationName":"totalAddressCount"
+        },
+        "TotalAvailableAddressCount":{
+          "shape":"Integer",
+          "locationName":"totalAvailableAddressCount"
+        }
+      }
+    },
+    "PublicIpv4PoolRange":{
+      "type":"structure",
+      "members":{
+        "FirstAddress":{
+          "shape":"String",
+          "locationName":"firstAddress"
+        },
+        "LastAddress":{
+          "shape":"String",
+          "locationName":"lastAddress"
+        },
+        "AddressCount":{
+          "shape":"Integer",
+          "locationName":"addressCount"
+        },
+        "AvailableAddressCount":{
+          "shape":"Integer",
+          "locationName":"availableAddressCount"
+        }
+      }
+    },
+    "PublicIpv4PoolRangeSet":{
+      "type":"list",
+      "member":{
+        "shape":"PublicIpv4PoolRange",
+        "locationName":"item"
+      }
+    },
+    "PublicIpv4PoolSet":{
+      "type":"list",
+      "member":{
+        "shape":"PublicIpv4Pool",
+        "locationName":"item"
       }
     },
     "Purchase":{
@@ -14997,7 +15803,9 @@
           "locationName":"SecurityGroup"
         },
         "InstanceMarketOptions":{"shape":"LaunchTemplateInstanceMarketOptionsRequest"},
-        "CreditSpecification":{"shape":"CreditSpecificationRequest"}
+        "CreditSpecification":{"shape":"CreditSpecificationRequest"},
+        "CpuOptions":{"shape":"LaunchTemplateCpuOptionsRequest"},
+        "CapacityReservationSpecification":{"shape":"LaunchTemplateCapacityReservationSpecificationRequest"}
       }
     },
     "RequestSpotFleetRequest":{
@@ -15708,6 +16516,7 @@
       "type":"string",
       "enum":[
         "customer-gateway",
+        "dedicated-host",
         "dhcp-options",
         "image",
         "instance",
@@ -15835,6 +16644,14 @@
         "CreditSpecification":{
           "shape":"CreditSpecification",
           "locationName":"creditSpecification"
+        },
+        "CpuOptions":{
+          "shape":"LaunchTemplateCpuOptions",
+          "locationName":"cpuOptions"
+        },
+        "CapacityReservationSpecification":{
+          "shape":"LaunchTemplateCapacityReservationSpecificationResponse",
+          "locationName":"capacityReservationSpecification"
         }
       }
     },
@@ -16164,7 +16981,8 @@
         "LaunchTemplate":{"shape":"LaunchTemplateSpecification"},
         "InstanceMarketOptions":{"shape":"InstanceMarketOptionsRequest"},
         "CreditSpecification":{"shape":"CreditSpecificationRequest"},
-        "CpuOptions":{"shape":"CpuOptionsRequest"}
+        "CpuOptions":{"shape":"CpuOptionsRequest"},
+        "CapacityReservationSpecification":{"shape":"CapacityReservationSpecification"}
       }
     },
     "RunScheduledInstancesRequest":{
@@ -16598,10 +17416,6 @@
     },
     "SecurityGroupReference":{
       "type":"structure",
-      "required":[
-        "GroupId",
-        "ReferencingVpcId"
-      ],
       "members":{
         "GroupId":{
           "shape":"String",
@@ -16943,9 +17757,17 @@
           "shape":"Double",
           "locationName":"diskImageSize"
         },
+        "Encrypted":{
+          "shape":"Boolean",
+          "locationName":"encrypted"
+        },
         "Format":{
           "shape":"String",
           "locationName":"format"
+        },
+        "KmsKeyId":{
+          "shape":"String",
+          "locationName":"kmsKeyId"
         },
         "Progress":{
           "shape":"String",
@@ -17133,6 +17955,10 @@
           "shape":"AllocationStrategy",
           "locationName":"allocationStrategy"
         },
+        "OnDemandAllocationStrategy":{
+          "shape":"OnDemandAllocationStrategy",
+          "locationName":"onDemandAllocationStrategy"
+        },
         "ClientToken":{
           "shape":"String",
           "locationName":"clientToken"
@@ -17200,6 +18026,10 @@
         "LoadBalancersConfig":{
           "shape":"LoadBalancersConfig",
           "locationName":"loadBalancersConfig"
+        },
+        "InstancePoolsToUseCount":{
+          "shape":"Integer",
+          "locationName":"instancePoolsToUseCount"
         }
       }
     },
@@ -17400,6 +18230,10 @@
         "InstanceInterruptionBehavior":{
           "shape":"SpotInstanceInterruptionBehavior",
           "locationName":"instanceInterruptionBehavior"
+        },
+        "InstancePoolsToUseCount":{
+          "shape":"Integer",
+          "locationName":"instancePoolsToUseCount"
         }
       }
     },
@@ -17407,7 +18241,8 @@
       "type":"structure",
       "members":{
         "AllocationStrategy":{"shape":"SpotAllocationStrategy"},
-        "InstanceInterruptionBehavior":{"shape":"SpotInstanceInterruptionBehavior"}
+        "InstanceInterruptionBehavior":{"shape":"SpotInstanceInterruptionBehavior"},
+        "InstancePoolsToUseCount":{"shape":"Integer"}
       }
     },
     "SpotPlacement":{
@@ -17497,7 +18332,6 @@
     },
     "StaleSecurityGroup":{
       "type":"structure",
-      "required":["GroupId"],
       "members":{
         "Description":{
           "shape":"String",
@@ -19305,6 +20139,23 @@
       "members":{
         "TunnelInsideCidr":{"shape":"String"},
         "PreSharedKey":{"shape":"String"}
+      }
+    },
+    "WithdrawByoipCidrRequest":{
+      "type":"structure",
+      "required":["Cidr"],
+      "members":{
+        "Cidr":{"shape":"String"},
+        "DryRun":{"shape":"Boolean"}
+      }
+    },
+    "WithdrawByoipCidrResult":{
+      "type":"structure",
+      "members":{
+        "ByoipCidr":{
+          "shape":"ByoipCidr",
+          "locationName":"byoipCidr"
+        }
       }
     },
     "ZoneNameStringList":{

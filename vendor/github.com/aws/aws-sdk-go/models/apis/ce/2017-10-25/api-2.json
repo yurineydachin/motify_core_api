@@ -108,8 +108,13 @@
   "shapes":{
     "AccountScope":{
       "type":"string",
-      "enum":["PAYER"]
+      "enum":[
+        "PAYER",
+        "LINKED"
+      ]
     },
+    "AmortizedRecurringFee":{"type":"string"},
+    "AmortizedUpfrontFee":{"type":"string"},
     "AttributeType":{"type":"string"},
     "AttributeValue":{"type":"string"},
     "Attributes":{
@@ -199,7 +204,9 @@
         "DEPLOYMENT_OPTION",
         "DATABASE_ENGINE",
         "CACHE_ENGINE",
-        "INSTANCE_TYPE_FAMILY"
+        "INSTANCE_TYPE_FAMILY",
+        "BILLING_ENTITY",
+        "RESERVATION_ID"
       ]
     },
     "DimensionValues":{
@@ -237,6 +244,27 @@
       "type":"structure",
       "members":{
         "OfferingClass":{"shape":"OfferingClass"}
+      }
+    },
+    "ESInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "InstanceClass":{"shape":"GenericString"},
+        "InstanceSize":{"shape":"GenericString"},
+        "Region":{"shape":"GenericString"},
+        "CurrentGeneration":{"shape":"GenericBoolean"},
+        "SizeFlexEligible":{"shape":"GenericBoolean"}
+      }
+    },
+    "ElastiCacheInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "Family":{"shape":"GenericString"},
+        "NodeType":{"shape":"GenericString"},
+        "Region":{"shape":"GenericString"},
+        "ProductDescription":{"shape":"GenericString"},
+        "CurrentGeneration":{"shape":"GenericBoolean"},
+        "SizeFlexEligible":{"shape":"GenericBoolean"}
       }
     },
     "Entity":{"type":"string"},
@@ -396,7 +424,8 @@
       "type":"string",
       "enum":[
         "DAILY",
-        "MONTHLY"
+        "MONTHLY",
+        "HOURLY"
       ]
     },
     "Group":{
@@ -433,7 +462,10 @@
       "type":"structure",
       "members":{
         "EC2InstanceDetails":{"shape":"EC2InstanceDetails"},
-        "RDSInstanceDetails":{"shape":"RDSInstanceDetails"}
+        "RDSInstanceDetails":{"shape":"RDSInstanceDetails"},
+        "RedshiftInstanceDetails":{"shape":"RedshiftInstanceDetails"},
+        "ElastiCacheInstanceDetails":{"shape":"ElastiCacheInstanceDetails"},
+        "ESInstanceDetails":{"shape":"ESInstanceDetails"}
       }
     },
     "InvalidNextTokenException":{
@@ -482,6 +514,7 @@
       "key":{"shape":"MetricName"},
       "value":{"shape":"MetricValue"}
     },
+    "NetRISavings":{"type":"string"},
     "NextPageToken":{"type":"string"},
     "NonNegativeInteger":{
       "type":"integer",
@@ -494,6 +527,7 @@
         "CONVERTIBLE"
       ]
     },
+    "OnDemandCostOfRIHoursUsed":{"type":"string"},
     "OnDemandHours":{"type":"string"},
     "PageSize":{"type":"integer"},
     "PaymentOption":{
@@ -501,7 +535,10 @@
       "enum":[
         "NO_UPFRONT",
         "PARTIAL_UPFRONT",
-        "ALL_UPFRONT"
+        "ALL_UPFRONT",
+        "LIGHT_UTILIZATION",
+        "MEDIUM_UTILIZATION",
+        "HEAVY_UTILIZATION"
       ]
     },
     "PurchasedHours":{"type":"string"},
@@ -512,8 +549,19 @@
         "InstanceType":{"shape":"GenericString"},
         "Region":{"shape":"GenericString"},
         "DatabaseEngine":{"shape":"GenericString"},
+        "DatabaseEdition":{"shape":"GenericString"},
         "DeploymentOption":{"shape":"GenericString"},
         "LicenseModel":{"shape":"GenericString"},
+        "CurrentGeneration":{"shape":"GenericBoolean"},
+        "SizeFlexEligible":{"shape":"GenericBoolean"}
+      }
+    },
+    "RedshiftInstanceDetails":{
+      "type":"structure",
+      "members":{
+        "Family":{"shape":"GenericString"},
+        "NodeType":{"shape":"GenericString"},
+        "Region":{"shape":"GenericString"},
         "CurrentGeneration":{"shape":"GenericBoolean"},
         "SizeFlexEligible":{"shape":"GenericBoolean"}
       }
@@ -531,7 +579,13 @@
         "UtilizationPercentage":{"shape":"UtilizationPercentage"},
         "PurchasedHours":{"shape":"PurchasedHours"},
         "TotalActualHours":{"shape":"TotalActualHours"},
-        "UnusedHours":{"shape":"UnusedHours"}
+        "UnusedHours":{"shape":"UnusedHours"},
+        "OnDemandCostOfRIHoursUsed":{"shape":"OnDemandCostOfRIHoursUsed"},
+        "NetRISavings":{"shape":"NetRISavings"},
+        "TotalPotentialRISavings":{"shape":"TotalPotentialRISavings"},
+        "AmortizedUpfrontFee":{"shape":"AmortizedUpfrontFee"},
+        "AmortizedRecurringFee":{"shape":"AmortizedRecurringFee"},
+        "TotalAmortizedFee":{"shape":"TotalAmortizedFee"}
       }
     },
     "ReservationCoverageGroup":{
@@ -562,6 +616,7 @@
     "ReservationPurchaseRecommendationDetail":{
       "type":"structure",
       "members":{
+        "AccountId":{"shape":"GenericString"},
         "InstanceDetails":{"shape":"InstanceDetails"},
         "RecommendedNumberOfInstancesToPurchase":{"shape":"GenericString"},
         "RecommendedNormalizedUnitsToPurchase":{"shape":"GenericString"},
@@ -659,6 +714,8 @@
       ]
     },
     "TotalActualHours":{"type":"string"},
+    "TotalAmortizedFee":{"type":"string"},
+    "TotalPotentialRISavings":{"type":"string"},
     "TotalRunningHours":{"type":"string"},
     "UnusedHours":{"type":"string"},
     "UtilizationByTime":{
@@ -681,7 +738,7 @@
     },
     "YearMonthDay":{
       "type":"string",
-      "pattern":"\\d{4}-\\d{2}-\\d{2}"
+      "pattern":"(\\d{4}-\\d{2}-\\d{2})(T\\d{2}:\\d{2}:\\d{2}Z)?"
     }
   }
 }
