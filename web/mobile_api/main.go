@@ -1,7 +1,7 @@
 package main
 
 import (
-	"net/http"
+	//"net/http"
 	"os"
 	"time"
 
@@ -39,8 +39,8 @@ import (
 	"motify_core_api/handlers/mobile_api/user/social/fb_login"
 	"motify_core_api/handlers/mobile_api/user/social/google_login"
 	"motify_core_api/handlers/mobile_api/user/update"
-	"motify_core_api/handlers/static/download"
-	"motify_core_api/handlers/static/upload"
+	//"motify_core_api/handlers/static/download"
+	//"motify_core_api/handlers/static/upload"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -110,11 +110,11 @@ func main() {
 
 	fileStorageMode, _ := config.GetString("file-upload-mode")
 	fileStorageDir, _ := config.GetString("file-upload-dir")
-	urlPrefixPath, _ := config.GetString("file-download-prefix")
+	//urlPrefixPath, _ := config.GetString("file-download-prefix")
 	awsRegion, _ := config.GetString("aws-region")
 	awsBucket, _ := config.GetString("aws-s3-bucket")
 	fileStoreService := file_storage_service.NewService(fileStorageMode, fileStorageDir, awsRegion, awsBucket)
-	addr, _ := config.GetString("addr")
+	//addr, _ := config.GetString("addr")
 
 	srvc.MustRegisterHandlers(
 		/*
@@ -141,20 +141,22 @@ func main() {
 		payslip_details.New(coreApi),
 	)
 
-	mux := http.NewServeMux()
-	mux.Handle("/user/file/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
-	mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
-	baseHttpServer := &http.Server{
-		Addr:    addr,
-		Handler: mux,
-	}
-	go func() {
-		if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			logger.Critical(nil, err.Error())
-			logger.Flush(nil)
-			os.Exit(1)
+	/*
+		mux := http.NewServeMux()
+		mux.Handle("/user/file/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
+		mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
+		baseHttpServer := &http.Server{
+			Addr:    addr,
+			Handler: mux,
 		}
-	}()
+		go func() {
+			if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				logger.Critical(nil, err.Error())
+				logger.Flush(nil)
+				os.Exit(1)
+			}
+		}()
+	*/
 
 	err = srvc.Run()
 	if err != nil {
