@@ -2,10 +2,7 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="59047c57-7c1b-4796-a0d2-38117302cf9c" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/godep_libs/service/sessionlogger/logger.go" beforeDir="false" afterPath="$PROJECT_DIR$/godep_libs/service/sessionlogger/logger.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/handlers/core_api/payslip/create/v1.go" beforeDir="false" afterPath="$PROJECT_DIR$/handlers/core_api/payslip/create/v1.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srv/push/apns.go" beforeDir="false" afterPath="$PROJECT_DIR$/srv/push/apns.go" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/srv/push/service.go" beforeDir="false" afterPath="$PROJECT_DIR$/srv/push/service.go" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -17,10 +14,12 @@
     <session id="1552431077">
       <usages-collector id="statistics.lifecycle.project">
         <counts>
-          <entry key="project.closed" value="3" />
+          <entry key="project.closed" value="5" />
           <entry key="project.open.time.1" value="1" />
+          <entry key="project.open.time.10" value="1" />
+          <entry key="project.open.time.13" value="1" />
           <entry key="project.open.time.2" value="2" />
-          <entry key="project.opened" value="3" />
+          <entry key="project.opened" value="5" />
         </counts>
       </usages-collector>
       <usages-collector id="statistics.file.extensions.open">
@@ -57,18 +56,13 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/godep_libs/service/sessionlogger/logger.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="90">
+            <state relative-caret-position="645">
               <caret line="59" column="56" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="56" />
               <folding>
                 <element signature="e#23#353#0" expanded="true" />
               </folding>
             </state>
           </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/godep_libs/etcd/glide.yaml">
-          <provider selected="true" editor-type-id="text-editor" />
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
@@ -82,24 +76,15 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/godep_libs/discovery/_example/application.go">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="216" column="28" lean-forward="true" selection-start-line="216" selection-start-column="28" selection-end-line="216" selection-end-column="28" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/registrator_v2v3.go">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
+            <state relative-caret-position="345">
               <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
             </state>
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/app_registration_info.go">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="690">
@@ -117,11 +102,20 @@
           </provider>
         </entry>
       </file>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/etc/core_api/dev.ini">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="255">
+              <caret line="17" column="24" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/etc/mobile_api/app.ini">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="300">
-              <caret line="20" column="26" lean-forward="true" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+              <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
             </state>
           </provider>
         </entry>
@@ -170,6 +164,13 @@
     <detection-done>true</detection-done>
     <sorting>DEFINITION_ORDER</sorting>
   </component>
+  <component name="NodePackageJsonFileManager">
+    <packageJsonPaths>
+      <path value="$PROJECT_DIR$/vendor/github.com/apache/thrift/lib/js/package.json" />
+      <path value="$PROJECT_DIR$/vendor/github.com/apache/thrift/package.json" />
+      <path value="$PROJECT_DIR$/vendor/github.com/grpc-ecosystem/grpc-gateway/examples/browser/package.json" />
+    </packageJsonPaths>
+  </component>
   <component name="ProjectFrameBounds">
     <option name="x" value="8" />
     <option name="y" value="23" />
@@ -197,25 +198,13 @@
               <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
               <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
               <item name="etc" type="462c0819:PsiDirectoryNode" />
+              <item name="core_api" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
+              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
+              <item name="etc" type="462c0819:PsiDirectoryNode" />
               <item name="mobile_api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
-              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="godep_libs" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
-              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="godep_libs" type="462c0819:PsiDirectoryNode" />
-              <item name="discovery" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
-              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="godep_libs" type="462c0819:PsiDirectoryNode" />
-              <item name="discovery" type="462c0819:PsiDirectoryNode" />
-              <item name="balancer" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
@@ -239,21 +228,6 @@
               <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
               <item name="handlers" type="462c0819:PsiDirectoryNode" />
               <item name="mobile_api" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
-              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="handlers" type="462c0819:PsiDirectoryNode" />
-              <item name="mobile_api" type="462c0819:PsiDirectoryNode" />
-              <item name="user" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
-              <item name="motify_core_api" type="462c0819:PsiDirectoryNode" />
-              <item name="handlers" type="462c0819:PsiDirectoryNode" />
-              <item name="mobile_api" type="462c0819:PsiDirectoryNode" />
-              <item name="user" type="462c0819:PsiDirectoryNode" />
-              <item name="avatar" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="motify_core_api" type="b2602c69:ProjectViewProjectNode" />
@@ -337,7 +311,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.25779969" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.26600984" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Terminal" order="0" sideWeight="0.49753696" weight="0.32928944" />
       <window_info anchor="bottom" id="Event Log" order="1" sideWeight="0.50246304" side_tool="true" weight="0.32928944" />
@@ -419,9 +393,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3990">
           <caret line="321" column="19" selection-start-line="321" selection-start-column="19" selection-end-line="321" selection-end-column="19" />
-          <folding>
-            <element signature="e#17#1755#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -456,6 +427,45 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/etcd/glide.yaml" />
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/_example/application.go" />
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/UPGRADE.md">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="466">
+          <caret line="156" column="31" selection-start-line="156" selection-start-column="31" selection-end-line="156" selection-end-column="31" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/service/sessionlogger/logger.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="645">
+          <caret line="59" column="56" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="56" />
+          <folding>
+            <element signature="e#23#353#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/deploy/go_hint_config.json">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/balancer/dial_check.go">
+      <provider selected="true" editor-type-id="text-editor" />
+    </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/registrator_v2v3.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="345">
+          <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/app_registration_info.go">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="690">
+          <caret line="50" column="73" selection-start-line="50" selection-start-column="73" selection-end-line="50" selection-end-column="73" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/etc/mobile_api/dev.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
@@ -466,54 +476,14 @@
     <entry file="file://$PROJECT_DIR$/etc/mobile_api/app.ini">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="300">
-          <caret line="20" column="26" lean-forward="true" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
+          <caret line="20" column="26" selection-start-line="20" selection-start-column="26" selection-end-line="20" selection-end-column="26" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/service/sessionlogger/logger.go">
+    <entry file="file://$PROJECT_DIR$/etc/core_api/dev.ini">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="90">
-          <caret line="59" column="56" selection-start-line="59" selection-start-column="25" selection-end-line="59" selection-end-column="56" />
-          <folding>
-            <element signature="e#23#353#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/etcd/glide.yaml">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/deploy/go_hint_config.json">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/balancer/dial_check.go">
-      <provider selected="true" editor-type-id="text-editor" />
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/_example/application.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="216" column="28" lean-forward="true" selection-start-line="216" selection-start-column="28" selection-end-line="216" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/registrator_v2v3.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="34" column="30" selection-start-line="34" selection-start-column="30" selection-end-line="34" selection-end-column="30" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/UPGRADE.md">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="466">
-          <caret line="156" column="31" selection-start-line="156" selection-start-column="31" selection-end-line="156" selection-end-column="31" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/godep_libs/discovery/registrator/app_registration_info.go">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="690">
-          <caret line="50" column="73" selection-start-line="50" selection-start-column="73" selection-end-line="50" selection-end-column="73" />
+        <state relative-caret-position="255">
+          <caret line="17" column="24" selection-start-line="17" selection-start-column="24" selection-end-line="17" selection-end-column="24" />
         </state>
       </provider>
     </entry>
