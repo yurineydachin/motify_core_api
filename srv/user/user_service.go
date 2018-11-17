@@ -22,7 +22,7 @@ func NewUserService(db *database.DbAdapter) *UserService {
 func (service *UserService) GetUserByID(ctx context.Context, modelID uint64) (*models.User, error) {
 	res := models.User{}
 	err := service.db.Get(&res, `
-        SELECT id_user, u_fk_integration, u_name, u_short, u_description, u_avatar, u_phone, u_email, u_updated_at, u_created_at
+        SELECT id_user, u_fk_integration, u_name, u_short, u_description, u_avatar, u_phone, u_email, u_phone_approved, u_email_approved, u_updated_at, u_created_at
         FROM motify_users WHERE id_user = ?
     `, modelID)
 	return &res, err
@@ -44,14 +44,17 @@ func (service *UserService) createUser(ctx context.Context, model *models.User) 
 		fkValue = ":u_fk_integration, "
 	}
 	insertRes, err := service.db.Exec(fmt.Sprintf(`
-            INSERT INTO motify_users (u_name, %s u_short, u_description, u_avatar, u_phone, u_email)
-            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email)
+            INSERT INTO motify_users (u_name, %s u_short, u_description, u_avatar, u_phone, u_email, u_phone_approved, u_email_approved)
+            VALUES (:u_name, %s :u_short, :u_description, :u_avatar, :u_phone, :u_email, :u_phone_approved, :u_email_approved)
         `, fkField, fkValue), model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
 	}
 
 	id, err := insertRes.LastInsertId()
+	if id == 0 {
+		return 0, fmt.Errorf("Insert DB users error: id = 0")
+	}
 	return uint64(id), err
 }
 
@@ -69,7 +72,9 @@ func (service *UserService) updateUser(ctx context.Context, model *models.User) 
                 u_description = :u_description,
                 u_avatar = :u_avatar,
                 u_phone = :u_phone,
-                u_email = :u_email
+                u_email = :u_email,
+                u_phone_approved = :u_phone_approved,
+                u_email_approved = :u_email_approved
             WHERE id_user = :id_user
         `, fkField), args)
 	if err != nil {
@@ -111,14 +116,17 @@ func (service *UserService) createUserAccess(ctx context.Context, model *models.
 		return 0, fmt.Errorf("Insert DB exec error: no fk_user")
 	}
 	insertRes, err := service.db.Exec(`
-            INSERT INTO motify_user_access (ua_fk_user, ua_type, ua_phone, ua_email, ua_password)
-            VALUES (:ua_fk_user, :ua_type, :ua_phone, :ua_email, :ua_password)
+            INSERT INTO motify_user_access (ua_fk_user, ua_type, ua_login, ua_password)
+            VALUES (:ua_fk_user, :ua_type, :ua_login, :ua_password)
         `, model.ToArgs())
 	if err != nil {
 		return 0, fmt.Errorf("Insert DB exec error: %v", err)
 	}
 
 	id, err := insertRes.LastInsertId()
+	if id == 0 {
+		return 0, fmt.Errorf("Insert DB user_access error: id = 0")
+	}
 	return uint64(id), err
 }
 
@@ -126,8 +134,7 @@ func (service *UserService) updateUserAccess(ctx context.Context, model *models.
 	updateRes, err := service.db.Exec(`
             UPDATE motify_user_access SET
                 ua_type = :ua_type,
-                ua_phone = :ua_phone,
-                ua_email = :ua_email,
+                ua_login = :ua_login,
                 ua_password = :ua_password
             WHERE id_user_access = :id_user_access
         `, model.ToArgs())
@@ -141,7 +148,7 @@ func (service *UserService) updateUserAccess(ctx context.Context, model *models.
 	return model.ID, nil
 }
 
-func (service *UserService) IsEmailOrPhoneBusy(ctx context.Context, login string) (bool, error) {
+func (service *UserService) IsLoginBusy(ctx context.Context, login string) (bool, error) {
 	accessList, err := service.getUserAssessListByLogin(login)
 	if err != nil {
 		return false, err
@@ -152,13 +159,24 @@ func (service *UserService) IsEmailOrPhoneBusy(ctx context.Context, login string
 	return false, nil
 }
 
+func (service *UserService) GetUserIDByLogin(ctx context.Context, login string) (uint64, error) {
+	accessList, err := service.getUserAssessListByLogin(login)
+	if err != nil {
+		return 0, err
+	}
+	if len(accessList) == 0 || len(accessList) > 1 {
+		return 0, nil
+	}
+	return accessList[0].UserFK, nil
+}
+
 func (service *UserService) Authentificate(ctx context.Context, login, password string) (uint64, error) {
 	accessList, err := service.getUserAssessListByLoginAndPass(login, password)
 	if err != nil {
 		return 0, err
 	}
 	if len(accessList) == 0 {
-		return 0, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', not found", login, password)
+		return 0, nil //fmt.Errorf("Could not authentificate user by login '%s' and password '%s', not found", login, password)
 	}
 	userIDs := make(map[uint64]bool, len(accessList))
 	for i := range accessList {
@@ -166,20 +184,19 @@ func (service *UserService) Authentificate(ctx context.Context, login, password 
 	}
 	if len(userIDs) > 1 {
 		return 0, fmt.Errorf("Could not authentificate user by login '%s' and password '%s', too many users: %v", login, password, userIDs)
-	}
-	for i := range accessList {
-		return accessList[i].UserFK, nil
+	} else if len(userIDs) == 1 {
+		return accessList[0].UserFK, nil
 	}
 	return 0, nil
 }
 
 func (service *UserService) getUserAssessListByLogin(login string) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
-	loginHash := utils.Hash(login)
+	loginHash := utils.HashLogin(login)
 	err := service.db.Select(&res, `
-        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
-        FROM motify_user_access WHERE ua_email = ? OR ua_phone = ?
-    `, loginHash, loginHash)
+        SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
+        FROM motify_user_access WHERE ua_login = ?
+    `, loginHash)
 	for i, access := range res {
 		access.MarkAllHashed()
 		res[i] = access
@@ -189,12 +206,12 @@ func (service *UserService) getUserAssessListByLogin(login string) ([]*models.Us
 
 func (service *UserService) getUserAssessListByLoginAndPass(login, password string) ([]*models.UserAccess, error) {
 	res := []*models.UserAccess{}
-	loginHash := utils.Hash(login)
-	passwordHash := utils.Hash(password)
+	loginHash := utils.HashLogin(login)
+	passwordHash := utils.HashPass(password)
 	err := service.db.Select(&res, `
-        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
-        FROM motify_user_access WHERE (ua_email = ? OR ua_phone = ?) AND ua_password = ?
-    `, loginHash, loginHash, passwordHash)
+        SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
+        FROM motify_user_access WHERE ua_login = ? AND ua_password = ?
+    `, loginHash, passwordHash)
 	for i, access := range res {
 		access.MarkAllHashed()
 		res[i] = access
@@ -215,15 +232,17 @@ func (service *UserService) GetUserAssessByUserIDAndType(ctx context.Context, us
 	return nil, nil
 }
 
-func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) ([]*models.UserAccess, error) {
-	res := []*models.UserAccess{}
-	err := service.db.Select(&res, `
-        SELECT id_user_access, ua_fk_user, ua_type, ua_email, ua_phone, ua_password, ua_updated_at, ua_created_at
+func (service *UserService) GetUserAssessListByUserID(ctx context.Context, userID uint64) (map[string]*models.UserAccess, error) {
+	list := []*models.UserAccess{}
+	err := service.db.Select(&list, `
+        SELECT id_user_access, ua_fk_user, ua_type, ua_login, ua_password, ua_updated_at, ua_created_at
         FROM motify_user_access WHERE ua_fk_user = ?
     `, userID)
-	for i, access := range res {
+
+	res := make(map[string]*models.UserAccess, len(list))
+	for _, access := range list {
 		access.MarkAllHashed()
-		res[i] = access
+		res[access.Type] = access
 	}
 	return res, err
 }

@@ -39,6 +39,8 @@ ifndef GLIDE_INSTALLED
 endif
 
 BIN?=$(lastword $(subst :, ,$(GOPATH)))/bin/motify_core_api
+BIN_MOBILE?=$(lastword $(subst :, ,$(GOPATH)))/bin/motify_mobile_api
+BIN_INTEGRATION?=$(lastword $(subst :, ,$(GOPATH)))/bin/motify_integration_api
 DATE:=$(shell date -u "+%Y-%m-%d %H:%M:%S")
 VER:=$(shell git branch|grep '*'| cut -f2 -d' ')
 GITHASH_SHORT:=$(shell git rev-parse --short HEAD)
@@ -100,6 +102,13 @@ build-static: deps get-bindata download-translations ${GO}
 
 fast-build: 
 	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN) -i ./web/core_api/main.go
+	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN_MOBILE) -i ./web/mobile_api/main.go
+	${GO} build -ldflags "$(LDFLAGS)" -o $(BIN_INTEGRATION) -i ./web/integration_api/main.go
+
+fast-build-linux: 
+	GOOS=linux ${GO} build -ldflags "$(LDFLAGS)" -o $(BIN)_linux -i ./web/core_api/main.go
+	GOOS=linux ${GO} build -ldflags "$(LDFLAGS)" -o $(BIN_MOBILE)_linux -i ./web/mobile_api/main.go
+	GOOS=linux ${GO} build -ldflags "$(LDFLAGS)" -o $(BIN_INTEGRATION)_linux -i ./web/integration_api/main.go
 
 get-bindata: ${GO}
 ifeq ($(wildcard $(BINDATA_BIN)),)

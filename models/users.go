@@ -9,6 +9,8 @@ type User struct {
 	Avatar        string  `db:"u_avatar"`
 	Phone         string  `db:"u_phone"`
 	Email         string  `db:"u_email"`
+	PhoneApproved bool    `db:"u_phone_approved"`
+	EmailApproved bool    `db:"u_email_approved"`
 	UpdatedAt     string  `db:"u_updated_at"`
 	CreatedAt     string  `db:"u_created_at"`
 }
@@ -22,6 +24,16 @@ func (user *User) ToArgs() map[string]interface{} {
 		"u_avatar":      user.Avatar,
 		"u_phone":       user.Phone,
 		"u_email":       user.Email,
+	}
+	if user.PhoneApproved {
+		res["u_phone_approved"] = 1
+	} else {
+		res["u_phone_approved"] = 0
+	}
+	if user.EmailApproved {
+		res["u_email_approved"] = 1
+	} else {
+		res["u_email_approved"] = 0
 	}
 	if user.IntegrationFK != nil && *user.IntegrationFK > 0 {
 		res["u_fk_integration"] = *user.IntegrationFK

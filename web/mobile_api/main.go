@@ -1,6 +1,7 @@
 package main
 
 import (
+	//"net/http"
 	"os"
 	"time"
 
@@ -18,6 +19,7 @@ import (
 	"motify_core_api/godep_libs/mobapi_lib/token"
 	"motify_core_api/godep_libs/service/logger"
 
+	"motify_core_api/resources/file_storage"
 	coreApiAdapter "motify_core_api/resources/motify_core_api"
 
 	wrapToken "motify_core_api/utils/token"
@@ -27,9 +29,18 @@ import (
 	"motify_core_api/handlers/mobile_api/employer/list"
 	"motify_core_api/handlers/mobile_api/payslip/details"
 	"motify_core_api/handlers/mobile_api/payslip/list"
+	"motify_core_api/handlers/mobile_api/user/avatar"
 	"motify_core_api/handlers/mobile_api/user/login"
+	"motify_core_api/handlers/mobile_api/user/register/device/android"
+	"motify_core_api/handlers/mobile_api/user/register/device/ios"
+	"motify_core_api/handlers/mobile_api/user/remind/reset"
+	"motify_core_api/handlers/mobile_api/user/remind/send"
 	"motify_core_api/handlers/mobile_api/user/signup"
+	"motify_core_api/handlers/mobile_api/user/social/fb_login"
+	"motify_core_api/handlers/mobile_api/user/social/google_login"
 	"motify_core_api/handlers/mobile_api/user/update"
+	//"motify_core_api/handlers/static/download"
+	//"motify_core_api/handlers/static/upload"
 )
 
 const serviceName = "MotifyMobileAPI"
@@ -53,6 +64,12 @@ func init() {
 
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
+
+	config.RegisterString("file-upload-mode", "How to upload and get files: from dir or proxy to file cdn", file_storage_service.ModeDir)
+	config.RegisterString("file-upload-dir", "Path for files", "/tmp/motify/")
+	config.RegisterString("file-download-prefix", "Path prefix", "/images/")
+	config.RegisterString("aws-s3-bucket", "AWS S3 bucket name", "motify-app")
+	config.RegisterString("aws-region", "AWS region", "us-east-1")
 
 	config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
 }
@@ -91,6 +108,14 @@ func main() {
 		},
 	)
 
+	fileStorageMode, _ := config.GetString("file-upload-mode")
+	fileStorageDir, _ := config.GetString("file-upload-dir")
+	//urlPrefixPath, _ := config.GetString("file-download-prefix")
+	awsRegion, _ := config.GetString("aws-region")
+	awsBucket, _ := config.GetString("aws-s3-bucket")
+	fileStoreService := file_storage_service.NewService(fileStorageMode, fileStorageDir, awsRegion, awsBucket)
+	//addr, _ := config.GetString("addr")
+
 	srvc.MustRegisterHandlers(
 		/*
 			- login/ singup/ restore pass/ set new pass/ social logins
@@ -99,15 +124,39 @@ func main() {
 			- get employers, employer details
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
+		user_avatar.New(coreApi, fileStoreService),
 		user_login.New(coreApi),
+		user_fb_login.New(coreApi),
+		user_google_login.New(coreApi),
 		user_signup.New(coreApi),
 		user_update.New(coreApi),
+		user_remind_send.New(coreApi),
+		user_remind_reset.New(coreApi),
+		user_device_ios.New(coreApi),
+		user_device_android.New(coreApi),
 		employer_adduser.New(coreApi),
 		employer_details.New(coreApi),
 		employer_list.New(coreApi),
 		payslip_list.New(coreApi),
 		payslip_details.New(coreApi),
 	)
+
+	/*
+		mux := http.NewServeMux()
+		mux.Handle("/user/file/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
+		mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
+		baseHttpServer := &http.Server{
+			Addr:    addr,
+			Handler: mux,
+		}
+		go func() {
+			if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+				logger.Critical(nil, err.Error())
+				logger.Flush(nil)
+				os.Exit(1)
+			}
+		}()
+	*/
 
 	err = srvc.Run()
 	if err != nil {

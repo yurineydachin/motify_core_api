@@ -11,19 +11,51 @@ import (
 
 	etcdcl3 "github.com/coreos/etcd/clientv3"
 	"github.com/coreos/etcd/integration"
+	"golang.org/x/net/context"
+	"google.golang.org/grpc"
+	"google.golang.org/grpc/status"
 	"motify_core_api/godep_libs/discovery/balancer"
 	pb "motify_core_api/godep_libs/discovery/balancer/grpc/proto"
 	"motify_core_api/godep_libs/discovery/locator"
 	"motify_core_api/godep_libs/discovery/provider/etcdV3"
 	"motify_core_api/godep_libs/discovery/registrator"
-	"motify_core_api/godep_libs/go-logger"
-	"golang.org/x/net/context"
-	"google.golang.org/grpc"
-	"google.golang.org/grpc/status"
+	//"motify_core_api/godep_libs/go-logger"
 )
 
-var serverLogger = logger.NewBuiltinLogger(log.New(os.Stderr, "SERVER: ", log.Ldate|log.Ltime), logger.LevelWarning)
-var clientLogger = logger.NewBuiltinLogger(log.New(os.Stderr, "CLIENT: ", log.Ldate|log.Ltime), logger.LevelWarning)
+// nilLogger is a logger which does nothing.
+type nilLogger struct{}
+
+// NewNilLogger returns new nilLogger instance
+func NewNilLogger() ILogger {
+	return &nilLogger{}
+}
+
+// Debugf does nothing
+func (l *nilLogger) Debugf(format string, args ...interface{}) {}
+
+// Infof does nothing
+func (l *nilLogger) Infof(format string, args ...interface{}) {}
+
+// Warningf does nothing
+func (l *nilLogger) Warningf(format string, args ...interface{}) {}
+
+// Errorf does nothing
+func (l *nilLogger) Errorf(format string, args ...interface{}) {}
+
+// Debug does nothing
+func (l *nilLogger) Debug(args ...interface{}) {}
+
+// Info does nothing
+func (l *nilLogger) Info(args ...interface{}) {}
+
+// Warning does nothing
+func (l *nilLogger) Warning(args ...interface{}) {}
+
+// Error does nothing
+func (l *nilLogger) Error(args ...interface{}) {}
+
+var serverLogger = NewNilLogger() //logger.NewBuiltinLogger(log.New(os.Stderr, "SERVER: ", log.Ldate|log.Ltime), logger.LevelWarning)
+var clientLogger = NewNilLogger() //logger.NewBuiltinLogger(log.New(os.Stderr, "CLIENT: ", log.Ldate|log.Ltime), logger.LevelWarning)
 
 func createTestWRRBalancer() balancer.ILoadBalancer {
 	l := balancer.NewInMemLocator([]string{

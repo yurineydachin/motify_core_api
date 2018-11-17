@@ -84,14 +84,12 @@ func TestSetUser_Update(t *testing.T) {
 }
 
 func TestSetUserAccess_Create(t *testing.T) {
-	phone := "phone 1"
-	email := "email_1@text.com"
+	login := "email_1@text.com"
 	service := getService(t)
 	access := &models.UserAccess{
 		UserFK:   testUserID,
 		Type:     models.UserAccessEmail,
-		Phone:    &phone,
-		Email:    &email,
+		Login:    &login,
 		Password: "password 1",
 	}
 	var err error
@@ -106,23 +104,21 @@ func TestGetUserAssessListByUserID(t *testing.T) {
 	accessList, err := service.GetUserAssessListByUserID(context.Background(), testUserID)
 	if assert.Nil(t, err) &&
 		assert.Equal(t, len(accessList), 1) {
-		assert.Equal(t, accessList[0].UserFK, testUserID)
-		assert.Equal(t, *accessList[0].Email, utils.Hash("email_1@text.com"))
-		assert.Equal(t, *accessList[0].Phone, utils.Hash("phone 1"))
-		assert.Equal(t, accessList[0].Password, utils.Hash("password 1"))
+		assert.Equal(t, accessList[models.UserAccessEmail].UserFK, testUserID)
+		assert.Equal(t, accessList[models.UserAccessEmail].Type, models.UserAccessEmail)
+		assert.Equal(t, accessList[models.UserAccessEmail].Login, utils.Hash("email_1@text.com"))
+		assert.Equal(t, accessList[models.UserAccessEmail].Password, utils.Hash("password 1"))
 	}
 }
 
 func TestSetUserAccess_Update(t *testing.T) {
-	phone := "phone " + testUserIDStr
-	email := "email_" + testUserIDStr + "@text.com"
+	login := "phone " + testUserIDStr
 	service := getService(t)
 	access := &models.UserAccess{
 		ID:       testUserAccessID,
 		UserFK:   testUserID,
-		Type:     models.UserAccessEmail,
-		Phone:    &phone,
-		Email:    &email,
+		Type:     models.UserAccessPhone,
+		Login:    &login,
 		Password: "password " + testUserIDStr,
 	}
 
@@ -134,22 +130,22 @@ func TestSetUserAccess_Update(t *testing.T) {
 	accessNew, err := service.GetUserAssessListByUserID(context.Background(), access.UserFK)
 	if assert.Nil(t, err) &&
 		assert.Equal(t, len(accessNew) > 0, true, "user from DB is empty") {
-		assert.Equal(t, accessNew[0].ID, testUserAccessID)
-		assert.Equal(t, accessNew[0].UserFK, testUserID)
-		assert.Equal(t, *accessNew[0].Email, utils.Hash("email_"+testUserIDStr+"@text.com"))
-		assert.Equal(t, *accessNew[0].Phone, utils.Hash("phone "+testUserIDStr))
-		assert.Equal(t, accessNew[0].Password, utils.Hash("password "+testUserIDStr))
+		assert.Equal(t, accessNew[models.UserAccessEmail].ID, testUserAccessID)
+		assert.Equal(t, accessNew[models.UserAccessEmail].UserFK, testUserID)
+		assert.Equal(t, accessNew[models.UserAccessEmail].Type, models.UserAccessPhone)
+		assert.Equal(t, accessNew[models.UserAccessEmail].Login, utils.Hash("phone "+testUserIDStr))
+		assert.Equal(t, accessNew[models.UserAccessEmail].Password, utils.Hash("password "+testUserIDStr))
 	}
 }
 
-func TestIsEmailOrPhoneBusy_OldEmail(t *testing.T) {
-	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "email_1@text.com")
+func TestIsLoginBusy_OldEmail(t *testing.T) {
+	isExist, err := getService(t).IsLoginBusy(context.Background(), "email_1@text.com")
 	assert.Nil(t, err)
 	assert.Equal(t, isExist, false)
 }
 
-func TestIsEmailOrPhoneBusy_OldPhone(t *testing.T) {
-	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "phone 1")
+func TestIsLoginBusy_OldPhone(t *testing.T) {
+	isExist, err := getService(t).IsLoginBusy(context.Background(), "phone 1")
 	assert.Nil(t, err)
 	assert.Equal(t, isExist, false)
 }
@@ -161,14 +157,14 @@ func TestCanNotAuthentificateByOldEmailAndPassword(t *testing.T) {
 	assert.Equal(t, userID, uint64(0))
 }
 
-func TestIsEmailOrPhoneBusy_NewEmail(t *testing.T) {
-	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "email_"+testUserIDStr+"@text.com")
+func TestIsLoginBusy_NewEmail(t *testing.T) {
+	isExist, err := getService(t).IsLoginBusy(context.Background(), "email_"+testUserIDStr+"@text.com")
 	assert.Nil(t, err)
 	assert.Equal(t, isExist, true)
 }
 
-func TestIsEmailOrPhoneBusy_NewPhone(t *testing.T) {
-	isExist, err := getService(t).IsEmailOrPhoneBusy(context.Background(), "phone "+testUserIDStr)
+func TestIsLoginBusy_NewPhone(t *testing.T) {
+	isExist, err := getService(t).IsLoginBusy(context.Background(), "phone "+testUserIDStr)
 	assert.Nil(t, err)
 	assert.Equal(t, isExist, true)
 }
@@ -218,14 +214,12 @@ func TestSetUser_Create1(t *testing.T) {
 }
 
 func TestSetUserAccess_Create1(t *testing.T) {
-	phone := "123456"
-	email := "yuri@test.com"
+	login := "yuri@test.com"
 	service := getService(t)
 	access := &models.UserAccess{
 		UserFK:   testUserID,
 		Type:     models.UserAccessEmail,
-		Phone:    &phone,
-		Email:    &email,
+		Login:    &login,
 		Password: "123456",
 	}
 	var err error

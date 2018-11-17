@@ -37,6 +37,25 @@ func NewAgentService(db *database.DbAdapter) *AgentService {
 	}
 }
 
+func (service *AgentService) GetDevicesByEmployeeID(ctx context.Context, empID, limit, offset uint64) ([]*models.Device, error) {
+	if limit == 0 || limit > defaultLimit {
+		limit = defaultLimit
+	}
+	res := []*models.Device{}
+
+	err := service.db.Select(&res, `
+        SELECT
+            id_device, d_fk_user, d_device, d_token, d_updated_at, d_created_at
+        FROM motify_agent_employees
+        INNER JOIN motify_device ON d_fk_user = e_fk_user
+        WHERE id_employee = ?
+        ORDER BY d_created_at DESC
+        LIMIT ?
+        OFFSET ?
+    `, empID, limit, offset)
+	return res, err
+}
+
 func (service *AgentService) GetAgentWithSettingsListByIntegrationIDAndUserID(ctx context.Context, integrationID, userID uint64) ([]AgentWithSetting, error) {
 	list := []AgentWithLeftSetting{}
 

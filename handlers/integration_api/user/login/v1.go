@@ -37,6 +37,8 @@ type V1ErrorTypes struct {
 	LOGIN_FAILED           error `text:"Login is failed"`
 	USER_NOT_FOUND         error `text:"User not found"`
 	USER_ALREADY_LOGGED_IN error `text:"Request with already authorized apiToken"`
+	EMAIL_NOT_APPROVED     error `text:"Email not approved"`
+	PHONE_NOT_APPROVED     error `text:"Phone not approved"`
 }
 
 var v1Errors V1ErrorTypes
@@ -71,8 +73,15 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args, apiToken token.INu
 		Password:      opts.Password,
 	})
 	if err != nil {
+		if err.Error() == "MotifyCoreAPI: EMAIL_NOT_APPROVED" {
+			return nil, v1Errors.EMAIL_NOT_APPROVED
+		} else if err.Error() == "MotifyCoreAPI: PHONE_NOT_APPROVED" {
+			return nil, v1Errors.PHONE_NOT_APPROVED
+		} else if err.Error() == "MotifyCoreAPI: LOGIN_FAILED" {
+			return nil, v1Errors.LOGIN_FAILED
+		}
 		logger.Error(ctx, "Failed login: %v", err)
-		return nil, v1Errors.USER_NOT_FOUND
+		return nil, err
 	}
 	if loginData == nil || loginData.User == nil {
 		logger.Error(ctx, "Failed login: user is nil")

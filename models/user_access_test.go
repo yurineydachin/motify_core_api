@@ -8,12 +8,10 @@ import (
 
 func TestMarkAllHashed(t *testing.T) {
 	access := &UserAccess{
-		IsHashedEmail:    false,
-		IsHashedPhone:    false,
+		IsHashedLogin:    false,
 		IsHashedPassword: false,
 	}
 	access.MarkAllHashed()
-	assert.Equal(t, access.IsHashedEmail, true, "user result from DB is empty")
-	assert.Equal(t, access.IsHashedPhone, true, "user result from DB is empty")
+	assert.Equal(t, access.IsHashedLogin, true, "user result from DB is empty")
 	assert.Equal(t, access.IsHashedPassword, true, "user result from DB is empty")
 }

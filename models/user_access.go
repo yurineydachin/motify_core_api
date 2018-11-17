@@ -7,9 +7,10 @@ import (
 )
 
 const (
-	UserAccessEmail = "email"
-	UserAccessFb    = "fb"
-	UserAccessVk    = "vk"
+	UserAccessEmail  = "email"
+	UserAccessPhone  = "phone"
+	UserAccessFb     = "fb"
+	UserAccessGoogle = "google"
 )
 
 type UserAccess struct {
@@ -17,10 +18,8 @@ type UserAccess struct {
 	UserFK           uint64  `db:"ua_fk_user"`
 	IntegrationFK    *uint64 `db:"-"`
 	Type             string  `db:"ua_type"`
-	IsHashedEmail    bool    `db:"-"`
-	Email            *string `db:"ua_email"`
-	IsHashedPhone    bool    `db:"-"`
-	Phone            *string `db:"ua_phone"`
+	IsHashedLogin    bool    `db:"-"`
+	Login            string  `db:"ua_login"`
 	IsHashedPassword bool    `db:"-"`
 	Password         string  `db:"ua_password"`
 	UpdatedAt        string  `db:"ua_updated_at"`
@@ -34,16 +33,10 @@ func LoginSufix(integrationID *uint64) string {
 	return ""
 }
 
-func (access *UserAccess) SetEmail(value string) {
+func (access *UserAccess) SetLogin(value string) {
 	value += LoginSufix(access.IntegrationFK)
-	access.Email = &value
-	access.IsHashedEmail = false
-}
-
-func (access *UserAccess) SetPhone(value string) {
-	value += LoginSufix(access.IntegrationFK)
-	access.Phone = &value
-	access.IsHashedPhone = false
+	access.Login = value
+	access.IsHashedLogin = false
 }
 
 func (access *UserAccess) SetPassword(value string) {
@@ -52,8 +45,7 @@ func (access *UserAccess) SetPassword(value string) {
 }
 
 func (access *UserAccess) MarkAllHashed() {
-	access.IsHashedEmail = true
-	access.IsHashedPhone = true
+	access.IsHashedLogin = true
 	access.IsHashedPassword = true
 }
 
@@ -63,24 +55,15 @@ func (access UserAccess) ToArgs() map[string]interface{} {
 		"ua_fk_user":     access.UserFK,
 		"ua_type":        access.Type,
 	}
-	if access.Email != nil {
-		if access.IsHashedEmail {
-			args["ua_email"] = *access.Email
-		} else {
-			args["ua_email"] = utils.Hash(*access.Email)
-		}
-	}
-	if access.Phone != nil {
-		if access.IsHashedPhone {
-			args["ua_phone"] = *access.Phone
-		} else {
-			args["ua_phone"] = utils.Hash(*access.Phone)
-		}
+	if access.IsHashedLogin {
+		args["ua_login"] = access.Login
+	} else {
+		args["ua_login"] = utils.HashLogin(access.Login)
 	}
 	if access.IsHashedPassword {
 		args["ua_password"] = access.Password
 	} else {
-		args["ua_password"] = utils.Hash(access.Password)
+		args["ua_password"] = utils.HashPass(access.Password)
 	}
 	return args
 }

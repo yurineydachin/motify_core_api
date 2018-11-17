@@ -1,4 +1,4 @@
-package: godep.lzd.co/go-trace/example
+package: motify_core_api/godep_libs/go-trace/example
 import:
 - package: github.com/golang/protobuf
   subpackages:
@@ -12,11 +12,6 @@ import:
   version: ~0.8.0
   subpackages:
   - prometheus/promhttp
-- package: godep.lzd.co/go-log
-  version: ^3.8.0
-- package: godep.lzd.co/go-trace
-  version: GOLIBS-1238
-- package: godep.lzd.co/metrics
 - package: golang.org/x/net
   subpackages:
   - context

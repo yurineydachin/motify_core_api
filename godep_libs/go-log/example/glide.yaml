@@ -1,4 +1,0 @@
-package: example
-import:
-- package: godep.lzd.co/go-log
-  version: 3.1.2

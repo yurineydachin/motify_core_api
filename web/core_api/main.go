@@ -19,11 +19,14 @@ import (
 	"motify_core_api/godep_libs/service/logger"
 
 	"motify_core_api/resources/database"
+	"motify_core_api/web/core_api/push"
 
 	"motify_core_api/srv/agent"
+	"motify_core_api/srv/device"
 	"motify_core_api/srv/email"
 	"motify_core_api/srv/integration"
 	"motify_core_api/srv/payslip"
+	"motify_core_api/srv/push"
 	"motify_core_api/srv/user"
 
 	"motify_core_api/handlers/core_api/agent/create"
@@ -43,8 +46,12 @@ import (
 	"motify_core_api/handlers/core_api/setting/create"
 	"motify_core_api/handlers/core_api/setting/list"
 	"motify_core_api/handlers/core_api/setting/update"
+	"motify_core_api/handlers/core_api/user/approve/send"
 	"motify_core_api/handlers/core_api/user/create"
+	"motify_core_api/handlers/core_api/user/device"
 	"motify_core_api/handlers/core_api/user/login"
+	"motify_core_api/handlers/core_api/user/remind"
+	"motify_core_api/handlers/core_api/user/social"
 	"motify_core_api/handlers/core_api/user/update"
 )
 
@@ -77,6 +84,8 @@ func init() {
 	config.RegisterString("mail-password", "Email password", "")
 	config.RegisterString("mail-employee-invite-from", "Email user who sends invite", "")
 
+	config.RegisterString("push-apple-gateway", "APNS gateway url", "gateway.sandbox.push.apple.com:2195")
+
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 }
@@ -103,6 +112,8 @@ func main() {
 	userEmail, _ := config.GetString("mail-user")
 	userPassword, _ := config.GetString("mail-password")
 	userInvite, _ := config.GetString("mail-employee-invite-from")
+
+	apnsGateway, _ := config.GetString("push-apple-gateway")
 
 	dbReadNodes, _ := config.GetStringSlice("mysql-db-read-nodes")
 	dbWriteNodes, _ := config.GetStringSlice("mysql-db-write-nodes")
@@ -133,7 +144,9 @@ func main() {
 	userService := user_service.NewUserService(db)
 	payslipService := payslip_service.NewPayslipService(db)
 	integrationService := integration_service.NewIntegrationService(db)
+	deviceService := device_service.New(db)
 	emailService := email_service.NewService(host, port, userEmail, userPassword)
+	pushService := push_service.New().AddAPNS(apnsGateway, push.GetAPNSCert(), push.GetAPNSCert())
 
 	dconfm := dconfig.NewManager(serviceName, mobLogger.GetLoggerInstance())
 	sessionLogger, err := sessionlogger.NewSessionLoggerFromFlags(dconfm)
@@ -157,7 +170,7 @@ func main() {
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
 		payslip_details.New(agentService, payslipService),
-		payslip_create.New(agentService, payslipService),
+		payslip_create.New(agentService, payslipService, pushService),
 		payslip_list.New(payslipService),
 		payslip_list_by_employee.New(payslipService),
 		agent_create.New(agentService),
@@ -168,9 +181,13 @@ func main() {
 		employee_invite.New(agentService, emailService, userInvite),
 		employee_list.New(agentService),
 		employee_update.New(agentService, userService),
+		user_approve_send.New(userService, emailService, userInvite),
 		user_login.New(userService),
-		user_create.New(userService),
+		user_social.New(userService),
+		user_create.New(userService, emailService, userInvite),
+		user_remind.New(userService, emailService, userInvite),
 		user_update.New(userService),
+		user_device.New(deviceService),
 		setting_create.New(agentService, userService),
 		setting_list.New(agentService),
 		setting_update.New(agentService, userService),

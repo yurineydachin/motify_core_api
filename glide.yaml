@@ -4,7 +4,67 @@ import:
 - package: github.com/jmoiron/sqlx
 - package: github.com/boombuler/barcode
 - package: github.com/go-gomail/gomail
+- package: github.com/aws/aws-sdk-go
+- package: github.com/coreos/etcd
+  version: ~3.2.4
+  subpackages:
+  - client
+  - clientv3
+- package: github.com/golang/protobuf
+  version: 748d386b5c1ea99658fd69fe9f03991ce86a90c1
+  # 5a0f697c9ed9d68fef0116532c6e05cfeae00e55
+- package: github.com/stretchr/testify
+  # I don't want to set testify version, because the last semver is Sep 2016.
+  # Master is more stable and contains some fixes. But we can't set the exact version by hash in lib.
+  subpackages:
+  - mock
+- package: github.com/jpillora/backoff
+- package: github.com/mailru/easyjson
+  version: 9d6630dc8c577b56cb9687a9cf9e8578aca7298a
+- package: gopkg.in/check.v1
+- package: github.com/prometheus/client_golang
+  version: ~0.8.0
+- package: github.com/facebookgo/grace
+  subpackages:
+  - gracehttp
+- package: github.com/gorilla/websocket
+- package: github.com/sergei-svistunov/gorpc
+  version: ^3.5.0
+  subpackages:
+  - swagger_ui
+  - transport/http_json
+  - transport/http_json/adapter
+- package: github.com/vaughan0/go-ini
+- package: golang.org/x/net
+  subpackages:
+  - hpack
+  - context
+  - trace
+  - http2
+- package: google.golang.org/grpc
+  version: ~v1.7.4
+- package: github.com/elazarl/go-bindata-assetfs
+  version: 57eb5e1fc594ad4b0b1dbea7b286d299e0cb43c2
+- package: github.com/jteeuwen/go-bindata
+  version: ~3.0.7
+- package: github.com/opentracing/basictracer-go
+- package: github.com/opentracing/opentracing-go
+  version: ^1.0.1
+  subpackages:
+  - ext
+  - log
+- package: sourcegraph.com/sourcegraph/appdash
+  subpackages:
+  - opentracing
+  - traceapp
+- package: github.com/openzipkin/zipkin-go-opentracing
+- package: github.com/kardianos/osext
+- package: github.com/moul/http2curl
+- package: github.com/anachronistic/apns
+- package: golang.org/x/oauth2
+
 testImphort:
+- package: gopkg.in/check.v1
 - package: github.com/stretchr/testify
   version: 976c720a22c8eb4eb6a0b4348ad85ad12491a506
   subpackages:

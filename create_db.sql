@@ -182,3 +182,40 @@ ADD CONSTRAINT `motify_users_ibfk_1` FOREIGN KEY (`u_fk_integration`) REFERENCES
 ALTER TABLE `motify_user_access`
 ADD CONSTRAINT `ua_motify_user_access_ibfk_1` FOREIGN KEY (`ua_fk_user`) REFERENCES `motify_users` (`id_user`) ON UPDATE CASCADE;
 
+-- migration1
+
+ALTER TABLE `motify_users` ADD `u_email_approved` BOOLEAN NOT NULL AFTER `u_email`, ADD `u_phone_approved` BOOLEAN NOT NULL AFTER `u_email_approved`;
+
+-- migration2
+
+ALTER TABLE `motify_user_access` CHANGE `ua_email` `ua_login` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL;
+ALTER TABLE `motify_user_access` DROP `ua_phone`;
+ALTER TABLE `motify_user_access` CHANGE `ua_type` `ua_type` ENUM('email','fb','google','phone') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
+
+-- migration3
+
+DROP TABLE IF EXISTS `motify_device`;
+CREATE TABLE `motify_device` (
+  `id_device` int(11) NOT NULL,
+  `d_fk_user` int(11) NOT NULL,
+  `d_token` varchar(255) NOT NULL,
+  `d_device` varchar(255) NOT NULL,
+  `d_updated_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `d_created_at` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `motify_device`
+  ADD PRIMARY KEY (`id_device`),
+  ADD KEY `d_fk_user_ind` (`d_fk_user`),
+  ADD UNIQUE( `d_token`);
+
+
+ALTER TABLE `motify_device`
+  MODIFY `id_device` int(11) NOT NULL AUTO_INCREMENT;
+
+
+ALTER TABLE `motify_device`
+  ADD CONSTRAINT `d_motify_device_ibfk_1` FOREIGN KEY (`d_fk_user`) REFERENCES `motify_users` (`id_user`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
+

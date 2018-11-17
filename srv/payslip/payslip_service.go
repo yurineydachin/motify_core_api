@@ -3,6 +3,7 @@ package payslip_service
 import (
 	"context"
 	"fmt"
+	"time"
 
 	"motify_core_api/models"
 	"motify_core_api/resources/database"
@@ -46,6 +47,27 @@ func (service *PayslipService) GetListByUserID(ctx context.Context, userID, limi
         LIMIT ?
         OFFSET ?
     `, userID, limit, offset)
+	return res, err
+}
+
+func (service *PayslipService) GetListByUserIDAfter(ctx context.Context, userID, limit uint64, dateAfter time.Time) ([]PayslipAgentEmployee, error) {
+	if limit == 0 || limit > defaultLimit {
+		limit = defaultLimit
+	}
+	res := []PayslipAgentEmployee{}
+	err := service.db.Select(&res, `
+        SELECT
+            id_payslip, p_fk_employee, p_title, p_currency, p_amount, p_updated_at, p_created_at,
+            id_agent, a_name, a_company_id, a_description, a_logo, a_bg_image, a_address, a_phone, a_email, a_site, a_updated_at, a_created_at,
+            id_employee, e_fk_agent, e_fk_user, e_code, e_name, e_email, e_hire_date, e_number_of_dependants, e_gross_base_salary, e_role, e_updated_at, e_created_at
+        FROM motify_payslip
+        INNER JOIN motify_agent_employees ON id_employee = p_fk_employee
+        INNER JOIN motify_agents ON id_agent = e_fk_agent
+        WHERE e_fk_user = ?
+              AND p_created_at > ?
+        ORDER BY p_created_at DESC
+        LIMIT ?
+    `, userID, dateAfter.Format(time.RFC3339), limit)
 	return res, err
 }
 

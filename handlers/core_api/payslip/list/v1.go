@@ -2,15 +2,18 @@ package payslip_list
 
 import (
 	"context"
+	"time"
 
 	"github.com/sergei-svistunov/gorpc/transport/cache"
 	"motify_core_api/godep_libs/service/logger"
+	"motify_core_api/srv/payslip"
 )
 
 type V1Args struct {
-	UserID uint64  `key:"user_id" description:"User ID"`
-	Limit  *uint64 `key:"limit" description:"Limit"`
-	Offset *uint64 `key:"offset" description:"Offset"`
+	UserID    uint64  `key:"user_id" description:"User ID"`
+	Limit     *uint64 `key:"limit" description:"Limit"`
+	Offset    *uint64 `key:"offset" description:"Offset"`
+	DateAfter *string `key:"date_after" description:"Filter by created_at > date_after"`
 }
 
 type V1Res struct {
@@ -86,11 +89,34 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 		offset = *opts.Offset
 	}
 
-	list, err := handler.payslipService.GetListByUserID(ctx, opts.UserID, limit, offset)
-	if err != nil {
-		logger.Error(ctx, "Failed loading payslips by user %d: %v", opts.UserID, err)
-		return nil, err
+	var (
+		list []payslip_service.PayslipAgentEmployee
+		err  error
+		t    time.Time
+	)
+
+	listLoaded := false
+	if opts.DateAfter != nil && *opts.DateAfter != "" {
+		t, err = time.Parse(time.RFC3339, *opts.DateAfter)
+		if err == nil {
+			list, err = handler.payslipService.GetListByUserIDAfter(ctx, opts.UserID, limit, t)
+			if err != nil {
+				logger.Error(ctx, "Failed loading payslips by user %d after %s: %v", opts.UserID, t, err)
+				return nil, err
+			}
+			listLoaded = true
+		} else {
+			logger.Error(ctx, "Failed parse opts.DateAfter %s: %v", *opts.DateAfter, err)
+		}
 	}
+	if !listLoaded {
+		list, err = handler.payslipService.GetListByUserID(ctx, opts.UserID, limit, offset)
+		if err != nil {
+			logger.Error(ctx, "Failed loading payslips by user %d: %v", opts.UserID, err)
+			return nil, err
+		}
+	}
+
 	res := V1Res{
 		List: make([]ListItem, 0, len(list)),
 	}

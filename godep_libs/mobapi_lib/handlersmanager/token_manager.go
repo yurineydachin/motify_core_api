@@ -46,7 +46,7 @@ func getTokenType(method reflect.Method) TokenType {
 	return tokenType
 }
 
-func prepareToken(tokenHeaderHash string, extraData interface{}, tokenModel uint64) (apiToken token.IToken, shouldAppendToInputs bool, err error) {
+func PrepareToken(tokenHeaderHash string, extraData interface{}, tokenModel uint64) (apiToken token.IToken, shouldAppendToInputs bool, err error) {
 	shouldAppendToInputs = false
 
 	// fetch expected token type for handler from provided extra data interface

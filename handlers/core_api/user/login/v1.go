@@ -33,8 +33,10 @@ type User struct {
 }
 
 type V1ErrorTypes struct {
-	LOGIN_FAILED   error `text:"Login is failed"`
-	USER_NOT_FOUND error `text:"User not found"`
+	LOGIN_FAILED       error `text:"Login is failed"`
+	USER_NOT_FOUND     error `text:"User not found"`
+	EMAIL_NOT_APPROVED error `text:"Email not approved"`
+	PHONE_NOT_APPROVED error `text:"Phone not approved"`
 }
 
 var v1Errors V1ErrorTypes
@@ -65,6 +67,14 @@ func (handler *Handler) V1(ctx context.Context, opts *V1Args) (*V1Res, error) {
 	if user == nil {
 		logger.Error(ctx, "Failed login: user is nil")
 		return nil, v1Errors.USER_NOT_FOUND
+	}
+	if opts.IntegrationFK != nil && *opts.IntegrationFK > 0 {
+		if user.Email == opts.Login && !user.EmailApproved {
+			return nil, v1Errors.EMAIL_NOT_APPROVED
+		}
+		if user.Phone == opts.Login && !user.EmailApproved {
+			return nil, v1Errors.PHONE_NOT_APPROVED
+		}
 	}
 	return &V1Res{
 		User: &User{
