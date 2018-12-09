@@ -2,6 +2,8 @@ package main
 
 import (
 	//"net/http"
+
+	"net/http"
 	"os"
 	"time"
 
@@ -29,7 +31,7 @@ import (
 	"motify_core_api/handlers/mobile_api/employer/list"
 	"motify_core_api/handlers/mobile_api/payslip/details"
 	"motify_core_api/handlers/mobile_api/payslip/list"
-	"motify_core_api/handlers/mobile_api/user/avatar"
+	//"motify_core_api/handlers/mobile_api/user/avatar"
 	"motify_core_api/handlers/mobile_api/user/login"
 	"motify_core_api/handlers/mobile_api/user/register/device/android"
 	"motify_core_api/handlers/mobile_api/user/register/device/ios"
@@ -39,6 +41,8 @@ import (
 	"motify_core_api/handlers/mobile_api/user/social/fb_login"
 	"motify_core_api/handlers/mobile_api/user/social/google_login"
 	"motify_core_api/handlers/mobile_api/user/update"
+	"motify_core_api/handlers/static/proxy"
+	"motify_core_api/handlers/static/upload"
 	//"motify_core_api/handlers/static/download"
 	//"motify_core_api/handlers/static/upload"
 )
@@ -65,11 +69,19 @@ func init() {
 	config.RegisterString("token-triple-des-key", "24-bit key for token DES encryption", "")
 	config.RegisterString("token-salt", "8-bit salt for token DES encryption", "")
 
-	config.RegisterString("file-upload-mode", "How to upload and get files: from dir or proxy to file cdn", file_storage_service.ModeDir)
+	config.RegisterString("static-addr", "Address for static", ":6130")
+	config.RegisterString("file-upload-mode", "How to upload and get files: from dir or proxy to file cdn", file_storage.ModeBucket)
 	config.RegisterString("file-upload-dir", "Path for files", "/tmp/motify/")
 	config.RegisterString("file-download-prefix", "Path prefix", "/images/")
-	config.RegisterString("aws-s3-bucket", "AWS S3 bucket name", "motify-app")
+
 	config.RegisterString("aws-region", "AWS region", "us-east-1")
+	config.RegisterString("aws-user", "AWS user", "motify-mobile-user")
+	config.RegisterString("aws-access-key-id", "AWS access key", "")
+	config.RegisterString("aws-secret-access-key", "AWS secret access key", "")
+	config.RegisterString("aws-credintials", "AWS credintials", "")
+	config.RegisterString("aws-s3-bucket", "AWS S3 bucket name", "motify-app")
+	config.RegisterString("aws-s3-host", "AWS S3 bucket name", "https://motify-app.s3.amazonaws.com")
+	config.RegisterUint("aws-s3-timeout_sec", "AWS S3 timeout for static, sec", 10)
 
 	config.RegisterUint("motify_core_api-timeout", "MotifyCoreAPI timeout, sec", 10)
 }
@@ -112,9 +124,19 @@ func main() {
 	fileStorageDir, _ := config.GetString("file-upload-dir")
 	//urlPrefixPath, _ := config.GetString("file-download-prefix")
 	awsRegion, _ := config.GetString("aws-region")
+	awsAccessKey, _ := config.GetString("aws-access-key-id")
+	awsSecretAccessKey, _ := config.GetString("aws-secret-access-key")
 	awsBucket, _ := config.GetString("aws-s3-bucket")
-	fileStoreService := file_storage_service.NewService(fileStorageMode, fileStorageDir, awsRegion, awsBucket)
-	//addr, _ := config.GetString("addr")
+	staticAddr, _ := config.GetString("static-addr")
+	awsS3Host, _ := config.GetString("aws-s3-host")
+	awsStaticTimeout, _ := config.GetUint("aws-s3-timeout_sec")
+
+	sess, err := file_storage.NewSession(awsRegion, awsAccessKey, awsSecretAccessKey)
+	if err != nil {
+		logger.Critical(nil, "failed to init AWS session: %v", err)
+		os.Exit(1)
+	}
+	fileStoreService := file_storage.NewService(fileStorageMode, fileStorageDir, awsBucket, sess)
 
 	srvc.MustRegisterHandlers(
 		/*
@@ -124,7 +146,7 @@ func main() {
 			- get employers, employer details
 			- и возможно всякие системные/служебные хендлеры для включения и выключения нотификаций, данные для аккаунта и прочее
 		*/
-		user_avatar.New(coreApi, fileStoreService),
+		//user_avatar.New(coreApi, fileStoreService),
 		user_login.New(coreApi),
 		user_fb_login.New(coreApi),
 		user_google_login.New(coreApi),
@@ -141,22 +163,21 @@ func main() {
 		payslip_details.New(coreApi),
 	)
 
-	/*
-		mux := http.NewServeMux()
-		mux.Handle("/user/file/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
-		mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
-		baseHttpServer := &http.Server{
-			Addr:    addr,
-			Handler: mux,
+	mux := http.NewServeMux()
+	mux.Handle("/upload/v1", upload.New(wrapToken.ModelMobileUser, fileStorageDir, coreApi, fileStoreService))
+	mux.Handle("/users/", proxy.New(awsS3Host, time.Duration(awsStaticTimeout)*time.Second))
+	//mux.Handle("/user/file/download/v1", download.New(urlPrefixPath, fileStorageDir).GetHttpHandler())
+	baseHttpServer := &http.Server{
+		Addr:    staticAddr,
+		Handler: mux,
+	}
+	go func() {
+		if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			logger.Critical(nil, err.Error())
+			logger.Flush(nil)
+			os.Exit(1)
 		}
-		go func() {
-			if err := baseHttpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-				logger.Critical(nil, err.Error())
-				logger.Flush(nil)
-				os.Exit(1)
-			}
-		}()
-	*/
+	}()
 
 	err = srvc.Run()
 	if err != nil {

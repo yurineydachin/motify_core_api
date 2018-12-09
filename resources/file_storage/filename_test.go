@@ -1,4 +1,4 @@
-package file_storage_service
+package file_storage
 
 import (
 	"testing"

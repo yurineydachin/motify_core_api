@@ -1,9 +1,8 @@
 package upload
 
 import (
-	"fmt"
-	//"context"
 	"encoding/json"
+	"errors"
 	"net/http"
 
 	"motify_core_api/godep_libs/mobapi_lib/handler"
@@ -18,7 +17,7 @@ import (
 type Handler struct {
 	tokenModel  uint64
 	dirPath     string
-	fileStorage *file_storage_service.FileStorageService
+	fileStorage *file_storage.FileStorage
 	coreApi     *coreApiAdapter.MotifyCoreAPI
 }
 
@@ -41,14 +40,12 @@ var model = map[uint64]string{
 }
 var defaultModelName = "unknown"
 
-type V1ErrorTypes struct {
-	FILE_NOT_LOADED    error `text:"File not loaded"`
-	USER_UPDATE_FAILED error `text:"User creating failed"`
-}
+var (
+	FILE_NOT_LOADED    = errors.New("File not loaded")
+	USER_UPDATE_FAILED = errors.New("User updating failed")
+)
 
-var v1Errors = V1ErrorTypes{}
-
-func New(tokenModel uint64, dirPath string, coreApi *coreApiAdapter.MotifyCoreAPI, fileStorage *file_storage_service.FileStorageService) *Handler {
+func New(tokenModel uint64, dirPath string, coreApi *coreApiAdapter.MotifyCoreAPI, fileStorage *file_storage.FileStorage) *Handler {
 	return &Handler{
 		tokenModel:  tokenModel,
 		dirPath:     dirPath,
@@ -68,32 +65,43 @@ func (h *Handler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	res, err := h.midleware(r)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error":"` + err.Error() + `"}`))
+		b, _ := json.Marshal(struct {
+			Error string `json:"error"`
+		}{
+			Error: err.Error(),
+		})
+		w.Write(b)
+		return
 	}
 
-	response := struct {
+	b, err := json.Marshal(struct {
 		Data interface{} `json:"data"`
-	}{}
-	response.Data = res
-	b, err := json.Marshal(response)
+	}{
+		Data: res,
+	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(`{"error":"` + err.Error() + `"}`))
+		b, _ := json.Marshal(struct {
+			Error string `json:"error"`
+		}{
+			Error: err.Error(),
+		})
+		w.Write(b)
+		return
 	}
 	w.WriteHeader(http.StatusOK)
 	w.Write(b)
 }
 
 func (h *Handler) midleware(r *http.Request) (interface{}, error) {
-	if r.Method == "POST" {
-		return nil, fmt.Errorf("Need POST-request")
+	if r.Method != "POST" {
+		return nil, errors.New("Need POST-request")
 	}
 	apiToken, _, err := handlersmanager.PrepareToken(r.Header.Get(handler.HeaderAPIToken), handlersmanager.TokenTypeAuthorized, h.tokenModel)
 	if err != nil {
-		return nil, fmt.Errorf("Token error: %s", err)
+		return nil, errors.New("Token error: " + err.Error())
 	}
 
-	// if r.URL.Path == ""
 	res, err := h.v1(r, apiToken)
 	if err != nil {
 		return nil, err
@@ -106,17 +114,18 @@ func (h *Handler) v1(r *http.Request, apiToken token.IToken) (*V1Res, error) {
 	file, fileHeader, err := r.FormFile("uploadFile")
 	if err != nil {
 		logger.Error(r.Context(), "Error upload file: %s", err)
-		return nil, v1Errors.FILE_NOT_LOADED
+		return nil, FILE_NOT_LOADED
 	}
 	defer file.Close()
 
-	fileName := file_storage_service.GenerateFileName(getModel(h.tokenModel), fileHeader.Filename, uint64(apiToken.GetID()))
+	fileName := file_storage.GenerateFileName(getModel(h.tokenModel), fileHeader.Filename, uint64(apiToken.GetID()))
 
-	err = h.fileStorage.Upload(fileName, file)
+	savepath, err := h.fileStorage.Upload(fileName, file)
 	if err != nil {
 		logger.Error(r.Context(), "File not saved: %s", err)
-		return nil, v1Errors.FILE_NOT_LOADED
+		return nil, FILE_NOT_LOADED
 	}
+	logger.Error(r.Context(), "File uploaded to: %s", savepath)
 
 	coreOpts := coreApiAdapter.UserUpdateV1Args{
 		ID:     uint64(apiToken.GetID()),
@@ -126,18 +135,18 @@ func (h *Handler) v1(r *http.Request, apiToken token.IToken) (*V1Res, error) {
 	data, err := h.coreApi.UserUpdateV1(r.Context(), coreOpts)
 	if err != nil {
 		if err.Error() == "MotifyCoreAPI: NEW_EMAIL_IS_BUSY" {
-			return nil, v1Errors.USER_UPDATE_FAILED
+			return nil, USER_UPDATE_FAILED
 		} else if err.Error() == "MotifyCoreAPI: NEW_PHONE_IS_BUSY" {
-			return nil, v1Errors.USER_UPDATE_FAILED
+			return nil, USER_UPDATE_FAILED
 		} else if err.Error() == "MotifyCoreAPI: USER_NOT_FOUND" {
-			return nil, v1Errors.USER_UPDATE_FAILED
+			return nil, USER_UPDATE_FAILED
 		} else if err.Error() == "MotifyCoreAPI: UPDATE_FAILED" {
-			return nil, v1Errors.USER_UPDATE_FAILED
+			return nil, USER_UPDATE_FAILED
 		}
 		return nil, err
 	}
 	if data.User == nil {
-		return nil, v1Errors.USER_UPDATE_FAILED
+		return nil, USER_UPDATE_FAILED
 	}
 
 	user := data.User
